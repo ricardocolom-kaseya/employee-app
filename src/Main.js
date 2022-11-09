@@ -23,6 +23,8 @@ import { MdCake, MdOutlineDelete, MdOutlineEdit, MdEmail } from 'react-icons/md'
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
+const font1 = 'Inter';
+
 const today = new Date();
 
 const employee1DOB = new Date("5/1/2001");
@@ -125,12 +127,12 @@ const EmployeeCard = (props) => {
                         </Avatar>
                         <VStack px="1" align="start" justify="start" spacing="0">
                             <HStack justify="end" align="end" spacing="3">
-                                <Text fontWeight="bold" fontSize="xl" lineHeight="1">
+                                <Text fontWeight="bold" fontSize="xl" lineHeight="1" fontFamily={font1}>
                                     {props.first} {props.last}
                                 </Text>
                                 <Tooltip hasArrow label={(props.dob).toLocaleDateString()} borderRadius="lg">
                                     {/* textDecoration="underline" textUnderlineOffset="2px"  */}
-                                    <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2">
+                                    <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1}>
                                         {GetAge(props.dob)} years old
                                     </Text>
                                 </Tooltip>
@@ -138,14 +140,14 @@ const EmployeeCard = (props) => {
                             <HStack spacing="2" position="relative">
                                 <Icon as={MdEmail} boxSize={4} position="absolute" bottom="2px" />
                                 <Box w="1" />
-                                <Text fontSize="sm">
+                                <Text fontSize="sm" fontFamily={font1}>
                                     {props.email}
                                 </Text>
                             </HStack>
                         </VStack>
                     </HStack>
                     <VStack spacing="0" align="left" pos="relative">
-                        <Text fontSize="xs" pos="absolute" bg="white" px="1" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent">
+                        <Text fontSize="xs" pos="absolute" bg="white" px="1" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
                             SKILLS
                         </Text>
                         <Accordion allowToggle pt="3" pb="8" w="100%">
@@ -157,14 +159,14 @@ const EmployeeCard = (props) => {
                                                 if (i < (props.skills).length - 1) {
                                                     return (
                                                         <HStack>
-                                                            <Text size="sm" fontWeight="bold">{skill.name}</Text>
-                                                            <Text size="sm" fontWeight="bold">•</Text>
+                                                            <Text size="sm" fontWeight="bold" fontFamily={font1}>{skill.name}</Text>
+                                                            <Text size="sm" fontWeight="bold" fontFamily={font1}>•</Text>
                                                         </HStack>
                                                     )
                                                 }
                                                 else {
                                                     return (
-                                                        <Text size="sm" fontWeight="bold">{skill.name}</Text>
+                                                        <Text size="sm" fontWeight="bold" fontFamily={font1}>{skill.name}</Text>
                                                     )
                                                 }
                                             })}
@@ -222,13 +224,13 @@ const ControlPanel = () => {
             </HStack>
             <VStack py="9">
                 <Avatar size="lg" label="Admin" />
-                <Text fontSize="xl">
+                <Text fontSize="xl" fontFamily={font1}>
                     Admin
                 </Text>
             </VStack>
             <Divider w="90%"/>
             <VStack px="4" align="left" w="100%">
-                <Text fontSize="xl">
+                <Text fontSize="xl" fontFamily={font1}>
                     Controls
                 </Text>
             </VStack>
