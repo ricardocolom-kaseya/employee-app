@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Box, Text, HStack, VStack, AvatarBadge, Code, Button, Tooltip, Icon, IconButton, Image } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, AvatarBadge, Code, Button, Tooltip, Icon, IconButton, Switch, Divider } from '@chakra-ui/react'
 import {
     Accordion,
     AccordionItem,
@@ -18,6 +18,7 @@ import {
     TableCaption,
     TableContainer,
 } from '@chakra-ui/react'
+import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon } from '@chakra-ui/icons'
 import { MdCake, MdOutlineDelete, MdOutlineEdit, MdEmail } from 'react-icons/md'
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
@@ -96,7 +97,7 @@ const EmployeeCard = (props) => {
     });
 
     return (
-        <Box display="flex" justifyContent="center" m="2">
+        <Box display="flex" justify="center" m="2">
             <Box pos="relative" w="md" maxW="lg" borderWidth="1px" borderRadius="2xl" bg="white">
                 <Box pos="absolute" m="2" right="0">
                     <HStack>
@@ -104,14 +105,14 @@ const EmployeeCard = (props) => {
                             colorScheme='gray'
                             aria-label='Edit Employee'
                             size="sm"
-                            icon={<MdOutlineEdit fontSize="16pt" color="black" />}
+                            icon={<EditIcon fontSize="12pt" color="black" />}
                             variant="ghost"
                         />
                         <IconButton
                             colorScheme='red'
                             aria-label='Delete Employee'
                             size="sm"
-                            icon={<MdOutlineDelete fontSize="16pt" color="black" />}
+                            icon={<DeleteIcon fontSize="12pt" color="black" />}
                             variant="ghost"
                         />
                     </HStack>
@@ -127,8 +128,9 @@ const EmployeeCard = (props) => {
                                 <Text fontWeight="bold" fontSize="xl" lineHeight="1">
                                     {props.first} {props.last}
                                 </Text>
-                                <Tooltip hasArrow placement='top' label={(props.dob).toLocaleDateString()}>
-                                    <Text fontStyle="italic" fontSize="sm" lineHeight="1.2">
+                                <Tooltip hasArrow label={(props.dob).toLocaleDateString()} borderRadius="lg">
+                                    {/* textDecoration="underline" textUnderlineOffset="2px"  */}
+                                    <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2">
                                         {GetAge(props.dob)} years old
                                     </Text>
                                 </Tooltip>
@@ -199,13 +201,52 @@ const EmployeeCard = (props) => {
     )
 }
 
+const CardView = () => {
+    return (
+        <Box m="4">
+            <EmployeeCard id="00000" first="John" last="Smith" dob={employee1DOB} email="john.smith@gmail.com" skills={employee1skills} isActive={true} />
+            <EmployeeCard id="00001" first="Mike" last="Jones" dob={employee2DOB} email="mike.jones@gmail.com" skills={employee2skills} isActive={false} />
+        </Box>
+    )
+}
+
+const ControlPanel = () => {
+    return (
+        <VStack m="2" w="100%">
+            <HStack w="100%" px="2" justify="right">
+                <HStack>
+                    <SunIcon />
+                    <Switch />
+                    <MoonIcon />
+                </HStack>
+            </HStack>
+            <VStack py="9">
+                <Avatar size="lg" label="Admin" />
+                <Text fontSize="xl">
+                    Admin
+                </Text>
+            </VStack>
+            <Divider w="90%"/>
+            <VStack px="4" align="left" w="100%">
+                <Text fontSize="xl">
+                    Controls
+                </Text>
+            </VStack>
+        </VStack>
+    )
+}
+
 export default function Main() {
     return (
-        <Box bg="gray.100">
-            <VStack>
-                <EmployeeCard id="00000" first="John" last="Smith" dob={employee1DOB} email="john.smith@gmail.com" skills={employee1skills} isActive={true} />
-                <EmployeeCard id="00001" first="Mike" last="Jones" dob={employee2DOB} email="mike.jones@gmail.com" skills={employee2skills} isActive={false} />
-            </VStack>
+        <Box bg="gray.100" w="100vw" h="100vh">
+            <HStack spacing="0" w="100%" h="100%" bg="blue.300">
+                <VStack w="100%" h="100%" bg="gray.200" align="left">
+                    <CardView />
+                </VStack>
+                <VStack w="400px" h="100%" bg="white">
+                    <ControlPanel />
+                </VStack>
+            </HStack>
         </Box>
     )
 }
