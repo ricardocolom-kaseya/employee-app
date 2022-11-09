@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Box, Text, HStack, VStack, AvatarBadge, Code, Button, Tooltip, IconButton } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, AvatarBadge, Code, Button, Tooltip, Icon, IconButton, Image } from '@chakra-ui/react'
 import {
     Accordion,
     AccordionItem,
@@ -20,6 +20,8 @@ import {
 } from '@chakra-ui/react'
 import { MdCake, MdOutlineDelete, MdOutlineEdit, MdEmail } from 'react-icons/md'
 
+import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
+
 const today = new Date();
 
 const employee1DOB = new Date("5/1/2001");
@@ -29,12 +31,12 @@ const employee1skills = [
     {
         name: "Front-End",
         id: "000",
-        desc: "aaaaaaaaa"
+        desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit"
     },
     {
         name: "Back-End",
         id: "001",
-        desc: "bbbbbbbbb"
+        desc: "Assumenda, quia temporibus eveniet a libero incidunt suscipit"
     }
 ]
 
@@ -59,8 +61,31 @@ const GetAge = (dob) => {
     return Math.floor(currAge);
 }
 
-const SkillBlock = (props) => {
-    
+const SkillBlock = (skill) => {
+    return (
+        <VStack align="left" spacing="0" position="relative" pb={(skill.i < skill.totalCount - 1) ? "6" : "0"}>
+            <HStack>
+                <Text fontSize="xl" fontWeight="bold">
+                    {skill.name}
+                </Text>
+                <HStack spacing="0" position="absolute" right="0">
+                    <Code bg="transparent" pl="0">
+                        SKILL ID:
+                    </Code>
+                    <Tooltip label="Click to copy skill ID" borderRadius="lg">
+                        <Button size="xs" variant="outline" onClick={() => navigator.clipboard.writeText(skill.id)}>
+                            <Code bg="transparent">
+                                {skill.id}
+                            </Code>
+                        </Button>
+                    </Tooltip>
+                </HStack>
+            </HStack>
+            <Text>
+                {skill.desc}
+            </Text>
+        </VStack>
+    )
 }
 
 const EmployeeCard = (props) => {
@@ -69,8 +94,6 @@ const EmployeeCard = (props) => {
     (props.skills).forEach(skill => {
         skillNames.push(skill.name);
     });
-
-    console.log(skillNames)
 
     return (
         <Box display="flex" justifyContent="center" m="2">
@@ -94,12 +117,75 @@ const EmployeeCard = (props) => {
                     </HStack>
 
                 </Box>
-                <Box pos="absolute" m="2" right="0" bottom="0">
+                <VStack m="4" align="left" spacing="3">
                     <HStack>
-                        <Text color="gray">
-                            ID:
+                        <Avatar size="md" name={props.first}>
+                            {RenderActivity(props.isActive)}
+                        </Avatar>
+                        <VStack px="1" align="start" justify="start" spacing="0">
+                            <HStack justify="end" align="end" spacing="3">
+                                <Text fontWeight="bold" fontSize="xl" lineHeight="1">
+                                    {props.first} {props.last}
+                                </Text>
+                                <Tooltip hasArrow placement='top' label={(props.dob).toLocaleDateString()}>
+                                    <Text fontStyle="italic" fontSize="sm" lineHeight="1.2">
+                                        {GetAge(props.dob)} years old
+                                    </Text>
+                                </Tooltip>
+                            </HStack>
+                            <HStack spacing="2" position="relative">
+                                <Icon as={MdEmail} boxSize={4} position="absolute" bottom="2px" />
+                                <Box w="1" />
+                                <Text fontSize="sm">
+                                    {props.email}
+                                </Text>
+                            </HStack>
+                        </VStack>
+                    </HStack>
+                    <VStack spacing="0" align="left" pos="relative">
+                        <Text fontSize="xs" pos="absolute" bg="white" px="1" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent">
+                            SKILLS
                         </Text>
-                        <Tooltip label="Click to copy" borderRadius="lg">
+                        <Accordion allowToggle pt="3" pb="8" w="100%">
+                            <AccordionItem borderLeftWidth="1px" borderRightWidth="1px" borderRadius="lg">
+                                <AccordionButton>
+                                    <HStack w="100%" justify="space-between">
+                                        <HStack>
+                                            {(props.skills).map((skill, i) => {
+                                                if (i < (props.skills).length - 1) {
+                                                    return (
+                                                        <HStack>
+                                                            <Text size="sm" fontWeight="bold">{skill.name}</Text>
+                                                            <Text size="sm" fontWeight="bold">•</Text>
+                                                        </HStack>
+                                                    )
+                                                }
+                                                else {
+                                                    return (
+                                                        <Text size="sm" fontWeight="bold">{skill.name}</Text>
+                                                    )
+                                                }
+                                            })}
+                                        </HStack>
+                                        <AccordionIcon />
+                                    </HStack>
+                                </AccordionButton>
+                                <AccordionPanel>
+                                    {(props.skills).map((skill, i) => {
+                                        return (<SkillBlock name={skill.name} id={skill.id} desc={skill.desc} i={i} totalCount={(props.skills).length} />)
+                                    })}
+                                </AccordionPanel>
+                            </AccordionItem>
+                        </Accordion>
+                    </VStack>
+                </VStack>
+                <HStack pos="absolute" w="100%" bottom="0" justify="end" px="2" py="2">
+                    {/* <Image src={KaseyaLogoSmall} boxSize="48px" objectFit="contain" pos="absolute" left="0" mx="4"/> */}
+                    <HStack spacing="0">
+                        <Code bg="transparent">
+                            ID:
+                        </Code>
+                        <Tooltip label="Click to copy employee ID" borderRadius="lg">
                             <Button size="xs" onClick={() => navigator.clipboard.writeText(props.id)}>
                                 <Code bg="transparent">
                                     {props.id}
@@ -107,76 +193,7 @@ const EmployeeCard = (props) => {
                             </Button>
                         </Tooltip>
                     </HStack>
-                </Box>
-                <Box m="4">
-                    <HStack>
-                        <Avatar size="md" name={props.first}>
-                            {RenderActivity(props.isActive)}
-                        </Avatar>
-                        <VStack px="1" align="start" justify="start" spacing="0">
-                            <Text fontWeight="bold" fontSize="2xl">
-                                {props.first} {props.last}
-                            </Text>
-                            <Text lineHeight="0.8" fontSize="sm">
-                                Kaseya
-                            </Text>
-                        </VStack>
-                    </HStack>
-                    <VStack my="3" align="left" spacing="0">
-                        <HStack>
-                            <MdEmail />
-                            <Text>
-                                {props.email}
-                            </Text>
-                        </HStack>
-                        <HStack>
-                            <MdCake />
-                            <HStack >
-                                <Text>
-                                    {(props.dob).toLocaleDateString()}
-                                </Text>
-                                <Text fontStyle="italic">
-                                    ({GetAge(props.dob)} years old)
-                                </Text>
-                            </HStack>
-                        </HStack>
-                    </VStack>
-
-                    <Accordion allowToggle pb="8">
-                        <AccordionItem borderLeftWidth="1px" borderRightWidth="1px" borderRadius="lg">
-                            <AccordionButton>
-                                <Box flex='1' textAlign='left'>
-                                    Skill Info
-                                </Box>
-                                <AccordionIcon />
-                            </AccordionButton>
-                            <AccordionPanel>
-                                <TableContainer>
-                                    <Table variant='simple' size="sm">
-                                        <Thead>
-                                            <Tr>
-                                                <Th>Skill ID</Th>
-                                                <Th>Name</Th>
-                                                <Th>Description</Th>
-                                            </Tr>
-                                        </Thead>
-                                        <Tbody>
-                                            {(props.skills).map((skill, i) => {
-                                                return (
-                                                    <Tr>
-                                                        <Td>{skill.id}</Td>
-                                                        <Td>{skill.name}</Td>
-                                                        <Td>{skill.desc}</Td>
-                                                    </Tr>
-                                                )
-                                            })}
-                                        </Tbody>
-                                    </Table>
-                                </TableContainer>
-                            </AccordionPanel>
-                        </AccordionItem>
-                    </Accordion>
-                </Box>
+                </HStack>
             </Box>
         </Box>
     )
