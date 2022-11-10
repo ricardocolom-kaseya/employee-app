@@ -293,7 +293,7 @@ const CardView = () => {
 const ControlPanel = () => {
 
     return (
-        <VStack w="100%">
+        <VStack w="100%" h="100%" bg="white">
             <HStack w="100%" p="2" justify="right">
                 <HStack>
                     <SunIcon />
@@ -336,11 +336,11 @@ export default function Main() {
 
     return (
         <Box bg="gray.100" maxW="100vw" h="100vh">
-            <HStack spacing="0" w="100%" h="100%" bg="blue.300">
+            <HStack spacing="0" w="100%" h="100%">
                 <VStack w="100%" h="100%" bg="gray.200" align="left">
                     <CardView />
                 </VStack>
-                <VStack w="400px" h="100%" bg="white">
+                <VStack w="400px" h="100%">
                     <ControlPanel />
                 </VStack>
             </HStack>
