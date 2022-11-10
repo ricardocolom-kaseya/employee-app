@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure } from '@chakra-ui/react'
 import {
     Accordion,
     AccordionItem,
@@ -23,8 +23,17 @@ import {
     FormErrorMessage,
     FormHelperText,
 } from '@chakra-ui/react'
+import {
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+} from '@chakra-ui/react'
 import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon } from '@chakra-ui/icons'
-import { MdCake, MdOutlineDelete, MdOutlineEdit, MdEmail, MdAddCircle } from 'react-icons/md'
+import { MdCake, MdOutlineDelete, MdOutlineEdit, MdPerson, MdEmail, MdAddCircle } from 'react-icons/md'
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
@@ -93,6 +102,70 @@ const SkillBlock = (skill) => {
                 {skill.desc}
             </Text>
         </VStack>
+    )
+}
+
+const AddNewEmployee = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const NameHeader = () => {
+        return (
+            <>
+                <HStack position="absolute" spacing="2">
+                    <Icon as={MdPerson} boxSize={4} position="absolute" top="5px" />
+                    <Box w="1" />
+                    <Text fontWeight="medium" fontFamily="Inter">Name</Text>
+                </HStack>
+                <FormLabel position="absolute" left="63px"></FormLabel>
+                <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+            </>
+
+        )
+    }
+
+    const EmailHeader = () => {
+        return (
+            <>
+                <HStack position="absolute" spacing="2">
+                    <Icon as={MdEmail} boxSize={4} position="absolute" top="5px" />
+                    <Box w="1" />
+                    <Text fontWeight="medium" fontFamily="Inter">Email</Text>
+                </HStack>
+                <FormLabel position="absolute" left="59px"></FormLabel>
+                <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+            </>
+        )
+    }
+
+    return (
+        <>
+            <Button variant="outline" my="4" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} onClick={onOpen}>
+                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                    Add a new employee
+                </Text>
+            </Button>
+            <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom'>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader fontFamily="Inter" fontWeight="medium">Add a new employee</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <FormControl isRequired>
+                            <NameHeader />
+                            <Input placeholder="First name" mb="2"/>
+                            <Input placeholder="Last name"/>
+                        </FormControl>
+                        <FormControl isRequired mt="8">
+                            <EmailHeader />
+                            <Input placeholder="Email"/>
+                        </FormControl>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Close</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        </>
     )
 }
 
@@ -218,9 +291,10 @@ const CardView = () => {
 }
 
 const ControlPanel = () => {
+
     return (
-        <VStack m="2" w="100%">
-            <HStack w="100%" px="2" justify="right">
+        <VStack w="100%">
+            <HStack w="100%" p="2" justify="right">
                 <HStack>
                     <SunIcon />
                     <Switch colorScheme="gray" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'gray.500' } }} />
@@ -235,40 +309,33 @@ const ControlPanel = () => {
             </VStack>
             <Divider w="90%" />
             <VStack align="left" w="100%" px="4">
-                <Heading fontSize="2xl" fontFamily={font1} my="4">
+                <AddNewEmployee />
+                <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
                 </Heading>
-                <VStack spacing="180px" align="left" w="100%">
-                    <VStack align="left">
-                        <FormControl maxW="80%">
-                            <Input placeholder="Search..." />
-                        </FormControl>
-                        <Menu>
-                            <MenuButton maxW="80%" textAlign="left" fontWeight="normal" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
-                                Sort by...
-                            </MenuButton>
-                            <MenuList>
-                                <MenuItem>One</MenuItem>
-                                <MenuItem>Two</MenuItem>
-                                <MenuItem>Three</MenuItem>
-                                <MenuItem>Four</MenuItem>
-                            </MenuList>
-                        </Menu>
-                    </VStack>
-                    <Button variant="outline" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />}>
-                        <Text w="100%" textAlign="left" fontWeight="normal">
-                            Add a new employee
-                        </Text>
-                    </Button>
-                </VStack>
+                <FormControl maxW="80%">
+                    <Input fontFamily="Inter" placeholder="Search..." />
+                </FormControl>
+                <Menu>
+                    <MenuButton maxW="80%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
+                        Sort by...
+                    </MenuButton>
+                    <MenuList>
+                        <MenuItem>One</MenuItem>
+                        <MenuItem>Two</MenuItem>
+                        <MenuItem>Three</MenuItem>
+                        <MenuItem>Four</MenuItem>
+                    </MenuList>
+                </Menu>
             </VStack>
         </VStack>
     )
 }
 
 export default function Main() {
+
     return (
-        <Box bg="gray.100" w="100vw" h="100vh">
+        <Box bg="gray.100" maxW="100vw" h="100vh">
             <HStack spacing="0" w="100%" h="100%" bg="blue.300">
                 <VStack w="100%" h="100%" bg="gray.200" align="left">
                     <CardView />
