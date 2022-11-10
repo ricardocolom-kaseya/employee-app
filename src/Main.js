@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Box, Text, HStack, VStack, AvatarBadge, Code, Button, Tooltip, Icon, IconButton, Switch, Divider } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider } from '@chakra-ui/react'
 import {
     Accordion,
     AccordionItem,
@@ -8,18 +8,23 @@ import {
     AccordionIcon,
 } from '@chakra-ui/react'
 import {
-    Table,
-    Thead,
-    Tbody,
-    Tfoot,
-    Tr,
-    Th,
-    Td,
-    TableCaption,
-    TableContainer,
+    Menu,
+    MenuButton,
+    MenuList,
+    MenuItem,
+    MenuItemOption,
+    MenuGroup,
+    MenuOptionGroup,
+    MenuDivider,
 } from '@chakra-ui/react'
-import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon } from '@chakra-ui/icons'
-import { MdCake, MdOutlineDelete, MdOutlineEdit, MdEmail } from 'react-icons/md'
+import {
+    FormControl,
+    FormLabel,
+    FormErrorMessage,
+    FormHelperText,
+} from '@chakra-ui/react'
+import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon } from '@chakra-ui/icons'
+import { MdCake, MdOutlineDelete, MdOutlineEdit, MdEmail, MdAddCircle } from 'react-icons/md'
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
@@ -218,21 +223,44 @@ const ControlPanel = () => {
             <HStack w="100%" px="2" justify="right">
                 <HStack>
                     <SunIcon />
-                    <Switch />
+                    <Switch colorScheme="gray" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'gray.500' } }} />
                     <MoonIcon />
                 </HStack>
             </HStack>
             <VStack py="9">
                 <Avatar size="lg" label="Admin" />
-                <Text fontSize="xl" fontFamily={font1}>
+                <Heading fontSize="2xl" fontFamily={font1}>
                     Admin
-                </Text>
+                </Heading>
             </VStack>
-            <Divider w="90%"/>
-            <VStack px="4" align="left" w="100%">
-                <Text fontSize="xl" fontFamily={font1}>
+            <Divider w="90%" />
+            <VStack align="left" w="100%" px="4">
+                <Heading fontSize="2xl" fontFamily={font1} my="4">
                     Controls
-                </Text>
+                </Heading>
+                <VStack spacing="180px" align="left" w="100%">
+                    <VStack align="left">
+                        <FormControl maxW="80%">
+                            <Input placeholder="Search..." />
+                        </FormControl>
+                        <Menu>
+                            <MenuButton maxW="80%" textAlign="left" fontWeight="normal" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
+                                Sort by...
+                            </MenuButton>
+                            <MenuList>
+                                <MenuItem>One</MenuItem>
+                                <MenuItem>Two</MenuItem>
+                                <MenuItem>Three</MenuItem>
+                                <MenuItem>Four</MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </VStack>
+                    <Button variant="outline" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />}>
+                        <Text w="100%" textAlign="left" fontWeight="normal">
+                            Add a new employee
+                        </Text>
+                    </Button>
+                </VStack>
             </VStack>
         </VStack>
     )
