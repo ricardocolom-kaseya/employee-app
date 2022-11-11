@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid } from '@chakra-ui/react'
 import {
     Accordion,
@@ -41,7 +41,7 @@ import {
     AlertDialogOverlay,
 } from '@chakra-ui/react'
 import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
-import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle } from 'react-icons/md'
+import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
@@ -474,6 +474,92 @@ const CardView = () => {
 
 const ControlPanel = () => {
 
+    const addDummyEmployee = () => {
+        console.log("Dummy button clicked")
+
+        let f_name = "Michael"
+        let l_name = "Jordan"
+        let dob = new Date('01-31-2022')
+        let yyyy = dob.getFullYear()
+        let mm = ((dob.getMonth() + 1) < 10) ? `0${dob.getMonth() + 1}` : dob.getMonth() + 1
+        let dd = (dob.getDate() < 10) ? `0${dob.getDate()}` : dob.getDate()
+        let email = "michael.jordan@gmail.com"
+        let skill_id = 'a0e1827d-61fd-11ed-b1bd-803f5d06682c'
+        let is_active = true
+
+        fetch("http://localhost:4000/createemployee", {
+            headers: {
+                'f_name': f_name,
+                'l_name': l_name,
+                'yyyy': yyyy,
+                'mm': mm,
+                'dd': dd,
+                'email': email,
+                'skill_id': skill_id,
+                'is_active': is_active
+            }
+        }).then(
+            response => response.json()
+        ).then(
+            data => { console.log(data) }
+        )
+    }
+
+    const DeleteAllEmployeesButton = () => {
+        const { isOpen, onOpen, onClose } = useDisclosure()
+        const cancelRef = React.useRef()
+
+        const handleDeleteAllEmployees = () => {
+
+            console.log("Going to delete all employees... ");
+            
+            fetch("http://localhost:4000/deleteallemployees").then(
+                response => response.json()
+            ).then(
+                data => { console.log(data) }
+            )
+
+            onClose();
+        }
+
+        return (
+            <>
+                <Button colorScheme="red" my="4" onClick={onOpen}>
+                    <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
+                        Delete All Employees
+                    </Text>
+                </Button>
+
+                <AlertDialog
+                    isOpen={isOpen}
+                    leastDestructiveRef={cancelRef}
+                    onClose={onClose}
+                    isCentered
+                    motionPreset="slideInBottom"
+                >
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                                Delete All Employees
+                            </AlertDialogHeader>
+                            <AlertDialogBody>
+                                <Text>Are you sure you would like to delete <strong>all</strong> employees?</Text>
+                            </AlertDialogBody>
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                    Cancel
+                                </Button>
+                                <Button colorScheme='red' onClick={() => {handleDeleteAllEmployees()}} ml={3}>
+                                    Delete All
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
+            </>
+        )
+    }
+
     return (
         <VStack w="100%" h="100%" bg="white">
             <HStack w="100%" p="2" justify="right">
@@ -492,6 +578,7 @@ const ControlPanel = () => {
             <Divider w="90%" />
             <VStack align="left" w="100%" px="4">
                 <AddNewEmployee />
+                <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
                 </Heading>
@@ -509,12 +596,27 @@ const ControlPanel = () => {
                         <MenuItem>Four</MenuItem>
                     </MenuList>
                 </Menu>
+                <DeleteAllEmployeesButton />
             </VStack>
         </VStack>
     )
 }
 
 export default function Main() {
+
+    const [employees, changeEmployees] = useState([]);
+
+    useEffect(() => {
+        fetch("http://localhost:4000/getemployees", {
+            headers: {
+                'testHeader': "Test"
+            }
+        }).then(
+            response => response.json()
+        ).then(
+            data => { console.log(data) }
+        )
+    }, [])
 
     return (
         <Box bg="gray.100" maxW="100vw" h="100vh">
