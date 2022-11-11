@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid } from '@chakra-ui/react'
 import {
     Accordion,
     AccordionItem,
@@ -62,7 +62,17 @@ const employee1skills = [
         name: "Back-End",
         id: "001",
         desc: "Assumenda, quia temporibus eveniet a libero incidunt suscipit"
-    }
+    },
+    {
+        name: "Database",
+        id: "003",
+        desc: "Assumenda, quia temporibus eveniet a libero incidunt suscipit"
+    },
+    {
+        name: "Database",
+        id: "003",
+        desc: "Assumenda, quia temporibus eveniet a libero incidunt suscipit"
+    },
 ]
 
 const employee2skills = [
@@ -352,7 +362,7 @@ const EmployeeCard = (props) => {
 
     return (
         <Box display="flex" justify="center" m="2">
-            <Box pos="relative" w="md" maxW="lg" borderWidth="1px" borderRadius="2xl" bg="white">
+            <Box pos="relative" w="md" maxW="md" borderWidth="1px" borderRadius="2xl" bg="white">
                 <Box pos="absolute" m="2" right="0">
                     <HStack>
                         <EditButton />
@@ -423,7 +433,7 @@ const EmployeeCard = (props) => {
                         </Accordion>
                     </VStack>
                 </VStack>
-                <HStack pos="absolute" w="100%" bottom="0" justify="end" px="2" py="2">
+                <HStack pos="absolute" w="100%" bottom="0" justify="end" px="4" py="2">
                     {/* <Image src={KaseyaLogoSmall} boxSize="48px" objectFit="contain" pos="absolute" left="0" mx="4"/> */}
                     <HStack spacing="0">
                         <Code bg="transparent">
@@ -445,10 +455,20 @@ const EmployeeCard = (props) => {
 
 const CardView = () => {
     return (
-        <Box m="4">
-            <EmployeeCard id="00000" first="John" last="Smith" dob={employee1DOB} email="john.smith@gmail.com" skills={employee1skills} isActive={true} />
-            <EmployeeCard id="00001" first="Mike" last="Jones" dob={employee2DOB} email="mike.jones@gmail.com" skills={employee2skills} isActive={false} />
-        </Box>
+        <HStack m="4" align="center">
+            <VStack h="100%">
+                <EmployeeCard id="00000" first="John" last="Smith" dob={employee1DOB} email="john.smith@gmail.com" skills={employee1skills} isActive={true} />
+                <EmployeeCard id="00132" first="Ricardo" last="Colom" dob={employee1DOB} email="ricardo.colom@gmail.com" skills={employee1skills} isActive={true} />
+            </VStack>
+            <VStack h="100%">
+                <EmployeeCard id="00001" first="Mike" last="Jones" dob={employee2DOB} email="mike.jones@gmail.com" skills={employee2skills} isActive={false} />
+                <EmployeeCard id="00132" first="Sean" last="Carter" dob={employee2DOB} email="sean.carter@gmail.com" skills={employee1skills} isActive={true} />
+            </VStack>
+            <VStack h="100%">
+                <EmployeeCard id="00001" first="Mike" last="Jones" dob={employee2DOB} email="mike.jones@gmail.com" skills={employee2skills} isActive={false} />
+                <EmployeeCard id="00132" first="Sean" last="Carter" dob={employee2DOB} email="sean.carter@gmail.com" skills={employee1skills} isActive={true} />
+            </VStack>
+        </HStack>
     )
 }
 
@@ -499,10 +519,10 @@ export default function Main() {
     return (
         <Box bg="gray.100" maxW="100vw" h="100vh">
             <HStack spacing="0" w="100%" h="100%">
-                <VStack w="100%" h="100%" bg="gray.200" align="left">
+                <VStack w="100%" h="100%" bg="gray.200" align="center">
                     <CardView />
                 </VStack>
-                <VStack w="400px" h="100%">
+                <VStack w="424px" h="100%">
                     <ControlPanel />
                 </VStack>
             </HStack>
