@@ -1,5 +1,5 @@
 import React from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select } from '@chakra-ui/react'
 import {
     Accordion,
     AccordionItem,
@@ -32,8 +32,16 @@ import {
     ModalBody,
     ModalCloseButton,
 } from '@chakra-ui/react'
-import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon } from '@chakra-ui/icons'
-import { MdCake, MdOutlineDelete, MdOutlineEdit, MdPerson, MdEmail, MdAddCircle } from 'react-icons/md'
+import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogContent,
+    AlertDialogOverlay,
+} from '@chakra-ui/react'
+import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
+import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle } from 'react-icons/md'
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
@@ -64,6 +72,63 @@ const employee2skills = [
         desc: "aaaaaaaaa"
     },
 ]
+
+const NameHeader = () => {
+    return (
+        <>
+            <HStack position="absolute" spacing="2">
+                <Icon as={MdPerson} boxSize={4} position="absolute" top="4px" />
+                <Box w="1" />
+                <Text fontWeight="medium" fontFamily="Inter">Name</Text>
+            </HStack>
+            <FormLabel position="absolute" left="63px"></FormLabel>
+            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+        </>
+
+    )
+}
+
+const EmailHeader = () => {
+    return (
+        <>
+            <HStack position="absolute" spacing="2">
+                <Icon as={MdEmail} boxSize={4} position="absolute" top="5px" />
+                <Box w="1" />
+                <Text fontWeight="medium" fontFamily="Inter">Email</Text>
+            </HStack>
+            <FormLabel position="absolute" left="59px"></FormLabel>
+            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+        </>
+    )
+}
+
+const DOBHeader = () => {
+    return (
+        <>
+            <HStack position="absolute" spacing="2">
+                <Icon as={MdCake} boxSize={4} position="absolute" top="3px" />
+                <Box w="1" />
+                <Text fontWeight="medium" fontFamily="Inter">Birthday</Text>
+            </HStack>
+            <FormLabel position="absolute" left="83px"></FormLabel>
+            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+        </>
+    )
+}
+
+const SkillsHeader = () => {
+    return (
+        <>
+            <HStack position="absolute" spacing="2">
+                <Icon as={MdBadge} boxSize={4} position="absolute" top="3px" />
+                <Box w="1" />
+                <Text fontWeight="medium" fontFamily="Inter">Skills</Text>
+            </HStack>
+            <FormLabel position="absolute" left="58px"></FormLabel>
+            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+        </>
+    )
+}
 
 const RenderActivity = (isActive) => {
     if (isActive) {
@@ -108,35 +173,6 @@ const SkillBlock = (skill) => {
 const AddNewEmployee = () => {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
-    const NameHeader = () => {
-        return (
-            <>
-                <HStack position="absolute" spacing="2">
-                    <Icon as={MdPerson} boxSize={4} position="absolute" top="5px" />
-                    <Box w="1" />
-                    <Text fontWeight="medium" fontFamily="Inter">Name</Text>
-                </HStack>
-                <FormLabel position="absolute" left="63px"></FormLabel>
-                <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
-            </>
-
-        )
-    }
-
-    const EmailHeader = () => {
-        return (
-            <>
-                <HStack position="absolute" spacing="2">
-                    <Icon as={MdEmail} boxSize={4} position="absolute" top="5px" />
-                    <Box w="1" />
-                    <Text fontWeight="medium" fontFamily="Inter">Email</Text>
-                </HStack>
-                <FormLabel position="absolute" left="59px"></FormLabel>
-                <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
-            </>
-        )
-    }
-
     return (
         <>
             <Button variant="outline" my="4" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} onClick={onOpen}>
@@ -144,24 +180,50 @@ const AddNewEmployee = () => {
                     Add a new employee
                 </Text>
             </Button>
-            <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom'>
+            <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl">
                 <ModalOverlay />
-                <ModalContent>
+                <ModalContent >
                     <ModalHeader fontFamily="Inter" fontWeight="medium">Add a new employee</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <FormControl isRequired>
-                            <NameHeader />
-                            <Input placeholder="First name" mb="2"/>
-                            <Input placeholder="Last name"/>
-                        </FormControl>
-                        <FormControl isRequired mt="8">
-                            <EmailHeader />
-                            <Input placeholder="Email"/>
-                        </FormControl>
+                        <HStack spacing="8">
+                            <VStack spacing="8" w="1200px" h="328px">
+                                <FormControl isRequired>
+                                    <NameHeader />
+                                    <Input placeholder="First name" mb="2" />
+                                    <Input placeholder="Last name" />
+                                </FormControl>
+                                <FormControl isRequired mt="8">
+                                    <EmailHeader />
+                                    <Input placeholder="Email" />
+                                </FormControl>
+                                <FormControl isRequired mt="8">
+                                    <DOBHeader />
+                                    <Input placeholder="Birthday" type="date" />
+                                </FormControl>
+                            </VStack>
+                            <VStack w="1200px" h="328px">
+                                <FormControl isRequired>
+                                    <SkillsHeader />
+                                    <Select placeholder="Skills">
+                                        <option>One</option>
+                                        <option>Two</option>
+                                        <option>Three</option>
+                                        <option>Four</option>
+                                    </Select>
+                                </FormControl>
+                            </VStack>
+                        </HStack>
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Close</Button>
+                        <HStack>
+                            <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                            <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />} onClick={onOpen}>
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                    Add
+                                </Text>
+                            </Button>
+                        </HStack>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
@@ -170,6 +232,118 @@ const AddNewEmployee = () => {
 }
 
 const EmployeeCard = (props) => {
+
+    const EditButton = () => {
+
+        const { isOpen, onOpen, onClose } = useDisclosure()
+
+        return (
+            <>
+                <IconButton
+                    colorScheme='gray'
+                    aria-label='Edit Employee'
+                    size="sm"
+                    icon={<EditIcon fontSize="12pt" color="black" />}
+                    variant="ghost"
+                    onClick={onOpen}
+                />
+                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl">
+                    <ModalOverlay />
+                    <ModalContent >
+                        <ModalHeader fontFamily="Inter" fontWeight="medium">Edit employee</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody>
+                            <HStack spacing="8">
+                                <VStack spacing="8" w="1200px" h="328px">
+                                    <FormControl isRequired>
+                                        <NameHeader />
+                                        <Input placeholder="First name" mb="2" />
+                                        <Input placeholder="Last name" />
+                                    </FormControl>
+                                    <FormControl isRequired mt="8">
+                                        <EmailHeader />
+                                        <Input placeholder="Email" />
+                                    </FormControl>
+                                    <FormControl isRequired mt="8">
+                                        <DOBHeader />
+                                        <Input placeholder="Birthday" type="date" />
+                                    </FormControl>
+                                </VStack>
+                                <VStack w="1200px" h="328px">
+                                    <FormControl isRequired>
+                                        <SkillsHeader />
+                                        <Select placeholder="Skills">
+                                            <option>One</option>
+                                            <option>Two</option>
+                                            <option>Three</option>
+                                            <option>Four</option>
+                                        </Select>
+                                    </FormControl>
+                                </VStack>
+                            </HStack>
+                        </ModalBody>
+                        <ModalFooter>
+                            <HStack>
+                                <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                                <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={onOpen}>
+                                    <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                        Save
+                                    </Text>
+                                </Button>
+                            </HStack>
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
+            </>
+        )
+    }
+
+    const DeleteButton = () => {
+        const { isOpen, onOpen, onClose } = useDisclosure()
+        const cancelRef = React.useRef()
+
+        return (
+            <>
+                <IconButton
+                    colorScheme='red'
+                    aria-label='Delete Employee'
+                    size="sm"
+                    icon={<DeleteIcon fontSize="12pt" color="black" />}
+                    variant="ghost"
+                    onClick={onOpen}
+                />
+
+                <AlertDialog
+                    isOpen={isOpen}
+                    leastDestructiveRef={cancelRef}
+                    onClose={onClose}
+                    isCentered
+                    motionPreset="slideInBottom"
+                >
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                                Delete Employee
+                            </AlertDialogHeader>
+
+                            <AlertDialogBody>
+                                <Text>Are you sure you would like to delete <strong>{props.first} {props.last}</strong>?</Text>
+                            </AlertDialogBody>
+
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                    Cancel
+                                </Button>
+                                <Button colorScheme='red' onClick={onClose} ml={3}>
+                                    Delete
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
+            </>
+        )
+    }
 
     const skillNames = [];
     (props.skills).forEach(skill => {
@@ -181,20 +355,8 @@ const EmployeeCard = (props) => {
             <Box pos="relative" w="md" maxW="lg" borderWidth="1px" borderRadius="2xl" bg="white">
                 <Box pos="absolute" m="2" right="0">
                     <HStack>
-                        <IconButton
-                            colorScheme='gray'
-                            aria-label='Edit Employee'
-                            size="sm"
-                            icon={<EditIcon fontSize="12pt" color="black" />}
-                            variant="ghost"
-                        />
-                        <IconButton
-                            colorScheme='red'
-                            aria-label='Delete Employee'
-                            size="sm"
-                            icon={<DeleteIcon fontSize="12pt" color="black" />}
-                            variant="ghost"
-                        />
+                        <EditButton />
+                        <DeleteButton />
                     </HStack>
 
                 </Box>
