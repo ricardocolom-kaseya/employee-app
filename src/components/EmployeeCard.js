@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid } from '@chakra-ui/react'
 import {
     Modal,
@@ -34,7 +34,7 @@ import {
 import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
-import {NameHeader, EmailHeader, DOBHeader, SkillsHeader} from './ModalHeaders'
+import { NameHeader, EmailHeader, DOBHeader, SkillsHeader } from './ModalHeaders'
 
 const font1 = 'Inter';
 
@@ -59,27 +59,25 @@ const RenderEmployeeActivity = (isActive) => {
 
 const SkillBlock = (skill) => {
     return (
-        <VStack align="left" spacing="0" position="relative" pb={(skill.i < skill.totalCount - 1) ? "6" : "0"}>
-            <HStack>
-                <Text fontSize="xl" fontWeight="bold">
-                    {skill.name}
-                </Text>
-                <HStack spacing="0" position="absolute" right="0">
-                    <Code bg="transparent" pl="0">
-                        SKILL ID:
-                    </Code>
-                    <Tooltip label={skill.skill_id} borderRadius="lg">
-                        <Button size="xs" variant="outline" onClick={() => navigator.clipboard.writeText(skill.skill_id)}>
-                            <Code bg="transparent">
-                                Copy
-                            </Code>
-                        </Button>
-                    </Tooltip>
-                </HStack>
-            </HStack>
-            <Text>
+        <VStack align="left" spacing="0" position="relative" pb={(skill.i < skill.totalCount - 1) ? "16" : "8"}>
+            <Text w="100%" textAlign="left" fontSize="xl" fontWeight="bold" fontFamily={font1}>
+                {skill.name}
+            </Text>
+            <Text fontFamily={font1}>
                 {skill.desc}
             </Text>
+            <HStack spacing="0" position="absolute" right="0" bottom="0">
+                <Code bg="transparent">
+                    SKILL ID:
+                </Code>
+                <Tooltip label={skill.skill_id} borderRadius="lg">
+                    <Button size="xs" variant="outline" onClick={() => navigator.clipboard.writeText(skill.skill_id)}>
+                        <Code bg="transparent">
+                            Copy
+                        </Code>
+                    </Button>
+                </Tooltip>
+            </HStack>
         </VStack>
     )
 }
@@ -89,10 +87,81 @@ export default function EmployeeCard(props) {
     let employee = props.employee;
     let skills = props.skills;
 
+    const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const EditEmployeeModal = () => {
+        const [firstName, changeFirstName] = useState(employee.f_name);
+        const [lastName, changeLastName] = useState(employee.l_name);
+        const [email, changeEmail] = useState(employee.email);
+        const [birthday, changeBirthday] = useState(employee.dob);
+        const [skill, changeSkill] = useState(employee.skill_id);
+
+        const formatDate = (date) => {
+            let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+
+            return dateString;
+        }
+
+        const handleChangeDate = (date) => {
+            let toBirthday = new Date(date);
+            console.log(toBirthday);
+            changeBirthday(toBirthday)
+        }
+
+        return (
+
+            <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl">
+                <ModalOverlay />
+                <ModalContent >
+                    <ModalHeader fontFamily="Inter" fontWeight="medium">Edit employee</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <HStack spacing="8">
+                            <VStack spacing="8" w="1200px" h="328px">
+                                <FormControl isRequired>
+                                    <NameHeader />
+                                    <Input value={firstName} onChange={(e) => changeFirstName(e.target.value)} mb="2" />
+                                    <Input value={lastName} onChange={(e) => changeLastName(e.target.value)} />
+                                </FormControl>
+                                <FormControl isRequired mt="8">
+                                    <EmailHeader />
+                                    <Input value={email} onChange={(e) => changeEmail(e.target.value)} />
+                                </FormControl>
+                                <FormControl isRequired mt="8">
+                                    <DOBHeader />
+                                    <Input value={formatDate(birthday)} onChange={(e) => handleChangeDate(e.target.value)} type="date" />
+                                </FormControl>
+                            </VStack>
+                            <VStack w="1200px" h="328px">
+                                <FormControl isRequired>
+                                    <SkillsHeader />
+                                    <Select placeholder="Skills">
+                                        <option>One</option>
+                                        <option>Two</option>
+                                        <option>Three</option>
+                                        <option>Four</option>
+                                    </Select>
+                                </FormControl>
+                            </VStack>
+                        </HStack>
+                    </ModalBody>
+                    <ModalFooter>
+                        <HStack>
+                            <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                            <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={onOpen}>
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                    Save
+                                </Text>
+                            </Button>
+                        </HStack>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+        )
+    }
+
     const EditButton = () => {
-
-        const { isOpen, onOpen, onClose } = useDisclosure()
-
         return (
             <>
                 <IconButton
@@ -103,53 +172,7 @@ export default function EmployeeCard(props) {
                     variant="ghost"
                     onClick={onOpen}
                 />
-                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl">
-                    <ModalOverlay />
-                    <ModalContent >
-                        <ModalHeader fontFamily="Inter" fontWeight="medium">Edit employee</ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody>
-                            <HStack spacing="8">
-                                <VStack spacing="8" w="1200px" h="328px">
-                                    <FormControl isRequired>
-                                        <NameHeader />
-                                        <Input placeholder="First name" mb="2" />
-                                        <Input placeholder="Last name" />
-                                    </FormControl>
-                                    <FormControl isRequired mt="8">
-                                        <EmailHeader />
-                                        <Input placeholder="Email" />
-                                    </FormControl>
-                                    <FormControl isRequired mt="8">
-                                        <DOBHeader />
-                                        <Input placeholder="Birthday" type="date" />
-                                    </FormControl>
-                                </VStack>
-                                <VStack w="1200px" h="328px">
-                                    <FormControl isRequired>
-                                        <SkillsHeader />
-                                        <Select placeholder="Skills">
-                                            <option>One</option>
-                                            <option>Two</option>
-                                            <option>Three</option>
-                                            <option>Four</option>
-                                        </Select>
-                                    </FormControl>
-                                </VStack>
-                            </HStack>
-                        </ModalBody>
-                        <ModalFooter>
-                            <HStack>
-                                <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                                <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={onOpen}>
-                                    <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
-                                        Save
-                                    </Text>
-                                </Button>
-                            </HStack>
-                        </ModalFooter>
-                    </ModalContent>
-                </Modal>
+                <EditEmployeeModal />
             </>
         )
     }
@@ -219,7 +242,7 @@ export default function EmployeeCard(props) {
 
         });
 
-        console.log("Attempting to find skills for this employee");
+        //console.log("Attempting to find skills for this employee");
     }
 
     findSkill();
