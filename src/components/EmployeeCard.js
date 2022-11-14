@@ -87,6 +87,22 @@ export default function EmployeeCard(props) {
     let employee = props.employee;
     let skills = props.skills;
 
+    let skillName = "None";
+    let skillDesc = "empty desc"
+
+    const findSkill = () => {
+
+        skills.forEach(skill => {
+            if (skill.skill_id == employee.skill_id) {
+                skillName = skill.skill_name;
+                skillDesc = skill.skill_desc;
+            }
+
+        });
+    }
+
+    findSkill();
+
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const EditEmployeeModal = () => {
@@ -135,11 +151,10 @@ export default function EmployeeCard(props) {
                             <VStack w="1200px" h="328px">
                                 <FormControl isRequired>
                                     <SkillsHeader />
-                                    <Select placeholder="Skills">
-                                        <option>One</option>
-                                        <option>Two</option>
-                                        <option>Three</option>
-                                        <option>Four</option>
+                                    <Select defaultValue={skillName}>
+                                        {skills.map((skill, i) => {
+                                            return(<option key={i} >{skill.skill_name}</option>)
+                                        })}
                                     </Select>
                                 </FormControl>
                             </VStack>
@@ -223,29 +238,6 @@ export default function EmployeeCard(props) {
             </>
         )
     }
-
-    // const skillNames = [];
-    // (props.skills).forEach(skill => {
-    //     skillNames.push(skill.name);
-    // });
-
-    let skillName = "None";
-    let skillDesc = "empty desc"
-
-    const findSkill = () => {
-
-        skills.forEach(skill => {
-            if (skill.skill_id == employee.skill_id) {
-                skillName = skill.skill_name;
-                skillDesc = skill.skill_desc;
-            }
-
-        });
-
-        //console.log("Attempting to find skills for this employee");
-    }
-
-    findSkill();
 
     return (
         <Box display="flex" justify="center" m="2">
