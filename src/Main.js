@@ -45,6 +45,8 @@ import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircl
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
+import { faker } from '@faker-js/faker';
+
 const font1 = 'Inter';
 
 const today = new Date();
@@ -61,11 +63,6 @@ const employee1skills = [
     {
         name: "Back-End",
         id: "001",
-        desc: "Assumenda, quia temporibus eveniet a libero incidunt suscipit"
-    },
-    {
-        name: "Database",
-        id: "003",
         desc: "Assumenda, quia temporibus eveniet a libero incidunt suscipit"
     },
     {
@@ -164,10 +161,10 @@ const SkillBlock = (skill) => {
                     <Code bg="transparent" pl="0">
                         SKILL ID:
                     </Code>
-                    <Tooltip label="Click to copy skill ID" borderRadius="lg">
-                        <Button size="xs" variant="outline" onClick={() => navigator.clipboard.writeText(skill.id)}>
+                    <Tooltip label={skill.skill_id} borderRadius="lg">
+                        <Button size="xs" variant="outline" onClick={() => navigator.clipboard.writeText(skill.skill_id)}>
                             <Code bg="transparent">
-                                {skill.id}
+                                Copy
                             </Code>
                         </Button>
                     </Tooltip>
@@ -242,6 +239,8 @@ const AddNewEmployee = () => {
 }
 
 const EmployeeCard = (props) => {
+
+    let employee = props.employee;
 
     const EditButton = () => {
 
@@ -337,7 +336,7 @@ const EmployeeCard = (props) => {
                             </AlertDialogHeader>
 
                             <AlertDialogBody>
-                                <Text>Are you sure you would like to delete <strong>{props.first} {props.last}</strong>?</Text>
+                                <Text>Are you sure you would like to delete <strong>{employee.f_name} {employee.l_name}</strong>?</Text>
                             </AlertDialogBody>
 
                             <AlertDialogFooter>
@@ -355,10 +354,12 @@ const EmployeeCard = (props) => {
         )
     }
 
-    const skillNames = [];
-    (props.skills).forEach(skill => {
-        skillNames.push(skill.name);
-    });
+    // const skillNames = [];
+    // (props.skills).forEach(skill => {
+    //     skillNames.push(skill.name);
+    // });
+
+    //console.log("Employee card for: " + employee.f_name)
 
     return (
         <Box display="flex" justify="center" m="2">
@@ -372,18 +373,18 @@ const EmployeeCard = (props) => {
                 </Box>
                 <VStack m="4" align="left" spacing="3">
                     <HStack>
-                        <Avatar size="md" name={props.first}>
-                            {RenderActivity(props.isActive)}
+                        <Avatar size="md" name={employee.f_name}>
+                            {RenderActivity(employee.is_active)}
                         </Avatar>
                         <VStack px="1" align="start" justify="start" spacing="0">
                             <HStack justify="end" align="end" spacing="3">
                                 <Text fontWeight="bold" fontSize="xl" lineHeight="1" fontFamily={font1}>
-                                    {props.first} {props.last}
+                                    {employee.f_name} {employee.l_name}
                                 </Text>
-                                <Tooltip hasArrow label={(props.dob).toLocaleDateString()} borderRadius="lg">
+                                <Tooltip hasArrow label={"test"} borderRadius="lg">
                                     {/* textDecoration="underline" textUnderlineOffset="2px"  */}
                                     <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1}>
-                                        {GetAge(props.dob)} years old
+                                        {GetAge(employee.dob)} years old
                                     </Text>
                                 </Tooltip>
                             </HStack>
@@ -391,7 +392,7 @@ const EmployeeCard = (props) => {
                                 <Icon as={MdEmail} boxSize={4} position="absolute" bottom="2px" />
                                 <Box w="1" />
                                 <Text fontSize="sm" fontFamily={font1}>
-                                    {props.email}
+                                    {employee.email}
                                 </Text>
                             </HStack>
                         </VStack>
@@ -405,7 +406,7 @@ const EmployeeCard = (props) => {
                                 <AccordionButton>
                                     <HStack w="100%" justify="space-between">
                                         <HStack>
-                                            {(props.skills).map((skill, i) => {
+                                            {/* {(props.skills).map((skill, i) => {
                                                 if (i < (props.skills).length - 1) {
                                                     return (
                                                         <HStack>
@@ -419,15 +420,17 @@ const EmployeeCard = (props) => {
                                                         <Text size="sm" fontWeight="bold" fontFamily={font1}>{skill.name}</Text>
                                                     )
                                                 }
-                                            })}
+                                            })} */}
+                                            <Text size="sm" fontWeight="bold" fontFamily={font1}>Placeholder</Text>
                                         </HStack>
                                         <AccordionIcon />
                                     </HStack>
                                 </AccordionButton>
                                 <AccordionPanel>
-                                    {(props.skills).map((skill, i) => {
-                                        return (<SkillBlock name={skill.name} id={skill.id} desc={skill.desc} i={i} totalCount={(props.skills).length} />)
-                                    })}
+                                    {/* {(props.skills).map((skill, i) => {
+                                        return (<SkillBlock name="Placeholder" id={employee.skill_id} desc="placeholder" key={i} totalCount={(props.skills).length} />)
+                                    })} */}
+                                    <SkillBlock name="Placeholder" skill_id={employee.skill_id} desc="placeholder" key={0} totalCount={1} />
                                 </AccordionPanel>
                             </AccordionItem>
                         </Accordion>
@@ -453,39 +456,54 @@ const EmployeeCard = (props) => {
     )
 }
 
-const CardView = () => {
+const CardView = (props) => {
+
+    const renderEmployees = () => {
+        let allEmployees = props.employees;
+
+        return (
+            <VStack h="100%">
+                {allEmployees.map((currEmployee, i) => {
+                    return (
+                        <EmployeeCard employee={currEmployee} key={i} />
+                    )
+                })}
+            </VStack>
+        )
+    }
+
+    let allEmployees = props.employees;
+
     return (
         <HStack m="4" align="center">
-            <VStack h="100%">
-                <EmployeeCard id="00000" first="John" last="Smith" dob={employee1DOB} email="john.smith@gmail.com" skills={employee1skills} isActive={true} />
-                <EmployeeCard id="00132" first="Ricardo" last="Colom" dob={employee1DOB} email="ricardo.colom@gmail.com" skills={employee1skills} isActive={true} />
-            </VStack>
-            <VStack h="100%">
-                <EmployeeCard id="00001" first="Mike" last="Jones" dob={employee2DOB} email="mike.jones@gmail.com" skills={employee2skills} isActive={false} />
-                <EmployeeCard id="00132" first="Sean" last="Carter" dob={employee2DOB} email="sean.carter@gmail.com" skills={employee1skills} isActive={true} />
-            </VStack>
-            <VStack h="100%">
-                <EmployeeCard id="00001" first="Mike" last="Jones" dob={employee2DOB} email="mike.jones@gmail.com" skills={employee2skills} isActive={false} />
-                <EmployeeCard id="00132" first="Sean" last="Carter" dob={employee2DOB} email="sean.carter@gmail.com" skills={employee1skills} isActive={true} />
-            </VStack>
+            {/* {allEmployees.map((currEmployee, i) => {
+                    <EmployeeCard employee={currEmployee} key={i}/>
+                })} */}
+            {renderEmployees()}
         </HStack>
     )
 }
 
-const ControlPanel = () => {
+const ControlPanel = (props) => {
 
     const addDummyEmployee = () => {
-        console.log("Dummy button clicked")
+        console.log("Adding dummy employee")
 
-        let f_name = "Michael"
-        let l_name = "Jordan"
-        let dob = new Date('01-31-2022')
+        let f_name = faker.name.firstName();
+        let l_name = faker.name.lastName();
+        let dob = faker.date.birthdate();
         let yyyy = dob.getFullYear()
         let mm = ((dob.getMonth() + 1) < 10) ? `0${dob.getMonth() + 1}` : dob.getMonth() + 1
         let dd = (dob.getDate() < 10) ? `0${dob.getDate()}` : dob.getDate()
-        let email = "michael.jordan@gmail.com"
+        let email = faker.internet.email(f_name, l_name)
         let skill_id = 'a0e1827d-61fd-11ed-b1bd-803f5d06682c'
-        let is_active = true
+        let is_active = Math.round(Math.random())
+
+        // If either name contains an apostrophe, "double up" the apostrophe
+        f_name = f_name.replace("'", "''")
+        l_name = l_name.replace("'", "''")
+
+        console.log("Attempting to create " + f_name + " " + l_name + "...")
 
         fetch("http://localhost:4000/createemployee", {
             headers: {
@@ -501,7 +519,13 @@ const ControlPanel = () => {
         }).then(
             response => response.json()
         ).then(
-            data => { console.log(data) }
+            data => {
+                let toEmployees = data;
+                toEmployees.forEach(employee => {
+                    employee.dob = new Date(employee.dob)
+                });
+                props.changeEmployees(toEmployees)
+            }
         )
     }
 
@@ -512,13 +536,14 @@ const ControlPanel = () => {
         const handleDeleteAllEmployees = () => {
 
             console.log("Going to delete all employees... ");
-            
+
             fetch("http://localhost:4000/deleteallemployees").then(
                 response => response.json()
             ).then(
                 data => { console.log(data) }
             )
 
+            props.changeEmployees([])
             onClose();
         }
 
@@ -549,7 +574,7 @@ const ControlPanel = () => {
                                 <Button ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
-                                <Button colorScheme='red' onClick={() => {handleDeleteAllEmployees()}} ml={3}>
+                                <Button colorScheme='red' onClick={() => { handleDeleteAllEmployees() }} ml={3}>
                                     Delete All
                                 </Button>
                             </AlertDialogFooter>
@@ -614,18 +639,26 @@ export default function Main() {
         }).then(
             response => response.json()
         ).then(
-            data => { console.log(data) }
+            data => {
+                let toEmployees = data;
+                toEmployees.forEach(employee => {
+                    employee.dob = new Date(employee.dob)
+                });
+                changeEmployees(toEmployees)
+            }
         )
     }, [])
+
+    // console.log(employees)
 
     return (
         <Box bg="gray.100" maxW="100vw" h="100vh">
             <HStack spacing="0" w="100%" h="100%">
                 <VStack w="100%" h="100%" bg="gray.200" align="center">
-                    <CardView />
+                    <CardView employees={employees} changeEmployees={changeEmployees} />
                 </VStack>
                 <VStack w="424px" h="100%">
-                    <ControlPanel />
+                    <ControlPanel employees={employees} changeEmployees={changeEmployees} />
                 </VStack>
             </HStack>
         </Box>
