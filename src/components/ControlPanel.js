@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea } from '@chakra-ui/react'
 import {
     Menu,
     MenuButton,
@@ -33,6 +33,17 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
 } from '@chakra-ui/react'
+import {
+    Table,
+    Thead,
+    Tbody,
+    Tfoot,
+    Tr,
+    Th,
+    Td,
+    TableCaption,
+    TableContainer,
+} from '@chakra-ui/react'
 import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
@@ -40,7 +51,7 @@ import { faker } from '@faker-js/faker';
 
 import KaseyaLogoSmall from "../assets/kaseya-logo-small.png"
 
-import {NameHeader, EmailHeader, DOBHeader, SkillsHeader} from './ModalHeaders'
+import { NameHeader, EmailHeader, DOBHeader, SkillsHeader } from './ModalHeaders'
 
 const font1 = 'Inter';
 
@@ -96,11 +107,162 @@ const AddNewEmployee = () => {
                     <ModalFooter>
                         <HStack>
                             <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                            <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />} onClick={onOpen}>
+                            <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />}>
                                 <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                                     Add
                                 </Text>
                             </Button>
+                        </HStack>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        </>
+    )
+}
+
+const ViewSkills = (props) => {
+    let skills = props.skills
+    const [index, changeIndex] = useState(0)
+
+    const { isOpen: isViewSkillsOpen, onOpen: onViewSkillsOpen, onClose: onViewSkillsClose } = useDisclosure()
+
+    const { isOpen: isEditSkillOpen, onOpen: onEditSkillOpen, onClose: onEditSkillClose } = useDisclosure()
+
+    const { isOpen: isNewSkillOpen, onOpen: onNewSkillOpen, onClose: onNewSkillClose } = useDisclosure()
+
+    const EditSkillModal = () => {
+
+        let defaultName = skills[index].skill_name
+        let defaultDesc = skills[index].skill_desc
+
+        const [skillName, changeSkillName] = useState(defaultName)
+        const [skillDesc, changeSkillDesc] = useState(defaultDesc)
+
+        return (
+            <Modal onClose={onEditSkillClose} isOpen={isEditSkillOpen} isCentered motionPreset='slideInBottom' size="xl">
+                <ModalOverlay />
+                <ModalContent >
+                    <ModalHeader fontFamily="Inter" fontWeight="medium">Edit Skill</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <HStack spacing="8">
+                            <VStack spacing="8" w="1200px" h="328px">
+                                <FormControl isRequired>
+                                    <FormLabel>Name</FormLabel>
+                                    <Input value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
+                                </FormControl>
+                                <FormControl isRequired mt="8">
+                                    <FormLabel>Description</FormLabel>
+                                    <Textarea value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
+                                </FormControl>
+                            </VStack>
+                        </HStack>
+                    </ModalBody>
+                    <ModalFooter>
+                        <HStack>
+                            <Button onClick={onEditSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                            <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />}>
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                    Save
+                                </Text>
+                            </Button>
+                        </HStack>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        )
+    }
+
+    const NewSkillModal = () => {
+
+        const [skillName, changeSkillName] = useState("")
+        const [skillDesc, changeSkillDesc] = useState("")
+
+        return (
+            <Modal onClose={onNewSkillClose} isOpen={isNewSkillOpen} isCentered motionPreset='slideInBottom' size="xl">
+                <ModalOverlay />
+                <ModalContent >
+                    <ModalHeader fontFamily="Inter" fontWeight="medium">New Skill</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <HStack spacing="8">
+                            <VStack spacing="8" w="1200px" h="328px">
+                                <FormControl isRequired>
+                                    <FormLabel>Name</FormLabel>
+                                    <Input value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
+                                </FormControl>
+                                <FormControl isRequired mt="8">
+                                    <FormLabel>Description</FormLabel>
+                                    <Textarea value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
+                                </FormControl>
+                            </VStack>
+                        </HStack>
+                    </ModalBody>
+                    <ModalFooter>
+                        <HStack>
+                            <Button onClick={onNewSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                            <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />}>
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                    Add
+                                </Text>
+                            </Button>
+                        </HStack>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        )
+    }
+
+    const showSelectedIcon = (i) => {
+        if (i == index)
+            return (
+                <CheckIcon color="gray.700" />
+            )
+    }
+
+    return (
+        <>
+            <Button variant="outline" my="4" rightIcon={<Icon as={MdBadge} w={6} h={6} />} onClick={onViewSkillsOpen}>
+                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                    View/Edit Skills
+                </Text>
+            </Button>
+            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg">
+                <ModalOverlay />
+                <ModalContent >
+                    <ModalHeader fontFamily="Inter" fontWeight="medium">Skills</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <VStack spacing="8" py="2">
+                            <VStack spacing="0" w="100%">
+                                {skills.map((skill, i) => {
+                                    return (
+                                        <Box onClick={() => { changeIndex(i) }} _hover={{ background: "gray.100", cursor: "pointer", transition: "linear 0.1s" }} key={i} w="100%" border="1px" borderBottom={(i < skills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == skills.length - 1) ? "md" : "0px"} borderColor="gray.200" p="2">
+                                            <HStack justify="space-between" px="2">
+                                                <Text textAlign="left" fontFamily={font1}>{skill.skill_name}</Text>
+                                                {showSelectedIcon(i)}
+                                            </HStack>
+                                        </Box>
+                                    )
+                                })}
+                            </VStack>
+                            <Button variant="outline" my="4" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} w="100%" onClick={onNewSkillOpen}>
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                    Add a new skill
+                                </Text>
+                            </Button>
+                            <NewSkillModal />
+                        </VStack>
+                    </ModalBody>
+                    <ModalFooter>
+                        <HStack>
+                            <Button onClick={onViewSkillsClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                            <Button my="4" rightIcon={<EditIcon w={4} h={4} />} onClick={onEditSkillOpen}>
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                    Edit
+                                </Text>
+                            </Button>
+                            <EditSkillModal />
                         </HStack>
                     </ModalFooter>
                 </ModalContent>
@@ -230,6 +392,7 @@ export default function ControlPanel(props) {
             <Divider w="90%" />
             <VStack align="left" w="100%" px="4">
                 <AddNewEmployee />
+                <ViewSkills skills={props.skills} />
                 <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
