@@ -80,6 +80,11 @@ const employee2skills = [
     },
 ]
 
+function randomInt(max)
+{
+    return Math.floor(Math.random() * max);
+}
+
 const NameHeader = () => {
     return (
         <>
@@ -241,6 +246,7 @@ const AddNewEmployee = () => {
 const EmployeeCard = (props) => {
 
     let employee = props.employee;
+    let skills = props.skills;
 
     const EditButton = () => {
 
@@ -359,7 +365,24 @@ const EmployeeCard = (props) => {
     //     skillNames.push(skill.name);
     // });
 
-    //console.log("Employee card for: " + employee.f_name)
+    let skillName = "None";
+    let skillDesc = "empty desc"
+
+    const findSkill = () => {
+        
+        skills.forEach(skill => {
+            if(skill.skill_id == employee.skill_id)
+            {
+                skillName = skill.skill_name;
+                skillDesc = skill.skill_desc;
+            }
+            
+        });
+
+        console.log("Attempting to find skills for this employee");
+    }
+
+    findSkill();
 
     return (
         <Box display="flex" justify="center" m="2">
@@ -421,7 +444,7 @@ const EmployeeCard = (props) => {
                                                     )
                                                 }
                                             })} */}
-                                            <Text size="sm" fontWeight="bold" fontFamily={font1}>Placeholder</Text>
+                                            <Text size="sm" fontWeight="bold" fontFamily={font1}>{skillName}</Text>
                                         </HStack>
                                         <AccordionIcon />
                                     </HStack>
@@ -430,7 +453,7 @@ const EmployeeCard = (props) => {
                                     {/* {(props.skills).map((skill, i) => {
                                         return (<SkillBlock name="Placeholder" id={employee.skill_id} desc="placeholder" key={i} totalCount={(props.skills).length} />)
                                     })} */}
-                                    <SkillBlock name="Placeholder" skill_id={employee.skill_id} desc="placeholder" key={0} totalCount={1} />
+                                    <SkillBlock name={skillName} skill_id={employee.skill_id} desc={skillDesc} key={0} totalCount={1} />
                                 </AccordionPanel>
                             </AccordionItem>
                         </Accordion>
@@ -442,10 +465,10 @@ const EmployeeCard = (props) => {
                         <Code bg="transparent">
                             ID:
                         </Code>
-                        <Tooltip label="Click to copy employee ID" borderRadius="lg">
+                        <Tooltip label={employee.employee_id} borderRadius="lg">
                             <Button size="xs" onClick={() => navigator.clipboard.writeText(props.id)}>
                                 <Code bg="transparent">
-                                    {props.id}
+                                    Copy
                                 </Code>
                             </Button>
                         </Tooltip>
@@ -465,14 +488,12 @@ const CardView = (props) => {
             <VStack h="100%">
                 {allEmployees.map((currEmployee, i) => {
                     return (
-                        <EmployeeCard employee={currEmployee} key={i} />
+                        <EmployeeCard employee={currEmployee} skills={props.skills} key={i} />
                     )
                 })}
             </VStack>
         )
     }
-
-    let allEmployees = props.employees;
 
     return (
         <HStack m="4" align="center">
@@ -486,6 +507,8 @@ const CardView = (props) => {
 
 const ControlPanel = (props) => {
 
+    let skills = props.skills;
+
     const addDummyEmployee = () => {
         console.log("Adding dummy employee")
 
@@ -496,7 +519,7 @@ const ControlPanel = (props) => {
         let mm = ((dob.getMonth() + 1) < 10) ? `0${dob.getMonth() + 1}` : dob.getMonth() + 1
         let dd = (dob.getDate() < 10) ? `0${dob.getDate()}` : dob.getDate()
         let email = faker.internet.email(f_name, l_name)
-        let skill_id = 'a0e1827d-61fd-11ed-b1bd-803f5d06682c'
+        let skill_id = skills[randomInt(skills.length)].skill_id
         let is_active = Math.round(Math.random())
 
         // If either name contains an apostrophe, "double up" the apostrophe
@@ -630,6 +653,7 @@ const ControlPanel = (props) => {
 export default function Main() {
 
     const [employees, changeEmployees] = useState([]);
+    const [skills, changeSkills] = useState([]);
 
     useEffect(() => {
         fetch("http://localhost:4000/getemployees", {
@@ -647,18 +671,31 @@ export default function Main() {
                 changeEmployees(toEmployees)
             }
         )
+
+        fetch("http://localhost:4000/getskills", {
+            headers: {
+                'testHeader': "Test"
+            }
+        }).then(
+            response => response.json()
+        ).then(
+            data => {
+                changeSkills(data)
+            }
+        )
     }, [])
 
     // console.log(employees)
+    console.log(skills)
 
     return (
         <Box bg="gray.100" maxW="100vw" h="100vh">
             <HStack spacing="0" w="100%" h="100%">
                 <VStack w="100%" h="100%" bg="gray.200" align="center">
-                    <CardView employees={employees} changeEmployees={changeEmployees} />
+                    <CardView employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills}/>
                 </VStack>
                 <VStack w="424px" h="100%">
-                    <ControlPanel employees={employees} changeEmployees={changeEmployees} />
+                    <ControlPanel employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills}/>
                 </VStack>
             </HStack>
         </Box>
