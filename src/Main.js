@@ -46,101 +46,17 @@ import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircl
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
 import { faker } from '@faker-js/faker';
+import {NameHeader, EmailHeader, DOBHeader, SkillsHeader} from './components/ModalHeaders'
 
 const font1 = 'Inter';
 
 const today = new Date();
 
-const employee1DOB = new Date("5/1/2001");
-const employee2DOB = new Date("4/12/1998");
-
-const employee1skills = [
-    {
-        name: "Front-End",
-        id: "000",
-        desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit"
-    },
-    {
-        name: "Back-End",
-        id: "001",
-        desc: "Assumenda, quia temporibus eveniet a libero incidunt suscipit"
-    },
-    {
-        name: "Database",
-        id: "003",
-        desc: "Assumenda, quia temporibus eveniet a libero incidunt suscipit"
-    },
-]
-
-const employee2skills = [
-    {
-        name: "Communications",
-        id: "003",
-        desc: "aaaaaaaaa"
-    },
-]
-
-function randomInt(max)
-{
+function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-const NameHeader = () => {
-    return (
-        <>
-            <HStack position="absolute" spacing="2">
-                <Icon as={MdPerson} boxSize={4} position="absolute" top="4px" />
-                <Box w="1" />
-                <Text fontWeight="medium" fontFamily="Inter">Name</Text>
-            </HStack>
-            <FormLabel position="absolute" left="63px"></FormLabel>
-            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
-        </>
 
-    )
-}
-
-const EmailHeader = () => {
-    return (
-        <>
-            <HStack position="absolute" spacing="2">
-                <Icon as={MdEmail} boxSize={4} position="absolute" top="5px" />
-                <Box w="1" />
-                <Text fontWeight="medium" fontFamily="Inter">Email</Text>
-            </HStack>
-            <FormLabel position="absolute" left="59px"></FormLabel>
-            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
-        </>
-    )
-}
-
-const DOBHeader = () => {
-    return (
-        <>
-            <HStack position="absolute" spacing="2">
-                <Icon as={MdCake} boxSize={4} position="absolute" top="3px" />
-                <Box w="1" />
-                <Text fontWeight="medium" fontFamily="Inter">Birthday</Text>
-            </HStack>
-            <FormLabel position="absolute" left="83px"></FormLabel>
-            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
-        </>
-    )
-}
-
-const SkillsHeader = () => {
-    return (
-        <>
-            <HStack position="absolute" spacing="2">
-                <Icon as={MdBadge} boxSize={4} position="absolute" top="3px" />
-                <Box w="1" />
-                <Text fontWeight="medium" fontFamily="Inter">Skills</Text>
-            </HStack>
-            <FormLabel position="absolute" left="58px"></FormLabel>
-            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
-        </>
-    )
-}
 
 const RenderActivity = (isActive) => {
     if (isActive) {
@@ -369,14 +285,13 @@ const EmployeeCard = (props) => {
     let skillDesc = "empty desc"
 
     const findSkill = () => {
-        
+
         skills.forEach(skill => {
-            if(skill.skill_id == employee.skill_id)
-            {
+            if (skill.skill_id == employee.skill_id) {
                 skillName = skill.skill_name;
                 skillDesc = skill.skill_desc;
             }
-            
+
         });
 
         console.log("Attempting to find skills for this employee");
@@ -692,10 +607,10 @@ export default function Main() {
         <Box bg="gray.100" maxW="100vw" h="100vh">
             <HStack spacing="0" w="100%" h="100%">
                 <VStack w="100%" h="100%" bg="gray.200" align="center">
-                    <CardView employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills}/>
+                    <CardView employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
                 </VStack>
                 <VStack w="424px" h="100%">
-                    <ControlPanel employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills}/>
+                    <ControlPanel employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
                 </VStack>
             </HStack>
         </Box>
