@@ -1,14 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
 import { ChakraProvider } from '@chakra-ui/react';
-import Main from './Main';
+import Dashboard from './Dashboard';
 import Navbar from './Navbar';
+
+const navBarHeight = 32;
 
 function App() {
   return (
     <ChakraProvider>
-      <Navbar />
-      <Main />
+      <Navbar navBarHeight={navBarHeight}/>
+      <Dashboard navBarHeight={navBarHeight}/>
     </ChakraProvider>
   );
 }

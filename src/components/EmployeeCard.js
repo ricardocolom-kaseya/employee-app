@@ -1,28 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid } from '@chakra-ui/react'
-import {
-    Accordion,
-    AccordionItem,
-    AccordionButton,
-    AccordionPanel,
-    AccordionIcon,
-} from '@chakra-ui/react'
-import {
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    MenuItemOption,
-    MenuGroup,
-    MenuOptionGroup,
-    MenuDivider,
-} from '@chakra-ui/react'
-import {
-    FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
-} from '@chakra-ui/react'
 import {
     Modal,
     ModalOverlay,
@@ -33,6 +10,13 @@ import {
     ModalCloseButton,
 } from '@chakra-ui/react'
 import {
+    Accordion,
+    AccordionItem,
+    AccordionButton,
+    AccordionPanel,
+    AccordionIcon,
+} from '@chakra-ui/react'
+import {
     AlertDialog,
     AlertDialogBody,
     AlertDialogFooter,
@@ -40,35 +24,37 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
 } from '@chakra-ui/react'
+import {
+    FormControl,
+    FormLabel,
+    FormErrorMessage,
+    FormHelperText,
+} from '@chakra-ui/react'
+
 import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
-import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
-
-import { faker } from '@faker-js/faker';
-import {NameHeader, EmailHeader, DOBHeader, SkillsHeader} from './components/ModalHeaders'
+import {NameHeader, EmailHeader, DOBHeader, SkillsHeader} from './ModalHeaders'
 
 const font1 = 'Inter';
-
-const today = new Date();
 
 function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
+const GetAge = (dob) => {
+    const today = new Date();
 
+    const currAge = (today - dob) / 31536000000;
+    return Math.floor(currAge);
+}
 
-const RenderActivity = (isActive) => {
+const RenderEmployeeActivity = (isActive) => {
     if (isActive) {
         return (
             <AvatarBadge boxSize="1.25em" bg="green.500" />
         )
     }
-}
-
-const GetAge = (dob) => {
-    const currAge = (today - dob) / 31536000000;
-    return Math.floor(currAge);
 }
 
 const SkillBlock = (skill) => {
@@ -98,68 +84,7 @@ const SkillBlock = (skill) => {
     )
 }
 
-const AddNewEmployee = () => {
-    const { isOpen, onOpen, onClose } = useDisclosure()
-
-    return (
-        <>
-            <Button variant="outline" my="4" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} onClick={onOpen}>
-                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
-                    Add a new employee
-                </Text>
-            </Button>
-            <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl">
-                <ModalOverlay />
-                <ModalContent >
-                    <ModalHeader fontFamily="Inter" fontWeight="medium">Add a new employee</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <HStack spacing="8">
-                            <VStack spacing="8" w="1200px" h="328px">
-                                <FormControl isRequired>
-                                    <NameHeader />
-                                    <Input placeholder="First name" mb="2" />
-                                    <Input placeholder="Last name" />
-                                </FormControl>
-                                <FormControl isRequired mt="8">
-                                    <EmailHeader />
-                                    <Input placeholder="Email" />
-                                </FormControl>
-                                <FormControl isRequired mt="8">
-                                    <DOBHeader />
-                                    <Input placeholder="Birthday" type="date" />
-                                </FormControl>
-                            </VStack>
-                            <VStack w="1200px" h="328px">
-                                <FormControl isRequired>
-                                    <SkillsHeader />
-                                    <Select placeholder="Skills">
-                                        <option>One</option>
-                                        <option>Two</option>
-                                        <option>Three</option>
-                                        <option>Four</option>
-                                    </Select>
-                                </FormControl>
-                            </VStack>
-                        </HStack>
-                    </ModalBody>
-                    <ModalFooter>
-                        <HStack>
-                            <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                            <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />} onClick={onOpen}>
-                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
-                                    Add
-                                </Text>
-                            </Button>
-                        </HStack>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </>
-    )
-}
-
-const EmployeeCard = (props) => {
+export default function EmployeeCard(props) {
 
     let employee = props.employee;
     let skills = props.skills;
@@ -312,14 +237,14 @@ const EmployeeCard = (props) => {
                 <VStack m="4" align="left" spacing="3">
                     <HStack>
                         <Avatar size="md" name={employee.f_name}>
-                            {RenderActivity(employee.is_active)}
+                            {RenderEmployeeActivity(employee.is_active)}
                         </Avatar>
                         <VStack px="1" align="start" justify="start" spacing="0">
                             <HStack justify="end" align="end" spacing="3">
                                 <Text fontWeight="bold" fontSize="xl" lineHeight="1" fontFamily={font1}>
                                     {employee.f_name} {employee.l_name}
                                 </Text>
-                                <Tooltip hasArrow label={"test"} borderRadius="lg">
+                                <Tooltip hasArrow label={(employee.dob).toLocaleDateString()} borderRadius="lg">
                                     {/* textDecoration="underline" textUnderlineOffset="2px"  */}
                                     <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1}>
                                         {GetAge(employee.dob)} years old
@@ -390,229 +315,6 @@ const EmployeeCard = (props) => {
                     </HStack>
                 </HStack>
             </Box>
-        </Box>
-    )
-}
-
-const CardView = (props) => {
-
-    const renderEmployees = () => {
-        let allEmployees = props.employees;
-
-        return (
-            <VStack h="100%">
-                {allEmployees.map((currEmployee, i) => {
-                    return (
-                        <EmployeeCard employee={currEmployee} skills={props.skills} key={i} />
-                    )
-                })}
-            </VStack>
-        )
-    }
-
-    return (
-        <HStack m="4" align="center">
-            {/* {allEmployees.map((currEmployee, i) => {
-                    <EmployeeCard employee={currEmployee} key={i}/>
-                })} */}
-            {renderEmployees()}
-        </HStack>
-    )
-}
-
-const ControlPanel = (props) => {
-
-    let skills = props.skills;
-
-    const addDummyEmployee = () => {
-        console.log("Adding dummy employee")
-
-        let f_name = faker.name.firstName();
-        let l_name = faker.name.lastName();
-        let dob = faker.date.birthdate();
-        let yyyy = dob.getFullYear()
-        let mm = ((dob.getMonth() + 1) < 10) ? `0${dob.getMonth() + 1}` : dob.getMonth() + 1
-        let dd = (dob.getDate() < 10) ? `0${dob.getDate()}` : dob.getDate()
-        let email = faker.internet.email(f_name, l_name)
-        let skill_id = skills[randomInt(skills.length)].skill_id
-        let is_active = Math.round(Math.random())
-
-        // If either name contains an apostrophe, "double up" the apostrophe
-        f_name = f_name.replace("'", "''")
-        l_name = l_name.replace("'", "''")
-
-        console.log("Attempting to create " + f_name + " " + l_name + "...")
-
-        fetch("http://localhost:4000/createemployee", {
-            headers: {
-                'f_name': f_name,
-                'l_name': l_name,
-                'yyyy': yyyy,
-                'mm': mm,
-                'dd': dd,
-                'email': email,
-                'skill_id': skill_id,
-                'is_active': is_active
-            }
-        }).then(
-            response => response.json()
-        ).then(
-            data => {
-                let toEmployees = data;
-                toEmployees.forEach(employee => {
-                    employee.dob = new Date(employee.dob)
-                });
-                props.changeEmployees(toEmployees)
-            }
-        )
-    }
-
-    const DeleteAllEmployeesButton = () => {
-        const { isOpen, onOpen, onClose } = useDisclosure()
-        const cancelRef = React.useRef()
-
-        const handleDeleteAllEmployees = () => {
-
-            console.log("Going to delete all employees... ");
-
-            fetch("http://localhost:4000/deleteallemployees").then(
-                response => response.json()
-            ).then(
-                data => { console.log(data) }
-            )
-
-            props.changeEmployees([])
-            onClose();
-        }
-
-        return (
-            <>
-                <Button colorScheme="red" my="4" onClick={onOpen}>
-                    <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
-                        Delete All Employees
-                    </Text>
-                </Button>
-
-                <AlertDialog
-                    isOpen={isOpen}
-                    leastDestructiveRef={cancelRef}
-                    onClose={onClose}
-                    isCentered
-                    motionPreset="slideInBottom"
-                >
-                    <AlertDialogOverlay>
-                        <AlertDialogContent>
-                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
-                                Delete All Employees
-                            </AlertDialogHeader>
-                            <AlertDialogBody>
-                                <Text>Are you sure you would like to delete <strong>all</strong> employees?</Text>
-                            </AlertDialogBody>
-                            <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
-                                    Cancel
-                                </Button>
-                                <Button colorScheme='red' onClick={() => { handleDeleteAllEmployees() }} ml={3}>
-                                    Delete All
-                                </Button>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialogOverlay>
-                </AlertDialog>
-            </>
-        )
-    }
-
-    return (
-        <VStack w="100%" h="100%" bg="white">
-            <HStack w="100%" p="2" justify="right">
-                <HStack>
-                    <SunIcon />
-                    <Switch colorScheme="gray" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'gray.500' } }} />
-                    <MoonIcon />
-                </HStack>
-            </HStack>
-            <VStack py="9">
-                <Avatar size="lg" label="Admin" />
-                <Heading fontSize="2xl" fontFamily={font1}>
-                    Admin
-                </Heading>
-            </VStack>
-            <Divider w="90%" />
-            <VStack align="left" w="100%" px="4">
-                <AddNewEmployee />
-                <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
-                <Heading fontSize="2xl" fontFamily={font1} py="4">
-                    Controls
-                </Heading>
-                <FormControl maxW="80%">
-                    <Input fontFamily="Inter" placeholder="Search..." />
-                </FormControl>
-                <Menu>
-                    <MenuButton maxW="80%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
-                        Sort by...
-                    </MenuButton>
-                    <MenuList>
-                        <MenuItem>One</MenuItem>
-                        <MenuItem>Two</MenuItem>
-                        <MenuItem>Three</MenuItem>
-                        <MenuItem>Four</MenuItem>
-                    </MenuList>
-                </Menu>
-                <DeleteAllEmployeesButton />
-            </VStack>
-        </VStack>
-    )
-}
-
-export default function Main() {
-
-    const [employees, changeEmployees] = useState([]);
-    const [skills, changeSkills] = useState([]);
-
-    useEffect(() => {
-        fetch("http://localhost:4000/getemployees", {
-            headers: {
-                'testHeader': "Test"
-            }
-        }).then(
-            response => response.json()
-        ).then(
-            data => {
-                let toEmployees = data;
-                toEmployees.forEach(employee => {
-                    employee.dob = new Date(employee.dob)
-                });
-                changeEmployees(toEmployees)
-            }
-        )
-
-        fetch("http://localhost:4000/getskills", {
-            headers: {
-                'testHeader': "Test"
-            }
-        }).then(
-            response => response.json()
-        ).then(
-            data => {
-                changeSkills(data)
-            }
-        )
-    }, [])
-
-    // console.log(employees)
-    console.log(skills)
-
-    return (
-        <Box bg="gray.100" maxW="100vw" h="100vh">
-            <HStack spacing="0" w="100%" h="100%">
-                <VStack w="100%" h="100%" bg="gray.200" align="center">
-                    <CardView employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
-                </VStack>
-                <VStack w="424px" h="100%">
-                    <ControlPanel employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
-                </VStack>
-            </HStack>
         </Box>
     )
 }
