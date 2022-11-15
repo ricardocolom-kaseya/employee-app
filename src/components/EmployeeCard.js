@@ -34,7 +34,7 @@ import {
 import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
 import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
-import { NameHeader, EmailHeader, DOBHeader, SkillsHeader } from './ModalHeaders'
+import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from './ModalHeaders'
 
 const font1 = 'Inter';
 
@@ -106,11 +106,19 @@ export default function EmployeeCard(props) {
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const EditEmployeeModal = () => {
+
+        let currSkill = {
+            skill_id: employee.skill_id,
+            skill_name: skillName,
+            skill_desc: skillDesc,
+        }
+
         const [firstName, changeFirstName] = useState(employee.f_name);
         const [lastName, changeLastName] = useState(employee.l_name);
         const [email, changeEmail] = useState(employee.email);
         const [birthday, changeBirthday] = useState(employee.dob);
-        const [skill, changeSkill] = useState(employee.skill_id);
+        const [skill, changeSkill] = useState(currSkill);
+        const [activity, changeActivity] = useState(employee.is_active);
 
         const formatDate = (date) => {
             let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
@@ -122,6 +130,24 @@ export default function EmployeeCard(props) {
             let toBirthday = new Date(date);
             console.log(toBirthday);
             changeBirthday(toBirthday)
+        }
+
+        const handleChangeSkill = () => {
+            var index = document.getElementById("skillsDropDown").selectedIndex;
+            console.log(index);
+            changeSkill(skills[index]);
+        }
+
+        const handleChangeActivity = () => {
+            if(activity)
+                changeActivity(0);
+            else
+                changeActivity(1);
+        }
+
+        const handleSaveEmployee = () => {
+            // Find this employee by employee_id in the database and change their information.
+            
         }
 
         return (
@@ -149,11 +175,19 @@ export default function EmployeeCard(props) {
                                 </FormControl>
                             </VStack>
                             <VStack w="1200px" h="328px">
-                                <FormControl isRequired>
+                                <VStack w="100%" spacing="0" justify="left">
+                                    <ActivityHeader />
+                                    <HStack w="100%" justify="center">
+                                        <Text>Inactive</Text>
+                                        <Switch isChecked={activity} onChange={handleChangeActivity} size="lg" colorScheme="green" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'red.500' } }} />
+                                        <Text>Active</Text>
+                                    </HStack>
+                                </VStack>
+                                <FormControl isRequired pt="8">
                                     <SkillsHeader />
-                                    <Select defaultValue={skillName}>
+                                    <Select defaultValue={skill.skill_name} id="skillsDropDown" onChange={handleChangeSkill}>
                                         {skills.map((skill, i) => {
-                                            return(<option key={i} >{skill.skill_name}</option>)
+                                            return (<option key={i} onClick={() => console.log("FIRED")}>{skill.skill_name}</option>)
                                         })}
                                     </Select>
                                 </FormControl>

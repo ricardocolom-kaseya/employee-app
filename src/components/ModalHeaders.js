@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { HStack, Icon, Box, Text, FormLabel } from '@chakra-ui/react'
-import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
+import { MdCake, MdWork, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
 export const NameHeader = () => {
     return (
@@ -56,6 +56,22 @@ export const SkillsHeader = () => {
             </HStack>
             <FormLabel position="absolute" left="58px"></FormLabel>
             <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+        </>
+    )
+}
+
+export const ActivityHeader = () => {
+    return (
+        <>
+            <HStack w="100%">
+                <HStack position="absolute" spacing="2">
+                    <Icon as={MdWork} boxSize={4} position="absolute" top="4px" />
+                    <Box w="1" />
+                    <Text fontWeight="medium" fontFamily="Inter">Activity</Text>
+                </HStack>
+                <FormLabel position="absolute" left="83px"></FormLabel>
+                <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+            </HStack>
         </>
     )
 }
