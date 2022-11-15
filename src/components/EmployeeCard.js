@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid } from '@chakra-ui/react'
+import { useToast, Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid } from '@chakra-ui/react'
 import {
     Modal,
     ModalOverlay,
@@ -90,8 +90,7 @@ export default function EmployeeCard(props) {
 
     let skills = props.skills;
 
-    function handleChangeEmployees(employees)
-    {
+    function handleChangeEmployees(employees) {
         props.changeEmployees(employees)
     }
 
@@ -111,97 +110,102 @@ export default function EmployeeCard(props) {
 
     findSkill();
 
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    const EditButton = () => {
 
-    const EditEmployeeModal = () => {
+        const toast = useToast();
 
-        let currSkill = {
-            skill_id: employee.skill_id,
-            skill_name: skillName,
-            skill_desc: skillDesc,
-        }
+        const { isOpen, onOpen, onClose } = useDisclosure()
 
-        const [firstName, changeFirstName] = useState(employee.f_name);
-        const [lastName, changeLastName] = useState(employee.l_name);
-        const [email, changeEmail] = useState(employee.email);
-        const [birthday, changeBirthday] = useState(employee.dob);
-        const [skill, changeSkill] = useState(currSkill);
-        const [activity, changeActivity] = useState(employee.is_active);
+        const EditEmployeeModal = () => {
 
-        const formatDate = (date) => {
-            let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
-
-            return dateString;
-        }
-
-        const handleChangeDate = (date) => {
-            let theDate = new Date(date);
-            if(!isNaN(theDate))
-            {
-                console.log(theDate)
-                changeBirthday(theDate)
+            let currSkill = {
+                skill_id: employee.skill_id,
+                skill_name: skillName,
+                skill_desc: skillDesc,
             }
-        }
 
-        const handleChangeSkill = () => {
-            var index = document.getElementById("skillsDropDown").selectedIndex;
-            changeSkill(skills[index]);
-        }
+            const [firstName, changeFirstName] = useState(employee.f_name);
+            const [lastName, changeLastName] = useState(employee.l_name);
+            const [email, changeEmail] = useState(employee.email);
+            const [birthday, changeBirthday] = useState(employee.dob);
+            const [skill, changeSkill] = useState(currSkill);
+            const [activity, changeActivity] = useState(employee.is_active);
 
-        const handleChangeActivity = () => {
-            if (activity)
-                changeActivity(0);
-            else
-                changeActivity(1);
-        }
+            const formatDate = (date) => {
+                let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
 
-        const handleSaveEmployee = () => {
-            // Find this employee by employee_id in the database and change their information.
+                return dateString;
+            }
 
-            let yyyy = birthday.getFullYear();
-            let mm = ((birthday.getMonth() + 1) < 10) ? `0${birthday.getMonth() + 1}` : birthday.getMonth() + 1
-            let dd = (birthday.getDate() < 10) ? `0${birthday.getDate()}` : birthday.getDate()
-
-            // If either name contains an apostrophe, "double up" the apostrophe
-            let f_name = firstName.replace("'", "''")
-            let l_name = lastName.replace("'", "''")
-
-            console.log("Attempting to save " + f_name + " " + l_name + "...")
-
-            fetch("http://localhost:4000/editemployee", {
-                headers: {
-                    'employee_id': employee.employee_id,
-                    'f_name': f_name,
-                    'l_name': l_name,
-                    'yyyy': yyyy,
-                    'mm': mm,
-                    'dd': dd,
-                    'email': email,
-                    'skill_id': skill.skill_id,
-                    'is_active': activity
+            const handleChangeDate = (date) => {
+                let theDate = new Date(date);
+                if (!isNaN(theDate)) {
+                    console.log(theDate)
+                    changeBirthday(theDate)
                 }
-            }).then(
-                response => response.json()
-            ).then(
-                data => {
-                    console.log("Saved this employee...")
-                    employee.f_name = f_name;
-                    employee.l_name = l_name;
-                    employee.dob = birthday;
-                    employee.email = email;
-                    employee.skill_id = skill.skill_id
-                    employee.is_active = activity;
-                    
-                    allEmployees[thisEmployeeIndex] = employee;
-                    handleChangeEmployees(allEmployees);
-                    onClose();
-                }
-            )
-        }
+            }
 
-        return (
-            <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl">
-                <ModalOverlay />
+            const handleChangeSkill = () => {
+                var index = document.getElementById("skillsDropDown").selectedIndex;
+                changeSkill(skills[index]);
+            }
+
+            const handleChangeActivity = () => {
+                if (activity)
+                    changeActivity(0);
+                else
+                    changeActivity(1);
+            }
+
+            const handleSaveEmployee = () => {
+                // Find this employee by employee_id in the database and change their information.
+
+                let yyyy = birthday.getFullYear();
+                let mm = ((birthday.getMonth() + 1) < 10) ? `0${birthday.getMonth() + 1}` : birthday.getMonth() + 1
+                let dd = (birthday.getDate() < 10) ? `0${birthday.getDate()}` : birthday.getDate()
+
+                // If either name contains an apostrophe, "double up" the apostrophe
+                let f_name = firstName.replace("'", "''")
+                let l_name = lastName.replace("'", "''")
+
+                console.log("Attempting to save " + f_name + " " + l_name + "...")
+
+                fetch("http://localhost:4000/editemployee", {
+                    headers: {
+                        'employee_id': employee.employee_id,
+                        'f_name': f_name,
+                        'l_name': l_name,
+                        'yyyy': yyyy,
+                        'mm': mm,
+                        'dd': dd,
+                        'email': email,
+                        'skill_id': skill.skill_id,
+                        'is_active': activity
+                    }
+                }).then(
+                    response => response.json()
+                ).then(
+                    data => {
+                        console.log("Saved this employee...")
+                        employee.f_name = f_name;
+                        employee.l_name = l_name;
+                        employee.dob = birthday;
+                        employee.email = email;
+                        employee.skill_id = skill.skill_id
+                        employee.is_active = activity;
+
+                        allEmployees[thisEmployeeIndex] = employee;
+
+                        // This forces the dashboard to reload the employees state and immediately show the updated employee card, unfortunately it has the side effect of closing the current modal causing the close transition to appear abrupt.
+
+                        onClose();
+                        
+                        toast({ title: "Saved!", status: 'success', duration: 3000 })
+                    }
+                )
+            }
+
+            return (
                 <ModalContent >
                     <ModalHeader fontFamily="Inter" fontWeight="medium">Edit employee</ModalHeader>
                     <ModalCloseButton />
@@ -253,12 +257,9 @@ export default function EmployeeCard(props) {
                         </HStack>
                     </ModalFooter>
                 </ModalContent>
-            </Modal>
+            )
+        }
 
-        )
-    }
-
-    const EditButton = () => {
         return (
             <>
                 <IconButton
@@ -269,7 +270,10 @@ export default function EmployeeCard(props) {
                     variant="ghost"
                     onClick={onOpen}
                 />
-                <EditEmployeeModal />
+                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => {handleChangeEmployees(allEmployees)}}>
+                    <ModalOverlay />
+                    <EditEmployeeModal />
+                </Modal>
             </>
         )
     }
@@ -291,9 +295,8 @@ export default function EmployeeCard(props) {
                 data => {
                     console.log("Deleted this employee...")
                     let newAllEmployees = [];
-                    for(var i = 0; i < allEmployees.length; ++i)
-                    {
-                        if(i != thisEmployeeIndex)
+                    for (var i = 0; i < allEmployees.length; ++i) {
+                        if (i != thisEmployeeIndex)
                             newAllEmployees.push(allEmployees[i])
                     }
                     handleChangeEmployees(newAllEmployees)

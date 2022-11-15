@@ -94,6 +94,8 @@ const AddNewEmployee = (props) => {
 
         const handleAddEmployee = () => {
 
+            // Selecting the last skill dropdown returns an error "Cannot read properties of undefined (reading 'skill_id')"
+
             console.log("fired")
 
             let employee_id = faker.datatype.uuid();
@@ -105,6 +107,9 @@ const AddNewEmployee = (props) => {
             // If either name contains an apostrophe, "double up" the apostrophe
             let f_name = firstName.replace("'", "''")
             let l_name = lastName.replace("'", "''")
+
+            f_name = f_name.charAt(0).toUpperCase() + f_name.slice(1);
+            l_name = l_name.charAt(0).toUpperCase() + l_name.slice(1);
 
             console.log("Attempting to add " + f_name + " " + l_name + "...")
 
@@ -181,7 +186,7 @@ const AddNewEmployee = (props) => {
                 <ModalFooter>
                     <HStack>
                         <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                        <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4}/>} onClick={handleAddEmployee}>
+                        <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />} onClick={handleAddEmployee}>
                             <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                                 Add
                             </Text>
@@ -217,7 +222,7 @@ const ViewSkills = (props) => {
 
     const { isOpen: isNewSkillOpen, onOpen: onNewSkillOpen, onClose: onNewSkillClose } = useDisclosure()
 
-    const EditSkillModal = () => {
+    const EditSkillModalContent = () => {
 
         let defaultName = skills[index].skill_name
         let defaultDesc = skills[index].skill_desc
@@ -226,77 +231,73 @@ const ViewSkills = (props) => {
         const [skillDesc, changeSkillDesc] = useState(defaultDesc)
 
         return (
-            <Modal onClose={onEditSkillClose} isOpen={isEditSkillOpen} isCentered motionPreset='slideInBottom' size="xl">
-                <ModalOverlay />
-                <ModalContent >
-                    <ModalHeader fontFamily="Inter" fontWeight="medium">Edit Skill</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <HStack spacing="8">
-                            <VStack spacing="8" w="1200px" h="328px">
-                                <FormControl isRequired>
-                                    <FormLabel>Name</FormLabel>
-                                    <Input value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
-                                </FormControl>
-                                <FormControl isRequired mt="8">
-                                    <FormLabel>Description</FormLabel>
-                                    <Textarea value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
-                                </FormControl>
-                            </VStack>
-                        </HStack>
-                    </ModalBody>
-                    <ModalFooter>
-                        <HStack>
-                            <Button onClick={onEditSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                            <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />}>
-                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
-                                    Save
-                                </Text>
-                            </Button>
-                        </HStack>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+
+            <ModalContent >
+                <ModalHeader fontFamily="Inter" fontWeight="medium">Edit Skill</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    <HStack spacing="8">
+                        <VStack spacing="8" w="1200px" h="328px">
+                            <FormControl isRequired>
+                                <FormLabel>Name</FormLabel>
+                                <Input value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
+                            </FormControl>
+                            <FormControl isRequired mt="8">
+                                <FormLabel>Description</FormLabel>
+                                <Textarea value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
+                            </FormControl>
+                        </VStack>
+                    </HStack>
+                </ModalBody>
+                <ModalFooter>
+                    <HStack>
+                        <Button onClick={onEditSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                        <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />}>
+                            <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                Save
+                            </Text>
+                        </Button>
+                    </HStack>
+                </ModalFooter>
+            </ModalContent>
         )
     }
 
-    const NewSkillModal = () => {
+    const NewSkillModalContent = () => {
 
         const [skillName, changeSkillName] = useState("")
         const [skillDesc, changeSkillDesc] = useState("")
 
         return (
-            <Modal onClose={onNewSkillClose} isOpen={isNewSkillOpen} isCentered motionPreset='slideInBottom' size="xl">
-                <ModalOverlay />
-                <ModalContent >
-                    <ModalHeader fontFamily="Inter" fontWeight="medium">New Skill</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <HStack spacing="8">
-                            <VStack spacing="8" w="1200px" h="328px">
-                                <FormControl isRequired>
-                                    <FormLabel>Name</FormLabel>
-                                    <Input value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
-                                </FormControl>
-                                <FormControl isRequired mt="8">
-                                    <FormLabel>Description</FormLabel>
-                                    <Textarea value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
-                                </FormControl>
-                            </VStack>
-                        </HStack>
-                    </ModalBody>
-                    <ModalFooter>
-                        <HStack>
-                            <Button onClick={onNewSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                            <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />}>
-                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
-                                    Add
-                                </Text>
-                            </Button>
-                        </HStack>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+
+            <ModalContent >
+                <ModalHeader fontFamily="Inter" fontWeight="medium">New Skill</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    <HStack spacing="8">
+                        <VStack spacing="8" w="1200px" h="328px">
+                            <FormControl isRequired>
+                                <FormLabel>Name</FormLabel>
+                                <Input value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
+                            </FormControl>
+                            <FormControl isRequired mt="8">
+                                <FormLabel>Description</FormLabel>
+                                <Textarea value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
+                            </FormControl>
+                        </VStack>
+                    </HStack>
+                </ModalBody>
+                <ModalFooter>
+                    <HStack>
+                        <Button onClick={onNewSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                        <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />}>
+                            <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                Add
+                            </Text>
+                        </Button>
+                    </HStack>
+                </ModalFooter>
+            </ModalContent>
         )
     }
 
@@ -338,7 +339,10 @@ const ViewSkills = (props) => {
                                     Add a new skill
                                 </Text>
                             </Button>
-                            <NewSkillModal />
+                            <Modal onClose={onNewSkillClose} isOpen={isNewSkillOpen} isCentered motionPreset='slideInBottom' size="xl">
+                                <ModalOverlay />
+                                <NewSkillModalContent />
+                            </Modal>
                         </VStack>
                     </ModalBody>
                     <ModalFooter>
@@ -349,7 +353,10 @@ const ViewSkills = (props) => {
                                     Edit
                                 </Text>
                             </Button>
-                            <EditSkillModal />
+                            <Modal onClose={onEditSkillClose} isOpen={isEditSkillOpen} isCentered motionPreset='slideInBottom' size="xl">
+                                <ModalOverlay />
+                                <EditSkillModalContent />
+                            </Modal>
                         </HStack>
                     </ModalFooter>
                 </ModalContent>
