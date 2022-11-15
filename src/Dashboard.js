@@ -50,14 +50,17 @@ const today = new Date();
 
 const CardView = (props) => {
 
+    // Creates a deep copy of all of the employees.
+    let allEmployees = [...props.employees];
+
     const renderEmployees = () => {
-        let allEmployees = props.employees;
 
         return (
             <VStack h="100%">
                 {allEmployees.map((currEmployee, i) => {
+                    if(currEmployee)
                     return (
-                        <EmployeeCard employee={currEmployee} skills={props.skills} key={i} />
+                        <EmployeeCard employee={currEmployee} skills={props.skills} allEmployees={allEmployees} changeEmployees={props.changeEmployees} key={i} />
                     )
                 })}
             </VStack>

@@ -84,8 +84,17 @@ const SkillBlock = (skill) => {
 
 export default function EmployeeCard(props) {
 
+    let allEmployees = props.allEmployees;
     let employee = props.employee;
+    let thisEmployeeIndex = allEmployees.indexOf(employee);
+    console.log(thisEmployeeIndex)
+
     let skills = props.skills;
+
+    function handleChangeEmployees(employees)
+    {
+        props.changeEmployees(employees)
+    }
 
     let skillName = "None";
     let skillDesc = "empty desc"
@@ -139,7 +148,7 @@ export default function EmployeeCard(props) {
         }
 
         const handleChangeActivity = () => {
-            if(activity)
+            if (activity)
                 changeActivity(0);
             else
                 changeActivity(1);
@@ -147,11 +156,49 @@ export default function EmployeeCard(props) {
 
         const handleSaveEmployee = () => {
             // Find this employee by employee_id in the database and change their information.
-            
+
+            let yyyy = birthday.getFullYear();
+            let mm = ((birthday.getMonth() + 1) < 10) ? `0${birthday.getMonth() + 1}` : birthday.getMonth() + 1
+            let dd = (birthday.getDate() < 10) ? `0${birthday.getDate()}` : birthday.getDate()
+
+            // If either name contains an apostrophe, "double up" the apostrophe
+            let f_name = firstName.replace("'", "''")
+            let l_name = lastName.replace("'", "''")
+
+            console.log("Attempting to save " + f_name + " " + l_name + "...")
+
+            fetch("http://localhost:4000/editemployee", {
+                headers: {
+                    'employee_id': employee.employee_id,
+                    'f_name': f_name,
+                    'l_name': l_name,
+                    'yyyy': yyyy,
+                    'mm': mm,
+                    'dd': dd,
+                    'email': email,
+                    'skill_id': skill.skill_id,
+                    'is_active': activity
+                }
+            }).then(
+                response => response.json()
+            ).then(
+                data => {
+                    console.log(data)
+                    employee.f_name = f_name;
+                    employee.l_name = l_name;
+                    employee.dob = birthday;
+                    employee.email = email;
+                    employee.skill_id = skill.skill_id
+                    employee.is_active = activity;
+                    
+                    allEmployees[thisEmployeeIndex] = employee;
+                    handleChangeEmployees(allEmployees);
+                    onClose();
+                }
+            )
         }
 
         return (
-
             <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl">
                 <ModalOverlay />
                 <ModalContent >
@@ -197,7 +244,7 @@ export default function EmployeeCard(props) {
                     <ModalFooter>
                         <HStack>
                             <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                            <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={onOpen}>
+                            <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={handleSaveEmployee}>
                                 <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                                     Save
                                 </Text>
@@ -229,6 +276,30 @@ export default function EmployeeCard(props) {
     const DeleteButton = () => {
         const { isOpen, onOpen, onClose } = useDisclosure()
         const cancelRef = React.useRef()
+
+        const handleDeleteEmployee = () => {
+            console.log("Attempting to delete this employee...")
+
+            fetch("http://localhost:4000/deleteemployee", {
+                headers: {
+                    'employee_id': employee.employee_id
+                }
+            }).then(
+                response => response.json()
+            ).then(
+                data => {
+                    console.log(data)
+                    let newAllEmployees = [];
+                    for(var i = 0; i < allEmployees.length; ++i)
+                    {
+                        if(i != thisEmployeeIndex)
+                            newAllEmployees.push(allEmployees[i])
+                    }
+                    handleChangeEmployees(newAllEmployees)
+                    onClose();
+                }
+            )
+        }
 
         return (
             <>
@@ -262,7 +333,7 @@ export default function EmployeeCard(props) {
                                 <Button ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
-                                <Button colorScheme='red' onClick={onClose} ml={3}>
+                                <Button colorScheme='red' onClick={handleDeleteEmployee} ml={3}>
                                     Delete
                                 </Button>
                             </AlertDialogFooter>
