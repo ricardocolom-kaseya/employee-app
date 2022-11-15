@@ -199,7 +199,7 @@ export default function EmployeeCard(props) {
                         // This forces the dashboard to reload the employees state and immediately show the updated employee card, unfortunately it has the side effect of closing the current modal causing the close transition to appear abrupt.
 
                         onClose();
-                        
+
                         toast({ title: "Saved!", status: 'success', duration: 3000 })
                     }
                 )
@@ -315,7 +315,6 @@ export default function EmployeeCard(props) {
                     variant="ghost"
                     onClick={onOpen}
                 />
-
                 <AlertDialog
                     isOpen={isOpen}
                     leastDestructiveRef={cancelRef}
@@ -356,7 +355,6 @@ export default function EmployeeCard(props) {
                         <EditButton />
                         <DeleteButton />
                     </HStack>
-
                 </Box>
                 <VStack m="4" align="left" spacing="3">
                     <HStack>
@@ -424,7 +422,6 @@ export default function EmployeeCard(props) {
                     </VStack>
                 </VStack>
                 <HStack pos="absolute" w="100%" bottom="0" justify="end" px="4" py="2">
-                    {/* <Image src={KaseyaLogoSmall} boxSize="48px" objectFit="contain" pos="absolute" left="0" mx="4"/> */}
                     <HStack spacing="0">
                         <Code bg="transparent">
                             ID:

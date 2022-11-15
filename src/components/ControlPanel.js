@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast } from '@chakra-ui/react'
 import {
     Menu,
     MenuButton,
@@ -213,7 +213,17 @@ const AddNewEmployee = (props) => {
 }
 
 const ViewSkills = (props) => {
-    let skills = props.skills
+
+    const toast = useToast();
+
+    let skills = [...props.skills];
+
+    const [allSkills, changeAllSkills] = useState(skills)
+
+    useEffect(() => {
+        console.log(allSkills)
+    }, [allSkills])
+
     const [index, changeIndex] = useState(0)
 
     const { isOpen: isViewSkillsOpen, onOpen: onViewSkillsOpen, onClose: onViewSkillsClose } = useDisclosure()
@@ -224,14 +234,13 @@ const ViewSkills = (props) => {
 
     const EditSkillModalContent = () => {
 
-        let defaultName = skills[index].skill_name
-        let defaultDesc = skills[index].skill_desc
+        let defaultName = allSkills[index].skill_name
+        let defaultDesc = allSkills[index].skill_desc
 
         const [skillName, changeSkillName] = useState(defaultName)
         const [skillDesc, changeSkillDesc] = useState(defaultDesc)
 
         return (
-
             <ModalContent >
                 <ModalHeader fontFamily="Inter" fontWeight="medium">Edit Skill</ModalHeader>
                 <ModalCloseButton />
@@ -268,8 +277,37 @@ const ViewSkills = (props) => {
         const [skillName, changeSkillName] = useState("")
         const [skillDesc, changeSkillDesc] = useState("")
 
-        return (
+        const handleAddSkill = () => {
+            let skillID = faker.datatype.uuid()
 
+            console.log("Attempting to add skill " + skillName)
+
+            fetch("http://localhost:4000/createskill", {
+                headers: {
+                    'skill_id': skillID,
+                    'skill_name': skillName,
+                    'skill_desc': skillDesc
+                }
+            }).then(
+                response => response.json()
+            ).then(
+                data => {
+                    console.log("Added this skill...")
+
+                    onNewSkillClose();
+
+                    toast({title: "Added a skill!", status: 'success', duration: 3000})
+
+                    let newSkill = {skill_id: skillID, skill_name: skillName, skill_desc: skillDesc}
+
+                    let newAllSkills = [...allSkills]
+                    newAllSkills.push(newSkill)
+                    changeAllSkills(newAllSkills);
+                }
+            )
+        }
+
+        return (
             <ModalContent >
                 <ModalHeader fontFamily="Inter" fontWeight="medium">New Skill</ModalHeader>
                 <ModalCloseButton />
@@ -290,7 +328,7 @@ const ViewSkills = (props) => {
                 <ModalFooter>
                     <HStack>
                         <Button onClick={onNewSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                        <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />}>
+                        <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />} onClick={handleAddSkill}>
                             <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                                 Add
                             </Text>
@@ -315,7 +353,7 @@ const ViewSkills = (props) => {
                     View/Edit Skills
                 </Text>
             </Button>
-            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg">
+            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={props.changeSkills(allSkills)}>
                 <ModalOverlay />
                 <ModalContent >
                     <ModalHeader fontFamily="Inter" fontWeight="medium">Skills</ModalHeader>
@@ -323,9 +361,9 @@ const ViewSkills = (props) => {
                     <ModalBody>
                         <VStack spacing="8" py="2">
                             <VStack spacing="0" w="100%">
-                                {skills.map((skill, i) => {
+                                {allSkills.map((skill, i) => {
                                     return (
-                                        <Box onClick={() => { changeIndex(i) }} _hover={{ background: "gray.100", cursor: "pointer", transition: "linear 0.1s" }} key={i} w="100%" border="1px" borderBottom={(i < skills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == skills.length - 1) ? "md" : "0px"} borderColor="gray.200" p="2">
+                                        <Box onClick={() => { changeIndex(i) }} _hover={{ background: "gray.100", cursor: "pointer", transition: "linear 0.1s" }} key={i} w="100%" border="1px" borderBottom={(i < allSkills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == allSkills.length - 1) ? "md" : "0px"} borderColor="gray.200" p="2">
                                             <HStack justify="space-between" px="2">
                                                 <Text textAlign="left" fontFamily={font1}>{skill.skill_name}</Text>
                                                 {showSelectedIcon(i)}
@@ -441,7 +479,6 @@ export default function ControlPanel(props) {
                         Delete All Employees
                     </Text>
                 </Button>
-
                 <AlertDialog
                     isOpen={isOpen}
                     leastDestructiveRef={cancelRef}
@@ -490,7 +527,7 @@ export default function ControlPanel(props) {
             <Divider w="90%" />
             <VStack align="left" w="100%" px="4">
                 <AddNewEmployee allEmployees={allEmployees} changeEmployees={props.changeEmployees} skills={skills} />
-                <ViewSkills skills={skills} />
+                <ViewSkills skills={skills} changeSkills={props.changeSkills}/>
                 <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
