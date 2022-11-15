@@ -87,7 +87,6 @@ export default function EmployeeCard(props) {
     let allEmployees = props.allEmployees;
     let employee = props.employee;
     let thisEmployeeIndex = allEmployees.indexOf(employee);
-    console.log(thisEmployeeIndex)
 
     let skills = props.skills;
 
@@ -136,14 +135,16 @@ export default function EmployeeCard(props) {
         }
 
         const handleChangeDate = (date) => {
-            let toBirthday = new Date(date);
-            console.log(toBirthday);
-            changeBirthday(toBirthday)
+            let theDate = new Date(date);
+            if(!isNaN(theDate))
+            {
+                console.log(theDate)
+                changeBirthday(theDate)
+            }
         }
 
         const handleChangeSkill = () => {
             var index = document.getElementById("skillsDropDown").selectedIndex;
-            console.log(index);
             changeSkill(skills[index]);
         }
 
@@ -183,7 +184,7 @@ export default function EmployeeCard(props) {
                 response => response.json()
             ).then(
                 data => {
-                    console.log(data)
+                    console.log("Saved this employee...")
                     employee.f_name = f_name;
                     employee.l_name = l_name;
                     employee.dob = birthday;
@@ -288,7 +289,7 @@ export default function EmployeeCard(props) {
                 response => response.json()
             ).then(
                 data => {
-                    console.log(data)
+                    console.log("Deleted this employee...")
                     let newAllEmployees = [];
                     for(var i = 0; i < allEmployees.length; ++i)
                     {

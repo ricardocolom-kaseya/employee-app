@@ -51,7 +51,7 @@ import { faker } from '@faker-js/faker';
 
 import KaseyaLogoSmall from "../assets/kaseya-logo-small.png"
 
-import { NameHeader, EmailHeader, DOBHeader, SkillsHeader } from './ModalHeaders'
+import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from './ModalHeaders'
 
 const font1 = 'Inter';
 
@@ -59,8 +59,138 @@ function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-const AddNewEmployee = () => {
+const AddNewEmployee = (props) => {
+    let allEmployees = props.allEmployees
+    let skills = props.skills
     const { isOpen, onOpen, onClose } = useDisclosure()
+
+    const AddNewEmployeeModalContent = () => {
+        const [firstName, changeFirstName] = useState("");
+        const [lastName, changeLastName] = useState("");
+        const [email, changeEmail] = useState("");
+        const [birthday, changeBirthday] = useState(new Date());
+        const [skill, changeSkill] = useState("");
+        const [activity, changeActivity] = useState(1);
+
+        const handleChangeDate = (date) => {
+            let theDate = new Date(date);
+            if (!isNaN(theDate)) {
+                console.log(theDate)
+                changeBirthday(theDate)
+            }
+        }
+
+        const handleChangeSkill = () => {
+            var index = document.getElementById("skillsDropDown").selectedIndex;
+            changeSkill(skills[index]);
+        }
+
+        const handleChangeActivity = () => {
+            if (activity)
+                changeActivity(0);
+            else
+                changeActivity(1);
+        }
+
+        const handleAddEmployee = () => {
+
+            console.log("fired")
+
+            let employee_id = faker.datatype.uuid();
+
+            let yyyy = birthday.getFullYear();
+            let mm = ((birthday.getMonth() + 1) < 10) ? `0${birthday.getMonth() + 1}` : birthday.getMonth() + 1
+            let dd = (birthday.getDate() < 10) ? `0${birthday.getDate()}` : birthday.getDate()
+
+            // If either name contains an apostrophe, "double up" the apostrophe
+            let f_name = firstName.replace("'", "''")
+            let l_name = lastName.replace("'", "''")
+
+            console.log("Attempting to add " + f_name + " " + l_name + "...")
+
+            fetch("http://localhost:4000/createemployee", {
+                headers: {
+                    'employee_id': employee_id,
+                    'f_name': f_name,
+                    'l_name': l_name,
+                    'yyyy': yyyy,
+                    'mm': mm,
+                    'dd': dd,
+                    'email': email,
+                    'skill_id': skill.skill_id,
+                    'is_active': activity
+                }
+            }).then(
+                response => response.json()
+            ).then(
+                data => {
+                    // data variable is SELECT * FROM employees
+                    // change data to be only this employee.
+                    console.log("Added this employee")
+                    let newEmployee = data
+                    newEmployee[0].dob = new Date(birthday);
+                    allEmployees.push(newEmployee[0])
+                    props.changeEmployees(allEmployees);
+                }
+            )
+
+            onClose();
+        }
+
+        return (
+            <ModalContent >
+                <ModalHeader fontFamily="Inter" fontWeight="medium">Add a new employee</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    <HStack spacing="8">
+                        <VStack spacing="8" w="1200px" h="328px">
+                            <FormControl isRequired>
+                                <NameHeader />
+                                <Input placeholder="First name" onChange={(e) => { changeFirstName(e.target.value) }} mb="2" />
+                                <Input placeholder="Last name" onChange={(e) => { changeLastName(e.target.value) }} />
+                            </FormControl>
+                            <FormControl isRequired mt="8">
+                                <EmailHeader />
+                                <Input placeholder="Email" onChange={(e) => { changeEmail(e.target.value) }} />
+                            </FormControl>
+                            <FormControl isRequired mt="8">
+                                <DOBHeader />
+                                <Input type="date" onChange={(e) => { handleChangeDate(e.target.value) }} />
+                            </FormControl>
+                        </VStack>
+                        <VStack w="1200px" h="328px">
+                            <VStack w="100%" spacing="0" justify="left">
+                                <ActivityHeader />
+                                <HStack w="100%" justify="center">
+                                    <Text>Inactive</Text>
+                                    <Switch isChecked={activity} onChange={handleChangeActivity} size="lg" colorScheme="green" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'red.500' } }} />
+                                    <Text>Active</Text>
+                                </HStack>
+                            </VStack>
+                            <FormControl isRequired pt="8">
+                                <SkillsHeader />
+                                <Select placeholder="Choose a skill" id="skillsDropDown" onChange={handleChangeSkill}>
+                                    {skills.map((skill, i) => {
+                                        return (<option key={i} onClick={() => console.log("FIRED")}>{skill.skill_name}</option>)
+                                    })}
+                                </Select>
+                            </FormControl>
+                        </VStack>
+                    </HStack>
+                </ModalBody>
+                <ModalFooter>
+                    <HStack>
+                        <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                        <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4}/>} onClick={handleAddEmployee}>
+                            <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                Add
+                            </Text>
+                        </Button>
+                    </HStack>
+                </ModalFooter>
+            </ModalContent>
+        )
+    }
 
     return (
         <>
@@ -71,50 +201,7 @@ const AddNewEmployee = () => {
             </Button>
             <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl">
                 <ModalOverlay />
-                <ModalContent >
-                    <ModalHeader fontFamily="Inter" fontWeight="medium">Add a new employee</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <HStack spacing="8">
-                            <VStack spacing="8" w="1200px" h="328px">
-                                <FormControl isRequired>
-                                    <NameHeader />
-                                    <Input placeholder="First name" mb="2" />
-                                    <Input placeholder="Last name" />
-                                </FormControl>
-                                <FormControl isRequired mt="8">
-                                    <EmailHeader />
-                                    <Input placeholder="Email" />
-                                </FormControl>
-                                <FormControl isRequired mt="8">
-                                    <DOBHeader />
-                                    <Input placeholder="Birthday" type="date" />
-                                </FormControl>
-                            </VStack>
-                            <VStack w="1200px" h="328px">
-                                <FormControl isRequired>
-                                    <SkillsHeader />
-                                    <Select placeholder="Skills">
-                                        <option>One</option>
-                                        <option>Two</option>
-                                        <option>Three</option>
-                                        <option>Four</option>
-                                    </Select>
-                                </FormControl>
-                            </VStack>
-                        </HStack>
-                    </ModalBody>
-                    <ModalFooter>
-                        <HStack>
-                            <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                            <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />}>
-                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
-                                    Add
-                                </Text>
-                            </Button>
-                        </HStack>
-                    </ModalFooter>
-                </ModalContent>
+                <AddNewEmployeeModalContent />
             </Modal>
         </>
     )
@@ -273,11 +360,13 @@ const ViewSkills = (props) => {
 
 
 export default function ControlPanel(props) {
+    let allEmployees = [...props.employees];
     let skills = props.skills;
 
     const addDummyEmployee = () => {
         console.log("Adding dummy employee")
 
+        let employee_id = faker.datatype.uuid();
         let f_name = faker.name.firstName();
         let l_name = faker.name.lastName();
         let dob = faker.date.birthdate();
@@ -296,6 +385,7 @@ export default function ControlPanel(props) {
 
         fetch("http://localhost:4000/createemployee", {
             headers: {
+                'employee_id': employee_id,
                 'f_name': f_name,
                 'l_name': l_name,
                 'yyyy': yyyy,
@@ -309,11 +399,12 @@ export default function ControlPanel(props) {
             response => response.json()
         ).then(
             data => {
-                let toEmployees = data;
-                toEmployees.forEach(employee => {
-                    employee.dob = new Date(employee.dob)
-                });
-                props.changeEmployees(toEmployees)
+                // data variable is SELECT * FROM employees
+                // change data to be only this employee.
+                let newEmployee = data
+                newEmployee[0].dob = new Date(dob);
+                allEmployees.push(newEmployee[0])
+                props.changeEmployees(allEmployees);
             }
         )
     }
@@ -391,8 +482,8 @@ export default function ControlPanel(props) {
             </VStack>
             <Divider w="90%" />
             <VStack align="left" w="100%" px="4">
-                <AddNewEmployee />
-                <ViewSkills skills={props.skills} />
+                <AddNewEmployee allEmployees={allEmployees} changeEmployees={props.changeEmployees} skills={skills} />
+                <ViewSkills skills={skills} />
                 <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls

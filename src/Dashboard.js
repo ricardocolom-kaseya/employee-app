@@ -109,6 +109,10 @@ export default function Dashboard(props) {
         )
     }, [])
 
+    useEffect(() => {
+        console.log(employees)
+    }, [employees])
+
     const pt = props.navBarHeight + "px"
 
     return (

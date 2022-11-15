@@ -52,9 +52,9 @@ export const SkillsHeader = () => {
             <HStack position="absolute" spacing="2">
                 <Icon as={MdBadge} boxSize={4} position="absolute" top="3px" />
                 <Box w="1" />
-                <Text fontWeight="medium" fontFamily="Inter">Skills</Text>
+                <Text fontWeight="medium" fontFamily="Inter">Skill</Text>
             </HStack>
-            <FormLabel position="absolute" left="58px"></FormLabel>
+            <FormLabel position="absolute" left="50px"></FormLabel>
             <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
         </>
     )
