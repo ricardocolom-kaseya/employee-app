@@ -270,7 +270,7 @@ export default function EmployeeCard(props) {
                     variant="ghost"
                     onClick={onOpen}
                 />
-                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => {handleChangeEmployees(allEmployees)}}>
+                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { handleChangeEmployees(allEmployees) }}>
                     <ModalOverlay />
                     <EditEmployeeModal />
                 </Modal>
@@ -366,12 +366,7 @@ export default function EmployeeCard(props) {
                                 <Text fontWeight="bold" fontSize="xl" lineHeight="1" fontFamily={font1}>
                                     {employee.f_name} {employee.l_name}
                                 </Text>
-                                <Tooltip hasArrow label={(employee.dob).toLocaleDateString()} borderRadius="lg">
-                                    {/* textDecoration="underline" textUnderlineOffset="2px"  */}
-                                    <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1}>
-                                        {GetAge(employee.dob)} years old
-                                    </Text>
-                                </Tooltip>
+
                             </HStack>
                             <HStack spacing="2" position="relative">
                                 <Icon as={MdEmail} boxSize={4} position="absolute" bottom="2px" />
@@ -421,8 +416,13 @@ export default function EmployeeCard(props) {
                         </Accordion>
                     </VStack>
                 </VStack>
-                <HStack pos="absolute" w="100%" bottom="0" justify="end" px="4" py="2">
-                    <HStack spacing="0">
+                <HStack pos="absolute" w="100%" bottom="0" px="4" py="2">
+                    <Tooltip hasArrow label={(employee.dob).toLocaleDateString()} borderRadius="lg">
+                        <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1} w="122px">
+                            {GetAge(employee.dob)} years old
+                        </Text>
+                    </Tooltip>
+                    <HStack spacing="0" w="100%" justify="end">
                         <Code bg="transparent">
                             ID:
                         </Code>
