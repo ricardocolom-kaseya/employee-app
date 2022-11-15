@@ -307,8 +307,46 @@ const ViewSkills = (props) => {
         const [skillName, changeSkillName] = useState(defaultName)
         const [skillDesc, changeSkillDesc] = useState(defaultDesc)
 
+        const handleEditSkill = () => {
+            let skillID = allSkills[index].skill_id
+
+            console.log("Attempting to edit skill " + skillName)
+
+            fetch("http://localhost:4000/editskill", {
+                headers: {
+                    'skill_id': skillID,
+                    'skill_name': skillName,
+                    'skill_desc': skillDesc
+                }
+            }).then(
+                response => response.json()
+            ).then(
+                data => {
+                    console.log("Edited this skill...")
+
+                    onEditSkillClose();
+
+                    toast({title: "Edited a skill", status: 'success', duration: 3000})
+
+                    let editedSkill = { skill_id: skillID, skill_name: skillName, skill_desc: skillDesc}
+
+                    let newAllSkills = [...allSkills]
+                    
+                    for(var i = 0; i < newAllSkills.length; ++i)
+                    {
+                        if(newAllSkills[i].skill_id == skillID)
+                        {
+                            newAllSkills[i] = editedSkill;
+                        }
+                    }
+
+                    changeAllSkills(newAllSkills);
+                }
+            )
+        }
+
         return (
-            <ModalContent >
+            <ModalContent>
                 <ModalHeader fontFamily="Inter" fontWeight="medium">Edit Skill</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
@@ -328,7 +366,7 @@ const ViewSkills = (props) => {
                 <ModalFooter>
                     <HStack>
                         <Button onClick={onEditSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                        <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />}>
+                        <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={handleEditSkill}>
                             <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                                 Save
                             </Text>
@@ -426,7 +464,7 @@ const ViewSkills = (props) => {
                     <ModalHeader fontFamily="Inter" fontWeight="medium">Skills</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <VStack spacing="8" py="2">
+                        <VStack spacing="8">
                             <VStack spacing="0" w="100%">
                                 {allSkills.map((skill, i) => {
                                     return (
