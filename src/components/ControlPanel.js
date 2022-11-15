@@ -326,16 +326,14 @@ const ViewSkills = (props) => {
 
                     onEditSkillClose();
 
-                    toast({title: "Edited a skill", status: 'success', duration: 3000})
+                    toast({ title: "Edited a skill", status: 'success', duration: 3000 })
 
-                    let editedSkill = { skill_id: skillID, skill_name: skillName, skill_desc: skillDesc}
+                    let editedSkill = { skill_id: skillID, skill_name: skillName, skill_desc: skillDesc }
 
                     let newAllSkills = [...allSkills]
-                    
-                    for(var i = 0; i < newAllSkills.length; ++i)
-                    {
-                        if(newAllSkills[i].skill_id == skillID)
-                        {
+
+                    for (var i = 0; i < newAllSkills.length; ++i) {
+                        if (newAllSkills[i].skill_id == skillID) {
                             newAllSkills[i] = editedSkill;
                         }
                     }
@@ -579,7 +577,7 @@ export default function ControlPanel(props) {
 
         return (
             <>
-                <Button colorScheme="red" my="4" onClick={onOpen}>
+                <Button colorScheme="red" my="2" onClick={onOpen} w="100%">
                     <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
                         Delete All Employees
                     </Text>
@@ -597,13 +595,68 @@ export default function ControlPanel(props) {
                                 Delete All Employees
                             </AlertDialogHeader>
                             <AlertDialogBody>
-                                <Text>Are you sure you would like to delete <strong>all</strong> employees?</Text>
+                                <Text>Are you sure you would like to delete <strong>all employees</strong>?</Text>
                             </AlertDialogBody>
                             <AlertDialogFooter>
                                 <Button ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
-                                <Button colorScheme='red' onClick={() => { handleDeleteAllEmployees() }} ml={3}>
+                                <Button colorScheme='red' onClick={handleDeleteAllEmployees} ml={3}>
+                                    Delete All
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
+            </>
+        )
+    }
+
+    const DeleteAllSkillsButton = () => {
+        const { isOpen, onOpen, onClose } = useDisclosure()
+        const cancelRef = React.useRef()
+
+        const handleDeleteAllSkills = () => {
+
+            console.log("Going to delete all skills... ");
+
+            fetch("http://localhost:4000/deleteallskills").then(
+                response => response.json()
+            ).then(
+                data => { console.log(data) }
+            )
+
+            props.changeSkills([])
+            onClose();
+        }
+
+        return (
+            <>
+                <Button colorScheme="red" onClick={onOpen} w="100%" my="2">
+                    <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
+                        Delete All Skills
+                    </Text>
+                </Button>
+                <AlertDialog
+                    isOpen={isOpen}
+                    leastDestructiveRef={cancelRef}
+                    onClose={onClose}
+                    isCentered
+                    motionPreset="slideInBottom"
+                >
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                                Delete All Skills
+                            </AlertDialogHeader>
+                            <AlertDialogBody>
+                                <Text>Are you sure you would like to delete <strong>all skills</strong>?</Text>
+                            </AlertDialogBody>
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                    Cancel
+                                </Button>
+                                <Button colorScheme='red' onClick={handleDeleteAllSkills} ml={3}>
                                     Delete All
                                 </Button>
                             </AlertDialogFooter>
@@ -637,21 +690,28 @@ export default function ControlPanel(props) {
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
                 </Heading>
-                <FormControl maxW="80%">
-                    <Input fontFamily="Inter" placeholder="Search..." />
-                </FormControl>
-                <Menu>
-                    <MenuButton maxW="80%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
-                        Sort by...
-                    </MenuButton>
-                    <MenuList>
-                        <MenuItem>One</MenuItem>
-                        <MenuItem>Two</MenuItem>
-                        <MenuItem>Three</MenuItem>
-                        <MenuItem>Four</MenuItem>
-                    </MenuList>
-                </Menu>
-                <DeleteAllEmployeesButton />
+                <VStack w="100%" spacing="280px">
+                    <VStack w="100%">
+                        <FormControl w="100%">
+                            <Input fontFamily="Inter" type="search" placeholder="Search..." />
+                        </FormControl>
+                        <Menu>
+                            <MenuButton w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
+                                Sort by...
+                            </MenuButton>
+                            <MenuList>
+                                <MenuItem>One</MenuItem>
+                                <MenuItem>Two</MenuItem>
+                                <MenuItem>Three</MenuItem>
+                                <MenuItem>Four</MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </VStack>
+                    <VStack w="100%" spacing="0">
+                        <DeleteAllEmployeesButton />
+                        <DeleteAllSkillsButton />
+                    </VStack>
+                </VStack>
             </VStack>
         </VStack>
     )

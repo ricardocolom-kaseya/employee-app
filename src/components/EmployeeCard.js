@@ -348,45 +348,44 @@ export default function EmployeeCard(props) {
     }
 
     return (
-        <Box display="flex" justify="center" m="2">
-            <Box pos="relative" w="md" maxW="md" borderWidth="1px" borderRadius="2xl" bg="white">
-                <Box pos="absolute" m="2" right="0">
-                    <HStack>
-                        <EditButton />
-                        <DeleteButton />
-                    </HStack>
-                </Box>
-                <VStack m="4" align="left" spacing="3">
-                    <HStack>
-                        <Avatar size="md" name={employee.f_name}>
-                            {RenderEmployeeActivity(employee.is_active)}
-                        </Avatar>
-                        <VStack px="1" align="start" justify="start" spacing="0">
-                            <HStack justify="end" align="end" spacing="3">
-                                <Text fontWeight="bold" fontSize="xl" lineHeight="1" fontFamily={font1}>
-                                    {employee.f_name} {employee.l_name}
-                                </Text>
+        <Box pos="relative" w="lg" borderWidth="1px" borderRadius="2xl" bg="white">
+            <Box pos="absolute" m="2" right="0">
+                <HStack>
+                    <EditButton />
+                    <DeleteButton />
+                </HStack>
+            </Box>
+            <VStack m="4" align="left" spacing="3">
+                <HStack>
+                    <Avatar size="md" name={employee.f_name}>
+                        {RenderEmployeeActivity(employee.is_active)}
+                    </Avatar>
+                    <VStack px="1" align="start" justify="start" spacing="0">
+                        <HStack justify="end" align="end" spacing="3">
+                            <Text fontWeight="bold" fontSize="xl" lineHeight="1" fontFamily={font1}>
+                                {employee.f_name} {employee.l_name}
+                            </Text>
 
-                            </HStack>
-                            <HStack spacing="2" position="relative">
-                                <Icon as={MdEmail} boxSize={4} position="absolute" bottom="2px" />
-                                <Box w="1" />
-                                <Text fontSize="sm" fontFamily={font1}>
-                                    {employee.email}
-                                </Text>
-                            </HStack>
-                        </VStack>
-                    </HStack>
-                    <VStack spacing="0" align="left" pos="relative">
-                        <Text fontSize="xs" pos="absolute" bg="white" px="1" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
-                            SKILLS
-                        </Text>
-                        <Accordion allowToggle pt="3" pb="8" w="100%">
-                            <AccordionItem borderLeftWidth="1px" borderRightWidth="1px" borderRadius="lg">
-                                <AccordionButton>
-                                    <HStack w="100%" justify="space-between">
-                                        <HStack>
-                                            {/* {(props.skills).map((skill, i) => {
+                        </HStack>
+                        <HStack spacing="2" position="relative">
+                            <Icon as={MdEmail} boxSize={4} position="absolute" bottom="2px" />
+                            <Box w="1" />
+                            <Text fontSize="sm" fontFamily={font1}>
+                                {employee.email}
+                            </Text>
+                        </HStack>
+                    </VStack>
+                </HStack>
+                <VStack spacing="0" align="left" pos="relative">
+                    <Text fontSize="xs" pos="absolute" bg="white" px="1" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
+                        SKILLS
+                    </Text>
+                    <Accordion allowToggle pt="3" pb="8" w="100%">
+                        <AccordionItem borderLeftWidth="1px" borderRightWidth="1px" borderRadius="lg">
+                            <AccordionButton>
+                                <HStack w="100%" justify="space-between">
+                                    <HStack>
+                                        {/* {(props.skills).map((skill, i) => {
                                                 if (i < (props.skills).length - 1) {
                                                     return (
                                                         <HStack>
@@ -401,41 +400,40 @@ export default function EmployeeCard(props) {
                                                     )
                                                 }
                                             })} */}
-                                            <Text size="sm" fontWeight="bold" fontFamily={font1}>{skillName}</Text>
-                                        </HStack>
-                                        <AccordionIcon />
+                                        <Text size="sm" fontWeight="bold" fontFamily={font1}>{skillName}</Text>
                                     </HStack>
-                                </AccordionButton>
-                                <AccordionPanel>
-                                    {/* {(props.skills).map((skill, i) => {
+                                    <AccordionIcon />
+                                </HStack>
+                            </AccordionButton>
+                            <AccordionPanel>
+                                {/* {(props.skills).map((skill, i) => {
                                         return (<SkillBlock name="Placeholder" id={employee.skill_id} desc="placeholder" key={i} totalCount={(props.skills).length} />)
                                     })} */}
-                                    <SkillBlock name={skillName} skill_id={employee.skill_id} desc={skillDesc} key={0} totalCount={1} />
-                                </AccordionPanel>
-                            </AccordionItem>
-                        </Accordion>
-                    </VStack>
+                                <SkillBlock name={skillName} skill_id={employee.skill_id} desc={skillDesc} key={0} totalCount={1} />
+                            </AccordionPanel>
+                        </AccordionItem>
+                    </Accordion>
                 </VStack>
-                <HStack pos="absolute" w="100%" bottom="0" px="4" py="2">
-                    <Tooltip hasArrow label={(employee.dob).toLocaleDateString()} borderRadius="lg">
-                        <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1} w="122px">
-                            {GetAge(employee.dob)} years old
-                        </Text>
+            </VStack>
+            <HStack pos="absolute" w="100%" bottom="0" px="4" py="2">
+                <Tooltip hasArrow label={(employee.dob).toLocaleDateString()} borderRadius="lg">
+                    <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1} w="122px">
+                        {GetAge(employee.dob)} years old
+                    </Text>
+                </Tooltip>
+                <HStack spacing="0" w="100%" justify="end">
+                    <Code bg="transparent">
+                        ID:
+                    </Code>
+                    <Tooltip label={employee.employee_id} borderRadius="lg">
+                        <Button size="xs" onClick={() => navigator.clipboard.writeText(employee.employee_id)}>
+                            <Code bg="transparent">
+                                Copy
+                            </Code>
+                        </Button>
                     </Tooltip>
-                    <HStack spacing="0" w="100%" justify="end">
-                        <Code bg="transparent">
-                            ID:
-                        </Code>
-                        <Tooltip label={employee.employee_id} borderRadius="lg">
-                            <Button size="xs" onClick={() => navigator.clipboard.writeText(props.id)}>
-                                <Code bg="transparent">
-                                    Copy
-                                </Code>
-                            </Button>
-                        </Tooltip>
-                    </HStack>
                 </HStack>
-            </Box>
+            </HStack>
         </Box>
     )
 }
