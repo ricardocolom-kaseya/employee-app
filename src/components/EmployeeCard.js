@@ -205,7 +205,7 @@ export default function EmployeeCard(props) {
             }
 
             return (
-                <ModalContent >
+                <ModalContent>
                     <ModalHeader fontFamily="Inter" fontWeight="medium">Edit employee</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
@@ -269,7 +269,7 @@ export default function EmployeeCard(props) {
                     variant="ghost"
                     onClick={onOpen}
                 />
-                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { handleChangeEmployees(allEmployees) }}>
+                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { handleChangeEmployees(allEmployees) }} preserveScrollBarGap>
                     <ModalOverlay />
                     <EditEmployeeModal />
                 </Modal>
@@ -320,6 +320,7 @@ export default function EmployeeCard(props) {
                     onClose={onClose}
                     isCentered
                     motionPreset="slideInBottom"
+                    preserveScrollBarGap
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
@@ -347,7 +348,7 @@ export default function EmployeeCard(props) {
     }
 
     return (
-        <Box pos="relative" w="lg" borderWidth="1px" borderRadius="2xl" bg="white">
+        <Box pos="relative" w="lg" style={{margin: "6px"}} borderRadius="2xl" bg="white">
             <Box pos="absolute" m="2" right="0">
                 <HStack>
                     <EditButton />
@@ -383,31 +384,11 @@ export default function EmployeeCard(props) {
                         <AccordionItem borderLeftWidth="1px" borderRightWidth="1px" borderRadius="lg">
                             <AccordionButton>
                                 <HStack w="100%" justify="space-between">
-                                    <HStack>
-                                        {/* {(props.skills).map((skill, i) => {
-                                                if (i < (props.skills).length - 1) {
-                                                    return (
-                                                        <HStack>
-                                                            <Text size="sm" fontWeight="bold" fontFamily={font1}>{skill.name}</Text>
-                                                            <Text size="sm" fontWeight="bold" fontFamily={font1}>•</Text>
-                                                        </HStack>
-                                                    )
-                                                }
-                                                else {
-                                                    return (
-                                                        <Text size="sm" fontWeight="bold" fontFamily={font1}>{skill.name}</Text>
-                                                    )
-                                                }
-                                            })} */}
-                                        <Text size="sm" fontWeight="bold" fontFamily={font1}>{skillName}</Text>
-                                    </HStack>
+                                    <Text size="sm" fontWeight="bold" fontFamily={font1}>{skillName}</Text>
                                     <AccordionIcon />
                                 </HStack>
                             </AccordionButton>
                             <AccordionPanel>
-                                {/* {(props.skills).map((skill, i) => {
-                                        return (<SkillBlock name="Placeholder" id={employee.skill_id} desc="placeholder" key={i} totalCount={(props.skills).length} />)
-                                    })} */}
                                 <SkillBlock name={skillName} skill_id={employee.skill_id} desc={skillDesc} key={0} totalCount={1} />
                             </AccordionPanel>
                         </AccordionItem>

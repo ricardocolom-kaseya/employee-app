@@ -9,7 +9,6 @@ const navBarHeight = 32;
 function App() {
   return (
     <ChakraProvider>
-      <Navbar navBarHeight={navBarHeight}/>
       <Dashboard navBarHeight={navBarHeight}/>
     </ChakraProvider>
   );

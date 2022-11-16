@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid, Flex } from '@chakra-ui/react'
 import {
     Menu,
     MenuButton,
@@ -43,6 +43,7 @@ import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 import EmployeeCard from './components/EmployeeCard'
 import ControlPanel from './components/ControlPanel'
 import { NameHeader, EmailHeader, DOBHeader, SkillsHeader } from './components/ModalHeaders'
+import Navbar from './Navbar'
 
 const font1 = 'Inter';
 
@@ -56,7 +57,7 @@ const CardView = (props) => {
     const renderEmployees = () => {
 
         return (
-            <VStack h="100%">
+            <VStack h="100%" spacing="0">
                 {allEmployees.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
@@ -68,7 +69,9 @@ const CardView = (props) => {
     }
 
     return (
-        <HStack m="4" align="center">
+        <HStack align="center" p="6px" spacing="0">
+            {renderEmployees()}
+            {renderEmployees()}
             {renderEmployees()}
         </HStack>
     )
@@ -110,25 +113,23 @@ export default function Dashboard(props) {
         )
     }, [])
 
-    // useEffect(() => {
-    //     if(skills.length == 0)
-    //         console.log("Dashboard - no skills")
-    //     else
-    //         console.log("Dashboard - retrieved " + skills.length + " skills")
-    // }, [skills])
-
     const pt = props.navBarHeight + "px"
 
+    const controlPanelWidth = "316px"
+
+    const width = window.innerWidth;
+
+    const cardViewWidth = (width - controlPanelWidth) + "px";
+
     return (
-        <Box bg="gray.100" maxW="100vw" h="100vh" pt={pt}>
-            <HStack spacing="0" w="100%" h="100%">
-                <VStack w="100%" h="100%" bg="gray.200" align="center">
-                    <CardView employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
-                </VStack>
-                <VStack w="424px" h="100%">
-                    <ControlPanel employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
-                </VStack>
-            </HStack>
-        </Box>
+        <VStack spacing="0" bg="gray.200" h="100%" alignSelf="stretch">
+            <Navbar navBarHeight={props.navBarHeight} />
+            <VStack align="left" w="100%" spacing="0" pt={pt}>
+                <CardView employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
+            </VStack>
+            <Box pos="fixed" w={controlPanelWidth} h="100vh" right="0" pt={pt}>
+                <ControlPanel employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
+            </Box>
+        </VStack>
     )
 }

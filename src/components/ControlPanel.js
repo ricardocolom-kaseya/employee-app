@@ -202,7 +202,7 @@ const AddNewEmployee = (props) => {
                     Add a new employee
                 </Text>
             </Button>
-            <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl">
+            <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" preserveScrollBarGap>
                 <ModalOverlay />
                 <AddNewEmployeeModalContent />
             </Modal>
@@ -299,6 +299,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
                         onClose={onClose}
                         isCentered
                         motionPreset="slideInBottom"
+                        preserveScrollBarGap
                     >
                         <AlertDialogOverlay>
                             <AlertDialogContent>
@@ -448,7 +449,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
         }
 
         return (
-            <ModalContent >
+            <ModalContent>
                 <ModalHeader fontFamily="Inter" fontWeight="medium">New Skill</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
@@ -486,7 +487,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
                     View/Edit Skills
                 </Text>
             </Button>
-            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={() => { changeSkills(modalSkills) }}>
+            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={() => { changeSkills(modalSkills) }} preserveScrollBarGap>
                 <ModalOverlay />
                 <ModalContent >
                     <ModalHeader fontFamily="Inter" fontWeight="medium">Skills</ModalHeader>
@@ -499,8 +500,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
                                     Add a new skill
                                 </Text>
                             </Button>
-                            <Modal onClose={onNewSkillClose} isOpen={isNewSkillOpen} isCentered motionPreset='slideInBottom' size="xl">
-                                <ModalOverlay />
+                            <Modal onClose={onNewSkillClose} isOpen={isNewSkillOpen} isCentered motionPreset='slideInBottom' size="xl" preserveScrollBarGap>
                                 <NewSkillModalContent />
                             </Modal>
                         </VStack>
@@ -509,7 +509,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
                         <HStack w="100%" justify="space-between">
                             <ShowDeleteSelectedSkillButton />
                             <ShowEditSkillButton />
-                            <Modal onClose={onEditSkillClose} isOpen={isEditSkillOpen} isCentered motionPreset='slideInBottom' size="xl">
+                            <Modal onClose={onEditSkillClose} isOpen={isEditSkillOpen} isCentered motionPreset='slideInBottom' size="xl" preserveScrollBarGap>
                                 <ModalOverlay />
                                 <EditSkillModalContent />
                             </Modal>
@@ -560,8 +560,6 @@ export default function ControlPanel(props) {
             response => response.json()
         ).then(
             data => {
-                // data variable is SELECT * FROM employees
-                // change data to be only this employee.
                 let newEmployee = data
                 newEmployee[0].dob = new Date(dob);
                 allEmployees.push(newEmployee[0])
@@ -601,6 +599,7 @@ export default function ControlPanel(props) {
                     onClose={onClose}
                     isCentered
                     motionPreset="slideInBottom"
+                    preserveScrollBarGap
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
@@ -656,6 +655,7 @@ export default function ControlPanel(props) {
                     onClose={onClose}
                     isCentered
                     motionPreset="slideInBottom"
+                    preserveScrollBarGap
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
