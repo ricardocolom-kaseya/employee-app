@@ -110,12 +110,12 @@ export default function Dashboard(props) {
         )
     }, [])
 
-    useEffect(() => {
-        if(skills.length == 0)
-            console.log("Dashboard - no skills")
-        else
-            console.log("Dashboard - retrieved " + skills.length + " skills")
-    }, [skills])
+    // useEffect(() => {
+    //     if(skills.length == 0)
+    //         console.log("Dashboard - no skills")
+    //     else
+    //         console.log("Dashboard - retrieved " + skills.length + " skills")
+    // }, [skills])
 
     const pt = props.navBarHeight + "px"
 

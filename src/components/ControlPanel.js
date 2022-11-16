@@ -212,28 +212,60 @@ const AddNewEmployee = (props) => {
     )
 }
 
-const ViewSkills = ({skills, changeSkills}) => {
-
-    console.log("ViewSkills() - " + (skills).length)
+const ViewSkills = ({ skills, changeSkills }) => {
 
     const toast = useToast();
 
-    let defSkills = [...skills];
+    const [allSkills, changeAllSkills] = useState([])
 
-    const [allSkills, changeAllSkills] = useState(defSkills)
+    useEffect(() => {
+        console.log("allSkills fired: ")
+        console.log(allSkills)
+    }, [allSkills])
+
+    // This is absolutely necessary as allSkills hook is always loaded as long as the control panel is rendered, and it MUST change whenever skills changes.
+    useEffect(() => {
+        console.log("skills was changed")
+        changeAllSkills([...skills])
+    }, [skills])
+
+    const { isOpen: isViewSkillsOpen, onOpen: onViewSkillsOpen, onClose: onViewSkillsClose } = useDisclosure()
 
     const [index, changeIndex] = useState(0)
 
-    if (index >= allSkills.length)
+    if (allSkills.length > 0 && index >= allSkills.length)
         changeIndex(index - 1)
-
-    const { isOpen: isViewSkillsOpen, onOpen: onViewSkillsOpen, onClose: onViewSkillsClose } = useDisclosure()
 
     const { isOpen: isEditSkillOpen, onOpen: onEditSkillOpen, onClose: onEditSkillClose } = useDisclosure()
 
     const { isOpen: isNewSkillOpen, onOpen: onNewSkillOpen, onClose: onNewSkillClose } = useDisclosure()
 
-    const DeleteSelectedSkillButton = () => {
+    const ShowSelectedIcon = (i) => {
+        if (i == index)
+            return (
+                <CheckIcon color="gray.700" />
+            )
+    }
+
+    const ShowSkillTable = () => {
+        if (allSkills.length > 0)
+            return (
+                <VStack spacing="0" w="100%" pb="8">
+                    {allSkills.map((skill, i) => {
+                        return (
+                            <Box onClick={() => { changeIndex(i) }} _hover={{ background: "gray.100", cursor: "pointer", transition: "linear 0.1s" }} key={i} w="100%" border="1px" borderBottom={(i < allSkills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == allSkills.length - 1) ? "md" : "0px"} borderColor="gray.200" p="2">
+                                <HStack justify="space-between" px="2">
+                                    <Text textAlign="left" fontFamily={font1}>{skill.skill_name}</Text>
+                                    {ShowSelectedIcon(i)}
+                                </HStack>
+                            </Box>
+                        )
+                    })}
+                </VStack>
+            )
+    }
+
+    const ShowDeleteSelectedSkillButton = () => {
         const { isOpen, onOpen, onClose } = useDisclosure()
         const cancelRef = React.useRef();
 
@@ -263,39 +295,58 @@ const ViewSkills = ({skills, changeSkills}) => {
             )
         }
 
-        return (
-            <>
-                <Button onClick={onOpen} fontFamily="Inter" colorScheme="red" fontWeight="medium">Delete Selected</Button>
-                <AlertDialog
-                    isOpen={isOpen}
-                    leastDestructiveRef={cancelRef}
-                    onClose={onClose}
-                    isCentered
-                    motionPreset="slideInBottom"
-                >
-                    <AlertDialogOverlay>
-                        <AlertDialogContent>
-                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
-                                Delete Skill
-                            </AlertDialogHeader>
-                            <AlertDialogBody>
-                                <Text>Are you sure you would like to delete <strong>{allSkills[index].skill_name}</strong>?</Text>
-                            </AlertDialogBody>
-                            <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
-                                    Cancel
-                                </Button>
-                                <Button colorScheme='red' onClick={handleDeleteSkill} ml={3}>
-                                    Delete
-                                </Button>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialogOverlay>
-                </AlertDialog>
-            </>
-        )
+        if (allSkills.length > 0) {
+
+            const handleDeleteSelectedPressed = () => {
+                console.log(allSkills[index])
+                onOpen();
+            }
+
+            return (
+                <>
+                    <Button onClick={handleDeleteSelectedPressed} fontFamily="Inter" colorScheme="red" fontWeight="medium">Delete Selected</Button>
+                    <AlertDialog
+                        isOpen={isOpen}
+                        leastDestructiveRef={cancelRef}
+                        onClose={onClose}
+                        isCentered
+                        motionPreset="slideInBottom"
+                    >
+                        <AlertDialogOverlay>
+                            <AlertDialogContent>
+                                <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                                    Delete Skill
+                                </AlertDialogHeader>
+                                <AlertDialogBody>
+                                    <Text>Are you sure you would like to delete <strong>{allSkills[index].skill_name}</strong>?</Text>
+                                </AlertDialogBody>
+                                <AlertDialogFooter>
+                                    <Button ref={cancelRef} onClick={onClose}>
+                                        Cancel
+                                    </Button>
+                                    <Button colorScheme='red' onClick={handleDeleteSkill} ml={3}>
+                                        Delete
+                                    </Button>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialogOverlay>
+                    </AlertDialog>
+                </>
+            )
+        }
     }
 
+    const ShowEditSkillButton = () => {
+        if (allSkills.length > 0) {
+            return (
+                <Button my="4" rightIcon={<EditIcon w={4} h={4} />} onClick={onEditSkillOpen}>
+                    <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                        Edit
+                    </Text>
+                </Button>
+            )
+        }
+    }
 
     const EditSkillModalContent = () => {
 
@@ -440,13 +491,6 @@ const ViewSkills = ({skills, changeSkills}) => {
         )
     }
 
-    const showSelectedIcon = (i) => {
-        if (i == index)
-            return (
-                <CheckIcon color="gray.700" />
-            )
-    }
-
     return (
         <>
             <Button variant="outline" my="4" rightIcon={<Icon as={MdBadge} w={6} h={6} />} onClick={onViewSkillsOpen}>
@@ -454,26 +498,15 @@ const ViewSkills = ({skills, changeSkills}) => {
                     View/Edit Skills
                 </Text>
             </Button>
-            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={changeSkills(allSkills)}>
+            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={() => { changeSkills(allSkills) }}>
                 <ModalOverlay />
                 <ModalContent >
                     <ModalHeader fontFamily="Inter" fontWeight="medium">Skills</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
-                        <VStack spacing="8">
-                            <VStack spacing="0" w="100%">
-                                {allSkills.map((skill, i) => {
-                                    return (
-                                        <Box onClick={() => { changeIndex(i) }} _hover={{ background: "gray.100", cursor: "pointer", transition: "linear 0.1s" }} key={i} w="100%" border="1px" borderBottom={(i < allSkills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == allSkills.length - 1) ? "md" : "0px"} borderColor="gray.200" p="2">
-                                            <HStack justify="space-between" px="2">
-                                                <Text textAlign="left" fontFamily={font1}>{skill.skill_name}</Text>
-                                                {showSelectedIcon(i)}
-                                            </HStack>
-                                        </Box>
-                                    )
-                                })}
-                            </VStack>
-                            <Button variant="outline" my="4" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} w="100%" onClick={onNewSkillOpen}>
+                        <VStack spacing="0">
+                            <ShowSkillTable />
+                            <Button variant="outline" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} w="100%" onClick={onNewSkillOpen}>
                                 <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                                     Add a new skill
                                 </Text>
@@ -486,12 +519,8 @@ const ViewSkills = ({skills, changeSkills}) => {
                     </ModalBody>
                     <ModalFooter>
                         <HStack w="100%" justify="space-between">
-                            <DeleteSelectedSkillButton />
-                            <Button my="4" rightIcon={<EditIcon w={4} h={4} />} onClick={onEditSkillOpen}>
-                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
-                                    Edit
-                                </Text>
-                            </Button>
+                            <ShowDeleteSelectedSkillButton />
+                            <ShowEditSkillButton />
                             <Modal onClose={onEditSkillClose} isOpen={isEditSkillOpen} isCentered motionPreset='slideInBottom' size="xl">
                                 <ModalOverlay />
                                 <EditSkillModalContent />
@@ -502,14 +531,6 @@ const ViewSkills = ({skills, changeSkills}) => {
             </Modal>
         </>
     )
-}
-
-const HandleShowViewSkills = ({skills, changeSkills}) => {
-
-    console.log("HandleShowViewSkills() - " + (skills).length)
-
-    if(skills.length > 0)
-        return (<ViewSkills skills={skills} changeSkills={changeSkills} />)
 }
 
 const ForceReloadSkills = ({ changeSkills }) => {
@@ -539,19 +560,10 @@ const ForceReloadSkills = ({ changeSkills }) => {
 
 export default function ControlPanel(props) {
     let allEmployees = [...props.employees];
-    let skills = [];
-
-    if(props.skills)
-        skills = [...props.skills];
-
-    if (skills.length == 0)
-        console.log("ControlPanel - no skills")
-    else
-        console.log("ControlPanel - retrieved " + skills.length + " skills")
 
     const addDummyEmployee = () => {
         console.log("Adding dummy employee")
-        console.log(skills)
+        console.log(props.skills)
 
         let employee_id = faker.datatype.uuid();
         let f_name = faker.name.firstName();
@@ -561,7 +573,7 @@ export default function ControlPanel(props) {
         let mm = ((dob.getMonth() + 1) < 10) ? `0${dob.getMonth() + 1}` : dob.getMonth() + 1
         let dd = (dob.getDate() < 10) ? `0${dob.getDate()}` : dob.getDate()
         let email = faker.internet.email(f_name, l_name)
-        let skill_id = skills[randomInt(skills.length)].skill_id
+        let skill_id = (props.skills[randomInt(props.skills.length)]).skill_id
         let is_active = Math.round(Math.random())
 
         // If either name contains an apostrophe, "double up" the apostrophe
@@ -723,8 +735,8 @@ export default function ControlPanel(props) {
             </VStack>
             <Divider w="90%" />
             <VStack align="left" w="100%" px="4">
-                <AddNewEmployee allEmployees={allEmployees} changeEmployees={props.changeEmployees} skills={skills} />
-                <HandleShowViewSkills skills={skills} changeSkills={props.changeSkills} />
+                <AddNewEmployee allEmployees={allEmployees} changeEmployees={props.changeEmployees} skills={props.skills} />
+                <ViewSkills skills={props.skills} changeSkills={props.changeSkills} />
                 <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
