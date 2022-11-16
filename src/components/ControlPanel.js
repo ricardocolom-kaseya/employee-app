@@ -96,8 +96,6 @@ const AddNewEmployee = (props) => {
 
             // Selecting the last skill dropdown returns an error "Cannot read properties of undefined (reading 'skill_id')"
 
-            console.log("fired")
-
             let employee_id = faker.datatype.uuid();
 
             let yyyy = birthday.getFullYear();
@@ -216,24 +214,19 @@ const ViewSkills = ({ skills, changeSkills }) => {
 
     const toast = useToast();
 
-    const [allSkills, changeAllSkills] = useState([])
+    const [modalSkills, changeModalSkills] = useState([])
 
-    useEffect(() => {
-        console.log("allSkills fired: ")
-        console.log(allSkills)
-    }, [allSkills])
-
-    // This is absolutely necessary as allSkills hook is always loaded as long as the control panel is rendered, and it MUST change whenever skills changes.
+    // This is absolutely necessary as modalSkills hook is always loaded as long as the control panel is rendered, and it MUST change whenever skills changes.
     useEffect(() => {
         console.log("skills was changed")
-        changeAllSkills([...skills])
+        changeModalSkills([...skills])
     }, [skills])
 
     const { isOpen: isViewSkillsOpen, onOpen: onViewSkillsOpen, onClose: onViewSkillsClose } = useDisclosure()
 
     const [index, changeIndex] = useState(0)
 
-    if (allSkills.length > 0 && index >= allSkills.length)
+    if (modalSkills.length > 0 && index >= modalSkills.length)
         changeIndex(index - 1)
 
     const { isOpen: isEditSkillOpen, onOpen: onEditSkillOpen, onClose: onEditSkillClose } = useDisclosure()
@@ -248,12 +241,12 @@ const ViewSkills = ({ skills, changeSkills }) => {
     }
 
     const ShowSkillTable = () => {
-        if (allSkills.length > 0)
+        if (modalSkills.length > 0)
             return (
                 <VStack spacing="0" w="100%" pb="8">
-                    {allSkills.map((skill, i) => {
+                    {modalSkills.map((skill, i) => {
                         return (
-                            <Box onClick={() => { changeIndex(i) }} _hover={{ background: "gray.100", cursor: "pointer", transition: "linear 0.1s" }} key={i} w="100%" border="1px" borderBottom={(i < allSkills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == allSkills.length - 1) ? "md" : "0px"} borderColor="gray.200" p="2">
+                            <Box onClick={() => { changeIndex(i) }} _hover={{ background: "gray.100", cursor: "pointer", transition: "linear 0.1s" }} key={i} w="100%" border="1px" borderBottom={(i < modalSkills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == modalSkills.length - 1) ? "md" : "0px"} borderColor="gray.200" p="2">
                                 <HStack justify="space-between" px="2">
                                     <Text textAlign="left" fontFamily={font1}>{skill.skill_name}</Text>
                                     {ShowSelectedIcon(i)}
@@ -270,7 +263,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
         const cancelRef = React.useRef();
 
         const handleDeleteSkill = () => {
-            let skillID = allSkills[index].skill_id
+            let skillID = modalSkills[index].skill_id
 
             console.log("Attempting to delete skill...")
 
@@ -285,26 +278,21 @@ const ViewSkills = ({ skills, changeSkills }) => {
                     console.log("Skill deleted...")
                     let newAllSkills = [];
 
-                    for (var i = 0; i < allSkills.length; ++i) {
-                        if (allSkills[i].skill_id != skillID)
-                            newAllSkills.push(allSkills[i])
+                    for (var i = 0; i < modalSkills.length; ++i) {
+                        if (modalSkills[i].skill_id != skillID)
+                            newAllSkills.push(modalSkills[i])
                     }
 
-                    changeAllSkills(newAllSkills);
+                    changeModalSkills(newAllSkills);
                 }
             )
         }
 
-        if (allSkills.length > 0) {
-
-            const handleDeleteSelectedPressed = () => {
-                console.log(allSkills[index])
-                onOpen();
-            }
+        if (modalSkills.length > 0) {
 
             return (
                 <>
-                    <Button onClick={handleDeleteSelectedPressed} fontFamily="Inter" colorScheme="red" fontWeight="medium">Delete Selected</Button>
+                    <Button onClick={onOpen} fontFamily="Inter" colorScheme="red" fontWeight="medium">Delete Selected</Button>
                     <AlertDialog
                         isOpen={isOpen}
                         leastDestructiveRef={cancelRef}
@@ -318,7 +306,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
                                     Delete Skill
                                 </AlertDialogHeader>
                                 <AlertDialogBody>
-                                    <Text>Are you sure you would like to delete <strong>{allSkills[index].skill_name}</strong>?</Text>
+                                    <Text>Are you sure you would like to delete <strong>{modalSkills[index].skill_name}</strong>?</Text>
                                 </AlertDialogBody>
                                 <AlertDialogFooter>
                                     <Button ref={cancelRef} onClick={onClose}>
@@ -337,7 +325,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
     }
 
     const ShowEditSkillButton = () => {
-        if (allSkills.length > 0) {
+        if (modalSkills.length > 0) {
             return (
                 <Button my="4" rightIcon={<EditIcon w={4} h={4} />} onClick={onEditSkillOpen}>
                     <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
@@ -350,14 +338,14 @@ const ViewSkills = ({ skills, changeSkills }) => {
 
     const EditSkillModalContent = () => {
 
-        let defaultName = allSkills[index].skill_name
-        let defaultDesc = allSkills[index].skill_desc
+        let defaultName = modalSkills[index].skill_name
+        let defaultDesc = modalSkills[index].skill_desc
 
         const [skillName, changeSkillName] = useState(defaultName)
         const [skillDesc, changeSkillDesc] = useState(defaultDesc)
 
         const handleEditSkill = () => {
-            let skillID = allSkills[index].skill_id
+            let skillID = modalSkills[index].skill_id
 
             console.log("Attempting to edit skill " + skillName)
 
@@ -379,7 +367,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
 
                     let editedSkill = { skill_id: skillID, skill_name: skillName, skill_desc: skillDesc }
 
-                    let newAllSkills = [...allSkills]
+                    let newAllSkills = [...modalSkills]
 
                     for (var i = 0; i < newAllSkills.length; ++i) {
                         if (newAllSkills[i].skill_id == skillID) {
@@ -387,7 +375,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
                         }
                     }
 
-                    changeAllSkills(newAllSkills);
+                    changeModalSkills(newAllSkills);
                 }
             )
         }
@@ -452,9 +440,9 @@ const ViewSkills = ({ skills, changeSkills }) => {
 
                     let newSkill = { skill_id: skillID, skill_name: skillName, skill_desc: skillDesc }
 
-                    let newAllSkills = [...allSkills]
+                    let newAllSkills = [...modalSkills]
                     newAllSkills.push(newSkill)
-                    changeAllSkills(newAllSkills);
+                    changeModalSkills(newAllSkills);
                 }
             )
         }
@@ -498,7 +486,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
                     View/Edit Skills
                 </Text>
             </Button>
-            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={() => { changeSkills(allSkills) }}>
+            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={() => { changeSkills(modalSkills) }}>
                 <ModalOverlay />
                 <ModalContent >
                     <ModalHeader fontFamily="Inter" fontWeight="medium">Skills</ModalHeader>
@@ -563,8 +551,7 @@ export default function ControlPanel(props) {
 
     const addDummyEmployee = () => {
         console.log("Adding dummy employee")
-        console.log(props.skills)
-
+        
         let employee_id = faker.datatype.uuid();
         let f_name = faker.name.firstName();
         let l_name = faker.name.lastName();
