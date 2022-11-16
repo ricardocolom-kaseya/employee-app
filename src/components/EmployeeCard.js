@@ -109,7 +109,6 @@ export default function EmployeeCard(props) {
     }
 
     findSkill();
-
     const EditButton = () => {
 
         const toast = useToast();

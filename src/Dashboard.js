@@ -42,7 +42,7 @@ import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
 import EmployeeCard from './components/EmployeeCard'
 import ControlPanel from './components/ControlPanel'
-import {NameHeader, EmailHeader, DOBHeader, SkillsHeader} from './components/ModalHeaders'
+import { NameHeader, EmailHeader, DOBHeader, SkillsHeader } from './components/ModalHeaders'
 
 const font1 = 'Inter';
 
@@ -58,10 +58,10 @@ const CardView = (props) => {
         return (
             <VStack h="100%">
                 {allEmployees.map((currEmployee, i) => {
-                    if(currEmployee)
-                    return (
-                        <EmployeeCard employee={currEmployee} skills={props.skills} allEmployees={allEmployees} changeEmployees={props.changeEmployees} key={i} />
-                    )
+                    if (currEmployee)
+                        return (
+                            <EmployeeCard employee={currEmployee} skills={props.skills} allEmployees={allEmployees} changeEmployees={props.changeEmployees} key={i} />
+                        )
                 })}
             </VStack>
         )
@@ -80,6 +80,19 @@ export default function Dashboard(props) {
     const [skills, changeSkills] = useState([]);
 
     useEffect(() => {
+
+        fetch("http://localhost:4000/getskills", {
+            headers: {
+                'testHeader': "Test"
+            }
+        }).then(
+            response => response.json()
+        ).then(
+            data => {
+                changeSkills(data)
+            }
+        )
+
         fetch("http://localhost:4000/getemployees", {
             headers: {
                 'testHeader': "Test"
@@ -95,19 +108,14 @@ export default function Dashboard(props) {
                 changeEmployees(toEmployees)
             }
         )
-
-        fetch("http://localhost:4000/getskills", {
-            headers: {
-                'testHeader': "Test"
-            }
-        }).then(
-            response => response.json()
-        ).then(
-            data => {
-                changeSkills(data)
-            }
-        )
     }, [])
+
+    useEffect(() => {
+        if(skills.length == 0)
+            console.log("Dashboard - no skills")
+        else
+            console.log("Dashboard - retrieved " + skills.length + " skills")
+    }, [skills])
 
     const pt = props.navBarHeight + "px"
 

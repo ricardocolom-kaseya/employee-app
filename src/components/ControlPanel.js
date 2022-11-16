@@ -212,17 +212,15 @@ const AddNewEmployee = (props) => {
     )
 }
 
-const ViewSkills = (props) => {
+const ViewSkills = ({skills, changeSkills}) => {
+
+    console.log("ViewSkills() - " + (skills).length)
 
     const toast = useToast();
 
-    let skills = [...props.skills];
+    let defSkills = [...skills];
 
-    const [allSkills, changeAllSkills] = useState(skills)
-
-    useEffect(() => {
-        console.log(allSkills)
-    }, [allSkills])
+    const [allSkills, changeAllSkills] = useState(defSkills)
 
     const [index, changeIndex] = useState(0)
 
@@ -456,7 +454,7 @@ const ViewSkills = (props) => {
                     View/Edit Skills
                 </Text>
             </Button>
-            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={props.changeSkills(allSkills)}>
+            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={changeSkills(allSkills)}>
                 <ModalOverlay />
                 <ModalContent >
                     <ModalHeader fontFamily="Inter" fontWeight="medium">Skills</ModalHeader>
@@ -506,13 +504,54 @@ const ViewSkills = (props) => {
     )
 }
 
+const HandleShowViewSkills = ({skills, changeSkills}) => {
+
+    console.log("HandleShowViewSkills() - " + (skills).length)
+
+    if(skills.length > 0)
+        return (<ViewSkills skills={skills} changeSkills={changeSkills} />)
+}
+
+const ForceReloadSkills = ({ changeSkills }) => {
+
+    const handleForceReloadSkills = () => {
+        console.log("Forcing a skill reload...")
+        fetch("http://localhost:4000/getskills", {
+            headers: {
+                'testHeader': "Test"
+            }
+        }).then(
+            response => response.json()
+        ).then(
+            data => {
+                changeSkills(data)
+            }
+        )
+    }
+
+    return (
+        <Button onClick={handleForceReloadSkills}>
+            Force reload skills
+        </Button>
+    )
+}
+
 
 export default function ControlPanel(props) {
     let allEmployees = [...props.employees];
-    let skills = props.skills;
+    let skills = [];
+
+    if(props.skills)
+        skills = [...props.skills];
+
+    if (skills.length == 0)
+        console.log("ControlPanel - no skills")
+    else
+        console.log("ControlPanel - retrieved " + skills.length + " skills")
 
     const addDummyEmployee = () => {
         console.log("Adding dummy employee")
+        console.log(skills)
 
         let employee_id = faker.datatype.uuid();
         let f_name = faker.name.firstName();
@@ -685,7 +724,7 @@ export default function ControlPanel(props) {
             <Divider w="90%" />
             <VStack align="left" w="100%" px="4">
                 <AddNewEmployee allEmployees={allEmployees} changeEmployees={props.changeEmployees} skills={skills} />
-                <ViewSkills skills={skills} changeSkills={props.changeSkills} />
+                <HandleShowViewSkills skills={skills} changeSkills={props.changeSkills} />
                 <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
@@ -710,6 +749,7 @@ export default function ControlPanel(props) {
                     <VStack w="100%" spacing="0">
                         <DeleteAllEmployeesButton />
                         <DeleteAllSkillsButton />
+                        <ForceReloadSkills changeSkills={props.changeSkills} />
                     </VStack>
                 </VStack>
             </VStack>
