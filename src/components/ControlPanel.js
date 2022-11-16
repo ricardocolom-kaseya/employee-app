@@ -57,20 +57,35 @@ import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from
 
 const font1 = 'Inter';
 
+const today = new Date();
+
+const GetAge = (dob) => {
+    const today = new Date();
+
+    const currAge = (today - dob) / 31536000000;
+    return Math.floor(currAge);
+}
+
 function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
 const AddNewEmployee = (props) => {
+
+    const toast = useToast();
+
+    const id = 'addEmployeeToast'
+
     let allEmployees = props.allEmployees
     let skills = props.skills
+
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const AddNewEmployeeModalContent = () => {
         const [firstName, changeFirstName] = useState("");
         const [lastName, changeLastName] = useState("");
         const [email, changeEmail] = useState("");
-        const [birthday, changeBirthday] = useState(new Date());
+        const [birthday, changeBirthday] = useState(0);
         const [skill, changeSkill] = useState("");
         const [activity, changeActivity] = useState(1);
 
@@ -80,12 +95,12 @@ const AddNewEmployee = (props) => {
         const [birthdayValid, changeBirthdayValid] = useState(false);
 
         const handleChangeFirstName = (theFirstName) => {
-            changeFirstNameValid(validator.isAlpha(theFirstName))
+            changeFirstNameValid(validator.isAlpha(theFirstName.replace(/'/g, "")) && theFirstName.slice(-1) != "'")
             changeFirstName(theFirstName)
         }
 
         const handleChangeLastName = (theLastName) => {
-            changeLastNameValid(validator.isAlpha(theLastName))
+            changeLastNameValid(validator.isAlpha(theLastName.replace(/'/g, "")) && theLastName.slice(-1) != "'")
             changeLastName(theLastName)
         }
 
@@ -96,9 +111,15 @@ const AddNewEmployee = (props) => {
 
         const handleChangeDate = (date) => {
             let theDate = new Date(date);
-            if (!isNaN(theDate)) {
-                console.log(theDate)
-                changeBirthday(theDate)
+            if (!isNaN(theDate) && !(GetAge(theDate) < 18)) {
+                changeBirthdayValid(true)
+                changeBirthday(date)
+            }
+            else
+            {
+                console.log("Date is invalid")
+                changeBirthday(0)
+                changeBirthdayValid(false)
             }
         }
 
@@ -114,52 +135,73 @@ const AddNewEmployee = (props) => {
                 changeActivity(1);
         }
 
+        function allValid() {
+
+            console.log("firstName: " + firstNameValid)
+            console.log("lastName: " + lastNameValid)
+            console.log("email: " + emailValid)
+            console.log("birthday: " + birthdayValid)
+
+
+            return (firstNameValid && lastNameValid && emailValid && birthdayValid)
+        }
+
         const handleAddEmployee = () => {
 
-            // Selecting the last skill dropdown returns an error "Cannot read properties of undefined (reading 'skill_id')"
+            if (allValid()) {
+                // Selecting the last skill dropdown returns an error "Cannot read properties of undefined (reading 'skill_id')"
 
-            let employee_id = faker.datatype.uuid();
+                let employee_id = faker.datatype.uuid();
 
-            let yyyy = birthday.getFullYear();
-            let mm = ((birthday.getMonth() + 1) < 10) ? `0${birthday.getMonth() + 1}` : birthday.getMonth() + 1
-            let dd = (birthday.getDate() < 10) ? `0${birthday.getDate()}` : birthday.getDate()
+                let yyyy = birthday.getFullYear();
+                let mm = ((birthday.getMonth() + 1) < 10) ? `0${birthday.getMonth() + 1}` : birthday.getMonth() + 1
+                let dd = (birthday.getDate() < 10) ? `0${birthday.getDate()}` : birthday.getDate()
 
-            // If either name contains an apostrophe, "double up" the apostrophe
-            let f_name = firstName.replace("'", "''")
-            let l_name = lastName.replace("'", "''")
+                // If either name contains an apostrophe, "double up" the apostrophe
+                let f_name = firstName.replace("'", "''")
+                let l_name = lastName.replace("'", "''")
 
-            f_name = f_name.charAt(0).toUpperCase() + f_name.slice(1);
-            l_name = l_name.charAt(0).toUpperCase() + l_name.slice(1);
+                f_name = f_name.charAt(0).toUpperCase() + f_name.slice(1);
+                l_name = l_name.charAt(0).toUpperCase() + l_name.slice(1);
 
-            console.log("Attempting to add " + f_name + " " + l_name + "...")
+                console.log("Attempting to add " + f_name + " " + l_name + "...")
 
-            fetch("http://localhost:4000/createemployee", {
-                headers: {
-                    'employee_id': employee_id,
-                    'f_name': f_name,
-                    'l_name': l_name,
-                    'yyyy': yyyy,
-                    'mm': mm,
-                    'dd': dd,
-                    'email': email,
-                    'skill_id': skill.skill_id,
-                    'is_active': activity
+                fetch("http://localhost:4000/createemployee", {
+                    headers: {
+                        'employee_id': employee_id,
+                        'f_name': f_name,
+                        'l_name': l_name,
+                        'yyyy': yyyy,
+                        'mm': mm,
+                        'dd': dd,
+                        'email': email,
+                        'skill_id': skill.skill_id,
+                        'is_active': activity
+                    }
+                }).then(
+                    response => response.json()
+                ).then(
+                    data => {
+                        // data variable is SELECT * FROM employees
+                        // change data to be only this employee.
+                        console.log("Added this employee")
+                        let newEmployee = data
+                        newEmployee[0].dob = new Date(birthday);
+                        allEmployees.push(newEmployee[0])
+                        props.changeEmployees(allEmployees);
+                    }
+                )
+
+                toast({ title: "Added an employee!", status: 'success', duration: 3000 })
+
+                onClose();
+            }
+            else {
+                if (!toast.isActive(id)) {
+                    toast({ id, title: "Please fix any empty or invalid fields", status: 'error', duration: 3000 })
                 }
-            }).then(
-                response => response.json()
-            ).then(
-                data => {
-                    // data variable is SELECT * FROM employees
-                    // change data to be only this employee.
-                    console.log("Added this employee")
-                    let newEmployee = data
-                    newEmployee[0].dob = new Date(birthday);
-                    allEmployees.push(newEmployee[0])
-                    props.changeEmployees(allEmployees);
-                }
-            )
+            }
 
-            onClose();
         }
 
         return (
