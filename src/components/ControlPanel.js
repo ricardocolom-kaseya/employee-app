@@ -49,6 +49,8 @@ import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircl
 
 import { faker } from '@faker-js/faker';
 
+import validator from 'validator'
+
 import KaseyaLogoSmall from "../assets/kaseya-logo-small.png"
 
 import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from './ModalHeaders'
@@ -71,6 +73,26 @@ const AddNewEmployee = (props) => {
         const [birthday, changeBirthday] = useState(new Date());
         const [skill, changeSkill] = useState("");
         const [activity, changeActivity] = useState(1);
+
+        const [firstNameValid, changeFirstNameValid] = useState(false);
+        const [lastNameValid, changeLastNameValid] = useState(false);
+        const [emailValid, changeEmailValid] = useState(false);
+        const [birthdayValid, changeBirthdayValid] = useState(false);
+
+        const handleChangeFirstName = (theFirstName) => {
+            changeFirstNameValid(validator.isAlpha(theFirstName))
+            changeFirstName(theFirstName)
+        }
+
+        const handleChangeLastName = (theLastName) => {
+            changeLastNameValid(validator.isAlpha(theLastName))
+            changeLastName(theLastName)
+        }
+
+        const handleChangeEmail = (theEmail) => {
+            changeEmailValid(validator.isEmail(theEmail))
+            changeEmail(theEmail)
+        }
 
         const handleChangeDate = (date) => {
             let theDate = new Date(date);
@@ -147,14 +169,18 @@ const AddNewEmployee = (props) => {
                 <ModalBody>
                     <HStack spacing="8">
                         <VStack spacing="8" w="1200px" h="328px">
-                            <FormControl isRequired>
-                                <NameHeader />
-                                <Input placeholder="First name" onChange={(e) => { changeFirstName(e.target.value) }} mb="2" />
-                                <Input placeholder="Last name" onChange={(e) => { changeLastName(e.target.value) }} />
-                            </FormControl>
-                            <FormControl isRequired mt="8">
+                            <VStack spacing="0" w="100%">
+                                <FormControl isRequired isInvalid={(!firstNameValid && firstName.length > 0)}>
+                                    <NameHeader />
+                                    <Input placeholder="First name" onChange={(e) => { handleChangeFirstName(e.target.value) }} mb="2" />
+                                </FormControl>
+                                <FormControl isRequired isInvalid={(!lastNameValid && lastName.length > 0)}>
+                                    <Input placeholder="Last name" onChange={(e) => { handleChangeLastName(e.target.value) }} />
+                                </FormControl>
+                            </VStack>
+                            <FormControl isRequired mt="8" isInvalid={(!emailValid && email.length > 0)}>
                                 <EmailHeader />
-                                <Input placeholder="Email" onChange={(e) => { changeEmail(e.target.value) }} />
+                                <Input placeholder="Email" type="email" onChange={(e) => { handleChangeEmail(e.target.value) }} />
                             </FormControl>
                             <FormControl isRequired mt="8">
                                 <DOBHeader />
@@ -174,7 +200,7 @@ const AddNewEmployee = (props) => {
                                 <SkillsHeader />
                                 <Select placeholder="Choose a skill" id="skillsDropDown" onChange={handleChangeSkill}>
                                     {skills.map((skill, i) => {
-                                        return (<option key={i} onClick={() => console.log("FIRED")}>{skill.skill_name}</option>)
+                                        return (<option key={i}>{skill.skill_name}</option>)
                                     })}
                                 </Select>
                             </FormControl>
@@ -197,7 +223,7 @@ const AddNewEmployee = (props) => {
 
     return (
         <>
-            <Button variant="outline" my="4" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} onClick={onOpen}>
+            <Button variant="outline" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} onClick={onOpen} w="100%">
                 <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                     Add a new employee
                 </Text>
@@ -482,7 +508,7 @@ const ViewSkills = ({ skills, changeSkills }) => {
 
     return (
         <>
-            <Button variant="outline" my="4" rightIcon={<Icon as={MdBadge} w={6} h={6} />} onClick={onViewSkillsOpen}>
+            <Button variant="outline" my="4" rightIcon={<Icon as={MdBadge} w={6} h={6} />} onClick={onViewSkillsOpen} w="100%">
                 <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                     View/Edit Skills
                 </Text>
@@ -697,8 +723,10 @@ export default function ControlPanel(props) {
             </VStack>
             <Divider w="90%" />
             <VStack align="left" w="100%" px="4">
-                <AddNewEmployee allEmployees={allEmployees} changeEmployees={props.changeEmployees} skills={props.skills} />
-                <ViewSkills skills={props.skills} changeSkills={props.changeSkills} />
+                <VStack w="100%">
+                    <AddNewEmployee allEmployees={allEmployees} changeEmployees={props.changeEmployees} skills={props.skills} />
+                    <ViewSkills skills={props.skills} changeSkills={props.changeSkills} />
+                </VStack>
                 <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
