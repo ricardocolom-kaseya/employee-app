@@ -60,9 +60,9 @@ const RenderEmployeeActivity = (isActive) => {
 const SkillBlock = (skill) => {
     return (
         <VStack align="left" spacing="0" position="relative" pb={(skill.i < skill.totalCount - 1) ? "16" : "8"}>
-            <Text w="100%" textAlign="left" fontSize="xl" fontWeight="bold" fontFamily={font1}>
+            {/* <Text w="100%" textAlign="left" fontSize="xl" fontWeight="bold" fontFamily={font1}>
                 {skill.name}
-            </Text>
+            </Text> */}
             <Text fontFamily={font1}>
                 {skill.desc}
             </Text>

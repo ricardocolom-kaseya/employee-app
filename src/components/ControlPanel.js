@@ -521,37 +521,12 @@ const ViewSkills = ({ skills, changeSkills }) => {
     )
 }
 
-const ForceReloadSkills = ({ changeSkills }) => {
-
-    const handleForceReloadSkills = () => {
-        console.log("Forcing a skill reload...")
-        fetch("http://localhost:4000/getskills", {
-            headers: {
-                'testHeader': "Test"
-            }
-        }).then(
-            response => response.json()
-        ).then(
-            data => {
-                changeSkills(data)
-            }
-        )
-    }
-
-    return (
-        <Button onClick={handleForceReloadSkills}>
-            Force reload skills
-        </Button>
-    )
-}
-
-
 export default function ControlPanel(props) {
     let allEmployees = [...props.employees];
 
     const addDummyEmployee = () => {
         console.log("Adding dummy employee")
-        
+
         let employee_id = faker.datatype.uuid();
         let f_name = faker.name.firstName();
         let l_name = faker.name.lastName();
@@ -748,7 +723,6 @@ export default function ControlPanel(props) {
                     <VStack w="100%" spacing="0">
                         <DeleteAllEmployeesButton />
                         <DeleteAllSkillsButton />
-                        <ForceReloadSkills changeSkills={props.changeSkills} />
                     </VStack>
                 </VStack>
             </VStack>
