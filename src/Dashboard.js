@@ -54,25 +54,45 @@ const CardView = (props) => {
     // Creates a deep copy of all of the employees.
     let allEmployees = [...props.employees];
 
-    const renderEmployees = () => {
+    let leftCol = [];
+    let midCol = [];
+    let rightCol = [];
 
-        return (
+    allEmployees.forEach(element => {
+        if (allEmployees.indexOf(element) % 3 == 0)
+            leftCol.push(element)
+        else if (allEmployees.indexOf(element) % 3 == 1)
+            midCol.push(element)
+        else
+            rightCol.push(element)
+    });
+
+    return (
+        <HStack align="left" p="6px" spacing="0" h="100%">
             <VStack h="100%" spacing="0">
-                {allEmployees.map((currEmployee, i) => {
+                {leftCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
                             <EmployeeCard employee={currEmployee} skills={props.skills} allEmployees={allEmployees} changeEmployees={props.changeEmployees} key={i} />
                         )
                 })}
             </VStack>
-        )
-    }
-
-    return (
-        <HStack align="center" p="6px" spacing="0">
-            {renderEmployees()}
-            {renderEmployees()}
-            {renderEmployees()}
+            <VStack h="100%" spacing="0">
+                {midCol.map((currEmployee, i) => {
+                    if (currEmployee)
+                        return (
+                            <EmployeeCard employee={currEmployee} skills={props.skills} allEmployees={allEmployees} changeEmployees={props.changeEmployees} key={i} />
+                        )
+                })}
+            </VStack>
+            <VStack h="100%" spacing="0">
+                {rightCol.map((currEmployee, i) => {
+                    if (currEmployee)
+                        return (
+                            <EmployeeCard employee={currEmployee} skills={props.skills} allEmployees={allEmployees} changeEmployees={props.changeEmployees} key={i} />
+                        )
+                })}
+            </VStack>
         </HStack>
     )
 }
@@ -122,9 +142,9 @@ export default function Dashboard(props) {
     const cardViewWidth = (width - controlPanelWidth) + "px";
 
     return (
-        <VStack spacing="0" bg="gray.200" h="100%" alignSelf="stretch">
+        <VStack spacing="0" minH="100vh" alignSelf="stretch" bg="gray.200">
             <Navbar navBarHeight={props.navBarHeight} />
-            <VStack align="left" w="100%" spacing="0" pt={pt}>
+            <VStack align="left" w="100%" h="100%" spacing="0" pt={pt}>
                 <CardView employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
             </VStack>
             <Box pos="fixed" w={controlPanelWidth} h="100vh" right="0" pt={pt}>

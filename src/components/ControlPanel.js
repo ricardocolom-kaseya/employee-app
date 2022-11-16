@@ -703,7 +703,7 @@ export default function ControlPanel(props) {
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
                 </Heading>
-                <VStack w="100%" spacing="280px">
+                <VStack w="100%" spacing="220px">
                     <VStack w="100%">
                         <FormControl w="100%">
                             <Input fontFamily="Inter" type="search" placeholder="Search..." />
