@@ -82,16 +82,13 @@ const SkillBlock = (skill) => {
     )
 }
 
-export default function EmployeeCard(props) {
+export default function EmployeeCard({ employee, skills, employees, changeEmployees }) {
 
-    let allEmployees = props.allEmployees;
-    let employee = props.employee;
-    let thisEmployeeIndex = allEmployees.indexOf(employee);
-
-    let skills = props.skills;
+    let toEmployees = employees;
+    let thisEmployeeIndex = toEmployees.indexOf(employee);
 
     function handleChangeEmployees(employees) {
-        props.changeEmployees(employees)
+        changeEmployees(employees)
     }
 
     let skillName = "None";
@@ -109,6 +106,8 @@ export default function EmployeeCard(props) {
     }
 
     findSkill();
+
+
     const EditButton = () => {
 
         const toast = useToast();
@@ -193,7 +192,7 @@ export default function EmployeeCard(props) {
                         employee.skill_id = skill.skill_id
                         employee.is_active = activity;
 
-                        allEmployees[thisEmployeeIndex] = employee;
+                        toEmployees[thisEmployeeIndex] = employee;
 
                         // This forces the dashboard to reload the employees state and immediately show the updated employee card, unfortunately it has the side effect of closing the current modal causing the close transition to appear abrupt.
 
@@ -269,7 +268,7 @@ export default function EmployeeCard(props) {
                     variant="ghost"
                     onClick={onOpen}
                 />
-                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { handleChangeEmployees(allEmployees) }} preserveScrollBarGap>
+                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { handleChangeEmployees(toEmployees) }} preserveScrollBarGap>
                     <ModalOverlay />
                     <EditEmployeeModal />
                 </Modal>
@@ -281,7 +280,7 @@ export default function EmployeeCard(props) {
         const { isOpen, onOpen, onClose } = useDisclosure()
         const cancelRef = React.useRef()
 
-        const handleDeleteEmployee = () => {
+        function handleDeleteEmployee() {
             console.log("Attempting to delete this employee...")
 
             fetch("http://localhost:4000/deleteemployee", {
@@ -293,12 +292,12 @@ export default function EmployeeCard(props) {
             ).then(
                 data => {
                     console.log("Deleted this employee...")
-                    let newAllEmployees = [];
-                    for (var i = 0; i < allEmployees.length; ++i) {
+                    let newToEmployees = [];
+                    for (var i = 0; i < toEmployees.length; ++i) {
                         if (i != thisEmployeeIndex)
-                            newAllEmployees.push(allEmployees[i])
+                        newToEmployees.push(toEmployees[i])
                     }
-                    handleChangeEmployees(newAllEmployees)
+                    toEmployees = [...newToEmployees];
                     onClose();
                 }
             )
@@ -321,6 +320,9 @@ export default function EmployeeCard(props) {
                     isCentered
                     motionPreset="slideInBottom"
                     preserveScrollBarGap
+                    onCloseComplete={() => {
+                        handleChangeEmployees(toEmployees)
+                    }}
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
@@ -348,7 +350,7 @@ export default function EmployeeCard(props) {
     }
 
     return (
-        <Box pos="relative" w="lg" style={{margin: "6px"}} borderRadius="2xl" bg="white">
+        <Box pos="relative" w="lg" style={{ margin: "6px" }} borderRadius="2xl" bg="white">
             <Box pos="absolute" m="2" right="0">
                 <HStack>
                     <EditButton />

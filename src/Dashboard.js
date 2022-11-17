@@ -49,19 +49,16 @@ const font1 = 'Inter';
 
 const today = new Date();
 
-const CardView = (props) => {
-
-    // Creates a deep copy of all of the employees.
-    let allEmployees = [...props.employees];
+const CardView = ({employees, changeEmployees, skills}) => {
 
     let leftCol = [];
     let midCol = [];
     let rightCol = [];
 
-    allEmployees.forEach(element => {
-        if (allEmployees.indexOf(element) % 3 == 0)
+    employees.forEach(element => {
+        if (employees.indexOf(element) % 3 == 0)
             leftCol.push(element)
-        else if (allEmployees.indexOf(element) % 3 == 1)
+        else if (employees.indexOf(element) % 3 == 1)
             midCol.push(element)
         else
             rightCol.push(element)
@@ -73,7 +70,7 @@ const CardView = (props) => {
                 {leftCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
-                            <EmployeeCard employee={currEmployee} skills={props.skills} allEmployees={allEmployees} changeEmployees={props.changeEmployees} key={i} />
+                            <EmployeeCard employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
                         )
                 })}
             </VStack>
@@ -81,7 +78,7 @@ const CardView = (props) => {
                 {midCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
-                            <EmployeeCard employee={currEmployee} skills={props.skills} allEmployees={allEmployees} changeEmployees={props.changeEmployees} key={i} />
+                            <EmployeeCard employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
                         )
                 })}
             </VStack>
@@ -89,7 +86,7 @@ const CardView = (props) => {
                 {rightCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
-                            <EmployeeCard employee={currEmployee} skills={props.skills} allEmployees={allEmployees} changeEmployees={props.changeEmployees} key={i} />
+                            <EmployeeCard employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
                         )
                 })}
             </VStack>
