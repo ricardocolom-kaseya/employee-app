@@ -11,7 +11,7 @@ const navBarHeight = 40;
 
 function App() {
 
-  const [auth, setAuth] = useState(false)
+  const [auth, setAuth] = useState(true)
 
   function showDashboard() {
     if (auth)

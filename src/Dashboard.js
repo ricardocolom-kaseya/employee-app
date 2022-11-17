@@ -128,12 +128,12 @@ export default function Dashboard({ navBarHeight }) {
     let width = "" + (windowSize.innerWidth - controlPanelWidth - 20) + "px"
 
     return (
-        <VStack align="left" spacing="0" minH="100vh" maxW="100vw" bg={secondary}>
-            <Navbar navBarHeight={navBarHeight} />
+        <VStack align="left" spacing="0" minH="100vh" w={width} bg={secondary}>
+            <Navbar navBarHeight={navBarHeight} width={width}/>
             <HStack w={width} h="100%" spacing="0" pt={navBarHeight + "px"}>
                 <CardView windowSize={windowSize} employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
             </HStack>
-            <Box pos="fixed" w={controlPanelWidth + "px"} h="100vh" right="0" pt={navBarHeight + "px"}>
+            <Box pos="fixed" w={controlPanelWidth + "px"} h="100vh" right="0">
                 <ControlPanel employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
             </Box>
         </VStack>

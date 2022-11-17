@@ -233,7 +233,7 @@ export default function ControlPanel({ employees, changeEmployees, skills, chang
     const secondary = useColorModeValue('gray.200', 'gray.700')
 
     return (
-        <VStack w="100%" h="100%" shadow="md" bg={primary}>
+        <VStack w="100%" h="100%" bg={primary}>
             <HStack w="100%" p="2" justify="right">
                 <HStack>
                     <SunIcon />
