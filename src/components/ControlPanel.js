@@ -220,7 +220,7 @@ export default function ControlPanel({ employees, changeEmployees, skills, chang
     }
 
     return (
-        <VStack w="100%" h="100%" bg="white">
+        <VStack w="100%" h="100%" bg="white" shadow="md">
             <HStack w="100%" p="2" justify="right">
                 <HStack>
                     <SunIcon />

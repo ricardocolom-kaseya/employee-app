@@ -346,7 +346,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
     }
 
     return (
-        <Box pos="relative" w="lg" style={{ margin: "6px" }} borderRadius="2xl" bg="white">
+        <Box pos="relative" w="lg" style={{ margin: "6px" }} shadow="md" borderRadius="2xl" bg="white">
             <Box pos="absolute" m="2" right="0">
                 <HStack>
                     <EditButton />

@@ -1,15 +1,31 @@
+import React, { useState, useEffect } from 'react'
+
 import logo from './logo.svg';
 import './App.css';
 import { ChakraProvider } from '@chakra-ui/react';
-import Dashboard from './Dashboard';
-import Navbar from './Navbar';
 
-const navBarHeight = 32;
+import Home from './Home';
+import Dashboard from './Dashboard';
+
+const navBarHeight = 40;
 
 function App() {
+
+  const [auth, setAuth] = useState(false)
+
+  function showDashboard() {
+    if (auth)
+      return (
+        <Dashboard navBarHeight={navBarHeight} />)
+    else
+      return (
+        <Home />
+      )
+  }
+
   return (
     <ChakraProvider>
-      <Dashboard navBarHeight={navBarHeight}/>
+      {showDashboard()}
     </ChakraProvider>
   );
 }
