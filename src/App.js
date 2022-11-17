@@ -11,7 +11,7 @@ const navBarHeight = 40;
 
 function App() {
 
-  const [auth, setAuth] = useState(true)
+  const [auth, setAuth] = useState(false)
 
   function showDashboard() {
     if (auth)
@@ -19,7 +19,7 @@ function App() {
         <Dashboard navBarHeight={navBarHeight} />)
     else
       return (
-        <Home />
+        <Home auth={auth} setAuth={setAuth}/>
       )
   }
 
