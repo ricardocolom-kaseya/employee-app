@@ -39,6 +39,7 @@ export const DOBHeader = () => {
                 <Icon as={MdCake} boxSize={4} position="absolute" top="3px" />
                 <Box w="1" />
                 <Text fontWeight="medium" fontFamily="Inter">Birthday</Text>
+                <Text pt="1" pl="8" w="100%" textAlign="center" fontFamily="Inter" fontStyle="italic">Must be over 18</Text>
             </HStack>
             <FormLabel position="absolute" left="83px"></FormLabel>
             <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
