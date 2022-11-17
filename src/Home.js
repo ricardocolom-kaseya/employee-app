@@ -12,22 +12,46 @@ import { MdCake, MdWork, MdOutlineDelete, MdSave, MdLock, MdPerson, MdEmail, MdA
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 import { ArrowForwardIcon, LockIcon, ViewIcon, ViewOffIcon, SunIcon, MoonIcon } from '@chakra-ui/icons'
 
-export default function Home() {
+import md5 from 'md5'
 
-    const [showPassword, changeShowPassword] = useState(false)
+export default function Home({setAuth}) {
+
+    const [userName, changeUserName] = useState("")
+
+    const [userPassword, changeUserPassword] = useState("")
+
+    const [hidePassword, changeHidePassword] = useState(false)
 
     const [submittedLogin, changeSubmittedLogin] = useState(false)
 
     const { colorMode, toggleColorMode } = useColorMode()
 
-    function handleChangeShowPassword() {
-        changeShowPassword(!showPassword)
+    const handleChangeSubmittedLogin = () => {
+        console.log("Button clicked")
+        console.log(userPassword)
+        setTimeout(function () { authenticateUser() }, 1000);
     }
 
-    const handleChangeSubmittedLogin = () => {
-        console.log("GO")
-        changeSubmittedLogin(true);
-        setTimeout(function () { changeSubmittedLogin(false) }, 1000);
+    const authenticateUser = () => {
+        console.log("Attempting to authenticate user...")
+
+         // Authenticate the user
+         fetch("http://localhost:4000/authenticate", {
+            method: 'POST',
+            headers: {
+                'username': userName,
+                'userpassword': userPassword
+            }
+        }).then(
+            response => response.json()
+        ).then(
+            data => {
+                console.log(data)
+
+                if(data == "valid")
+                    setAuth(true);
+            }
+        )
     }
 
     const primary = useColorModeValue('white', 'gray.700')
@@ -74,15 +98,15 @@ export default function Home() {
                     <VStack w="100%" justify="center" spacing="8" px="16" py="8">
                         <FormControl>
                             <InputGroup>
-                                <Input placeholder='Username' variant="flushed" />
+                                <Input placeholder='Username' variant="flushed" type="text" onChange={(e) => {changeUserName(e.target.value)}}/>
                                 <InputLeftElement children={<Icon as={MdPerson} color="gray.300" />} />
                             </InputGroup>
                         </FormControl>
                         <FormControl>
                             <InputGroup>
-                                <Input placeholder='Password' variant="flushed" type={(showPassword) ? "password" : "text"} />
+                                <Input placeholder='Password' variant="flushed" type={(hidePassword) ? "text" : "password"} onChange={(e) => {changeUserPassword(md5(e.target.value))}}/>
                                 <InputLeftElement children={<LockIcon color="gray.300" />} />
-                                <InputRightElement children={<IconButton icon={(showPassword) ? <ViewOffIcon w={4} h={4} /> : <ViewIcon w={4} h={4} />} size="sm" variant="link" />} onClick={handleChangeShowPassword} />
+                                <InputRightElement children={<IconButton icon={(!hidePassword) ? <ViewOffIcon w={4} h={4} /> : <ViewIcon w={4} h={4} />} size="sm" variant="link" />} onClick={() => {changeHidePassword(!hidePassword)}} />
                             </InputGroup>
                         </FormControl>
                         <LightMode>
