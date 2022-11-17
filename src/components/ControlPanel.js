@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast, useColorMode, useColorModeValue, LightMode } from '@chakra-ui/react'
 import {
     Menu,
     MenuButton,
@@ -52,6 +52,8 @@ function randomInt(max) {
 }
 
 export default function ControlPanel({ employees, changeEmployees, skills, changeSkills }) {
+
+    const { colorMode, toggleColorMode } = useColorMode()
 
     let toEmployees = employees
     let toSkills = skills
@@ -124,11 +126,13 @@ export default function ControlPanel({ employees, changeEmployees, skills, chang
 
         return (
             <>
-                <Button colorScheme="red" my="2" onClick={onOpen} w="100%">
-                    <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
-                        Delete All Employees
-                    </Text>
-                </Button>
+                <LightMode>
+                    <Button colorScheme="red" my="2" onClick={onOpen} w="100%">
+                        <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
+                            Delete All Employees
+                        </Text>
+                    </Button>
+                </LightMode>
                 <AlertDialog
                     isOpen={isOpen}
                     leastDestructiveRef={cancelRef}
@@ -150,9 +154,11 @@ export default function ControlPanel({ employees, changeEmployees, skills, chang
                                 <Button ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
-                                <Button colorScheme='red' onClick={handleDeleteAllEmployees} ml={3}>
-                                    Delete All
-                                </Button>
+                                <LightMode>
+                                    <Button colorScheme='red' onClick={handleDeleteAllEmployees} ml={3}>
+                                        Delete All
+                                    </Button>
+                                </LightMode>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialogOverlay>
@@ -182,11 +188,13 @@ export default function ControlPanel({ employees, changeEmployees, skills, chang
 
         return (
             <>
-                <Button colorScheme="red" onClick={onOpen} w="100%" my="2">
-                    <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
-                        Delete All Skills
-                    </Text>
-                </Button>
+                <LightMode>
+                    <Button colorScheme="red" onClick={onOpen} w="100%" my="2">
+                        <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
+                            Delete All Skills
+                        </Text>
+                    </Button>
+                </LightMode>
                 <AlertDialog
                     isOpen={isOpen}
                     leastDestructiveRef={cancelRef}
@@ -208,9 +216,11 @@ export default function ControlPanel({ employees, changeEmployees, skills, chang
                                 <Button ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
-                                <Button colorScheme='red' onClick={handleDeleteAllSkills} ml={3}>
-                                    Delete All
-                                </Button>
+                                <LightMode>
+                                    <Button colorScheme='red' onClick={handleDeleteAllSkills} ml={3}>
+                                        Delete All
+                                    </Button>
+                                </LightMode>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialogOverlay>
@@ -219,12 +229,22 @@ export default function ControlPanel({ employees, changeEmployees, skills, chang
         )
     }
 
+    const primary = useColorModeValue('white', 'gray.800')
+    const secondary = useColorModeValue('gray.200', 'gray.700')
+
     return (
-        <VStack w="100%" h="100%" bg="white" shadow="md">
+        <VStack w="100%" h="100%" shadow="md" bg={primary}>
             <HStack w="100%" p="2" justify="right">
                 <HStack>
                     <SunIcon />
-                    <Switch colorScheme="gray" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'gray.500' } }} />
+                    <LightMode>
+                        <Switch
+                            colorScheme="blackAlpha"
+                            defaultValue={colorMode}
+                            onChange={() => { setTimeout(function () { toggleColorMode() }, 100) }}
+                            sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'blackAlpha.500' } }}
+                            border="1px" borderRadius="2xl" borderColor="whiteAlpha.500" />
+                    </LightMode>
                     <MoonIcon />
                 </HStack>
             </HStack>

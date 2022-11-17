@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, InputRightElement, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Divider, useDisclosure, Select, SimpleGrid, Flex, InputGroup, InputLeftElement } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, InputRightElement, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Divider, useDisclosure, Select, SimpleGrid, Flex, InputGroup, InputLeftElement, useColorMode, useColorModeValue } from '@chakra-ui/react'
 import {
     FormControl,
     FormLabel,
@@ -18,6 +18,8 @@ export default function Home() {
 
     const [submittedLogin, changeSubmittedLogin] = useState(false)
 
+    const { colorMode, toggleColorMode } = useColorMode()
+
     function handleChangeShowPassword() {
         changeShowPassword(!showPassword)
     }
@@ -28,12 +30,16 @@ export default function Home() {
         setTimeout(function () { changeSubmittedLogin(false) }, 1000);
     }
 
+    const primary = useColorModeValue('white', 'black')
+    const secondary = useColorModeValue('gray.200', 'gray.700')
+
     return (
-        <VStack w="100vw" h="100vh" justify="center" bg="gray.200">
+        <VStack w="100vw" h="100vh" justify="center">
+            <Button onClick={toggleColorMode}>Test</Button>
             <VStack pb="32">
                 <Text fontFamily="Inter" fontSize="4xl" fontWeight="medium">Employee Lookup</Text>
             </VStack>
-            <VStack w="lg" bg="white" borderRadius="2xl" spacing="16" py="8">
+            <VStack w="lg" bg={secondary} borderRadius="2xl" spacing="16" py="8">
                 <VStack w="100%" spacing="4">
                     <VStack spacing="0" pos="relative">
                         <Text fontFamily="Inter" fontSize="xl" fontWeight="medium">Login</Text>

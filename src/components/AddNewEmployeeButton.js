@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, LightMode, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast } from '@chakra-ui/react'
 import {
     Menu,
     MenuButton,
@@ -59,7 +59,7 @@ function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-export default function AddNewEmployeeButton({employees, changeEmployees, skills}) {
+export default function AddNewEmployeeButton({ employees, changeEmployees, skills }) {
 
     const toast = useToast();
 
@@ -223,7 +223,9 @@ export default function AddNewEmployeeButton({employees, changeEmployees, skills
                                 <ActivityHeader />
                                 <HStack w="100%" justify="center">
                                     <Text>Inactive</Text>
-                                    <Switch isChecked={activity} onChange={handleChangeActivity} size="lg" colorScheme="green" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'red.500' } }} />
+                                    <LightMode>
+                                        <Switch isChecked={activity} onChange={handleChangeActivity} size="lg" colorScheme="green" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'red.500' } }} />
+                                    </LightMode>
                                     <Text>Active</Text>
                                 </HStack>
                             </VStack>
@@ -241,11 +243,13 @@ export default function AddNewEmployeeButton({employees, changeEmployees, skills
                 <ModalFooter>
                     <HStack>
                         <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                        <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />} onClick={handleAddEmployee}>
-                            <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
-                                Add
-                            </Text>
-                        </Button>
+                        <LightMode>
+                            <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} w={4} h={4} />} onClick={handleAddEmployee}>
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                    Add
+                                </Text>
+                            </Button>
+                        </LightMode>
                     </HStack>
                 </ModalFooter>
             </ModalContent>

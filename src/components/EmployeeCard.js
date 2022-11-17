@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useToast, Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid } from '@chakra-ui/react'
+import { useToast, Avatar, Box, Text, HStack, VStack, LightMode, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, useColorModeValue } from '@chakra-ui/react'
 import {
     Modal,
     ModalOverlay,
@@ -225,7 +225,9 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                                     <ActivityHeader />
                                     <HStack w="100%" justify="center">
                                         <Text>Inactive</Text>
-                                        <Switch isChecked={activity} onChange={handleChangeActivity} size="lg" colorScheme="green" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'red.500' } }} />
+                                        <LightMode>
+                                            <Switch isChecked={activity} onChange={handleChangeActivity} size="lg" colorScheme="green" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'red.500' } }} />
+                                        </LightMode>
                                         <Text>Active</Text>
                                     </HStack>
                                 </VStack>
@@ -260,7 +262,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     colorScheme='gray'
                     aria-label='Edit Employee'
                     size="sm"
-                    icon={<EditIcon fontSize="12pt" color="black" />}
+                    icon={<EditIcon fontSize="12pt" />}
                     variant="ghost"
                     onClick={onOpen}
                 />
@@ -291,7 +293,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     let newToEmployees = [];
                     for (var i = 0; i < toEmployees.length; ++i) {
                         if (i != thisEmployeeIndex)
-                        newToEmployees.push(toEmployees[i])
+                            newToEmployees.push(toEmployees[i])
                     }
                     toEmployees = [...newToEmployees];
                     onClose();
@@ -305,7 +307,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     colorScheme='red'
                     aria-label='Delete Employee'
                     size="sm"
-                    icon={<DeleteIcon fontSize="12pt" color="black" />}
+                    icon={<DeleteIcon fontSize="12pt" color="red.500" />}
                     variant="ghost"
                     onClick={onOpen}
                 />
@@ -334,9 +336,11 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                                 <Button ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
-                                <Button colorScheme='red' onClick={handleDeleteEmployee} ml={3}>
-                                    Delete
-                                </Button>
+                                <LightMode>
+                                    <Button colorScheme='red' onClick={handleDeleteEmployee} ml={3}>
+                                        Delete
+                                    </Button>
+                                </LightMode>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialogOverlay>
@@ -345,8 +349,12 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
         )
     }
 
+    const primary = useColorModeValue('white', 'gray.800')
+    const secondary = useColorModeValue('gray.200', 'gray.700')
+    const textPrimary = useColorModeValue('gray.800', 'gray.300')
+
     return (
-        <Box pos="relative" w="lg" style={{ margin: "6px" }} shadow="md" borderRadius="2xl" bg="white">
+        <Box pos="relative" w="lg" style={{ margin: "6px" }} shadow="md" borderRadius="2xl" bg={primary}>
             <Box pos="absolute" m="2" right="0">
                 <HStack>
                     <EditButton />
@@ -375,7 +383,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     </VStack>
                 </HStack>
                 <VStack spacing="0" align="left" pos="relative">
-                    <Text fontSize="xs" pos="absolute" bg="white" px="1" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
+                    <Text fontSize="xs" pos="absolute" bg={primary} px="1" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
                         SKILLS
                     </Text>
                     <Accordion allowToggle pt="3" pb="8" w="100%">
@@ -395,7 +403,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
             </VStack>
             <HStack pos="absolute" w="100%" bottom="0" px="4" py="2">
                 <Tooltip hasArrow label={(employee.dob).toLocaleDateString()} borderRadius="lg">
-                    <Text color="gray.600" fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1} w="122px">
+                    <Text fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1} w="122px">
                         {GetAge(employee.dob)} years old
                     </Text>
                 </Tooltip>

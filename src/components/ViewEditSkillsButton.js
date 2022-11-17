@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, useColorModeValue, Textarea, useToast, LightMode } from '@chakra-ui/react'
 import {
     FormControl,
     FormLabel,
@@ -51,6 +51,13 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
     const [modalSkills, changeModalSkills] = useState([])
 
+    const primary = useColorModeValue('white', 'gray.800')
+    const secondary = useColorModeValue('gray.200', 'gray.700')
+    const borderColorVal = useColorModeValue('gray.200', 'gray.600')
+    const hoverColorVal = useColorModeValue('red.100', 'gray.100')
+    const tertiary = useColorModeValue('gray.300', 'gray.600')
+    const textPrimary = useColorModeValue('gray.800', 'gray.300')
+
     // This is absolutely necessary as modalSkills hook is always loaded as long as the control panel is rendered, and it MUST change whenever skills changes.
     useEffect(() => {
         console.log("skills was changed")
@@ -71,17 +78,24 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
     const ShowSelectedIcon = (i) => {
         if (i == index)
             return (
-                <CheckIcon color="gray.700" />
+                <CheckIcon color={primary == 'white' ? "gray.200" : 'white'} />
             )
     }
 
     const ShowSkillTable = () => {
         if (modalSkills.length > 0)
             return (
-                <VStack spacing="0" w="100%" pb="8">
+                <VStack spacing="0" w="100%" pb="6">
                     {modalSkills.map((skill, i) => {
                         return (
-                            <Box onClick={() => { changeIndex(i) }} _hover={{ background: "gray.100", cursor: "pointer", transition: "linear 0.1s" }} key={i} w="100%" border="1px" borderBottom={(i < modalSkills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == modalSkills.length - 1) ? "md" : "0px"} borderColor="gray.200" p="2">
+                            <Box onClick={() => { changeIndex(i) }}
+                                _hover={primary == 'white' ? { background: "gray.100", cursor: "pointer", transition: "linear 0.1s" } : { background: "whiteAlpha.200", cursor: "pointer", transition: "linear 0.1s" }}
+                                key={i}
+                                w="100%"
+                                border="1px"
+                                borderBottom={(i < modalSkills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == modalSkills.length - 1) ? "md" : "0px"}
+                                borderColor={borderColorVal}
+                                p="2">
                                 <HStack justify="space-between" px="2">
                                     <Text textAlign="left" fontFamily={font1}>{skill.skill_name}</Text>
                                     {ShowSelectedIcon(i)}
@@ -127,7 +141,9 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
             return (
                 <>
-                    <Button onClick={onOpen} fontFamily="Inter" colorScheme="red" fontWeight="medium">Delete Selected</Button>
+                    <LightMode>
+                        <Button onClick={onOpen} fontFamily="Inter" colorScheme="red" fontWeight="medium">Delete Selected</Button>
+                    </LightMode>
                     <AlertDialog
                         isOpen={isOpen}
                         leastDestructiveRef={cancelRef}
@@ -148,9 +164,11 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                                     <Button ref={cancelRef} onClick={onClose}>
                                         Cancel
                                     </Button>
-                                    <Button colorScheme='red' onClick={handleDeleteSkill} ml={3}>
-                                        Delete
-                                    </Button>
+                                    <LightMode>
+                                        <Button colorScheme='red' onClick={handleDeleteSkill} ml={3}>
+                                            Delete
+                                        </Button>
+                                    </LightMode>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialogOverlay>
@@ -304,11 +322,13 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                 <ModalFooter>
                     <HStack>
                         <Button onClick={onNewSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
-                        <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} color="white" w={4} h={4} />} onClick={handleAddSkill}>
-                            <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
-                                Add
-                            </Text>
-                        </Button>
+                        <LightMode>
+                            <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} w={4} h={4} />} onClick={handleAddSkill}>
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                    Add
+                                </Text>
+                            </Button>
+                        </LightMode>
                     </HStack>
                 </ModalFooter>
             </ModalContent>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, SimpleGrid, Flex } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, useColorModeValue } from '@chakra-ui/react'
 import {
     FormControl,
     FormLabel,
@@ -71,6 +71,10 @@ export default function Dashboard({ navBarHeight }) {
     const [employees, changeEmployees] = useState([]);
     const [skills, changeSkills] = useState([]);
 
+    const primary = useColorModeValue('white', 'gray.800')
+    const secondary = useColorModeValue('gray.200', 'gray.700')
+    const textPrimary = useColorModeValue('gray.800', 'gray.300')
+
     function getWindowSize() {
         const { innerWidth, innerHeight } = window;
         return { innerWidth, innerHeight }
@@ -124,7 +128,7 @@ export default function Dashboard({ navBarHeight }) {
     let width = "" + (windowSize.innerWidth - controlPanelWidth - 20) + "px"
 
     return (
-        <VStack align="left" spacing="0" minH="100vh" maxW="100vw" bg="gray.200">
+        <VStack align="left" spacing="0" minH="100vh" maxW="100vw" bg={secondary}>
             <Navbar navBarHeight={navBarHeight} />
             <HStack w={width} h="100%" spacing="0" pt={navBarHeight + "px"}>
                 <CardView windowSize={windowSize} employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
