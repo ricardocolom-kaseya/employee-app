@@ -51,7 +51,10 @@ function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-export default function ControlPanel({employees, changeEmployees, skills, changeSkills}) {
+export default function ControlPanel({ employees, changeEmployees, skills, changeSkills }) {
+
+    let toEmployees = employees
+    let toSkills = skills
 
     const addDummyEmployee = () => {
         console.log("Adding dummy employee")
@@ -111,11 +114,12 @@ export default function ControlPanel({employees, changeEmployees, skills, change
             fetch("http://localhost:4000/deleteallemployees").then(
                 response => response.json()
             ).then(
-                data => { console.log(data) }
+                data => {
+                    console.log(data);
+                    toEmployees = [];
+                    onClose();
+                }
             )
-
-            changeEmployees([])
-            onClose();
         }
 
         return (
@@ -132,6 +136,7 @@ export default function ControlPanel({employees, changeEmployees, skills, change
                     isCentered
                     motionPreset="slideInBottom"
                     preserveScrollBarGap
+                    onCloseComplete={() => { changeEmployees(toEmployees) }}
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
@@ -167,11 +172,12 @@ export default function ControlPanel({employees, changeEmployees, skills, change
             fetch("http://localhost:4000/deleteallskills").then(
                 response => response.json()
             ).then(
-                data => { console.log(data) }
+                data => {
+                    console.log(data);
+                    toSkills = [];
+                    onClose();
+                }
             )
-
-            changeSkills([])
-            onClose();
         }
 
         return (
@@ -188,6 +194,7 @@ export default function ControlPanel({employees, changeEmployees, skills, change
                     isCentered
                     motionPreset="slideInBottom"
                     preserveScrollBarGap
+                    onCloseComplete={() => { changeSkills(toSkills) }}
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>

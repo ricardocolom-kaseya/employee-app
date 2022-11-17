@@ -87,10 +87,6 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
     let toEmployees = employees;
     let thisEmployeeIndex = toEmployees.indexOf(employee);
 
-    function handleChangeEmployees(employees) {
-        changeEmployees(employees)
-    }
-
     let skillName = "None";
     let skillDesc = "empty desc"
 
@@ -268,7 +264,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     variant="ghost"
                     onClick={onOpen}
                 />
-                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { handleChangeEmployees(toEmployees) }} preserveScrollBarGap>
+                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { changeEmployees(toEmployees) }} preserveScrollBarGap>
                     <ModalOverlay />
                     <EditEmployeeModal />
                 </Modal>
@@ -321,7 +317,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     motionPreset="slideInBottom"
                     preserveScrollBarGap
                     onCloseComplete={() => {
-                        handleChangeEmployees(toEmployees)
+                        changeEmployees(toEmployees)
                     }}
                 >
                     <AlertDialogOverlay>

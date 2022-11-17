@@ -136,8 +136,6 @@ export default function Dashboard(props) {
 
     const width = window.innerWidth;
 
-    const cardViewWidth = (width - controlPanelWidth) + "px";
-
     return (
         <VStack spacing="0" minH="100vh" alignSelf="stretch" bg="gray.200">
             <Navbar navBarHeight={props.navBarHeight} />
