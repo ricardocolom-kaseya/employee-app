@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useToast, Avatar, Box, Text, HStack, VStack, LightMode, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, CloseButton, useDisclosure, Select, useColorModeValue } from '@chakra-ui/react'
 import {
     Modal,
@@ -31,10 +31,12 @@ import {
     FormHelperText,
 } from '@chakra-ui/react'
 
-import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon, CheckCircleIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon, WarningIcon, MoonIcon, ChevronDownIcon, CheckIcon, CheckCircleIcon } from '@chakra-ui/icons'
 import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
 import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from './ModalHeaders'
+
+import validator from 'validator'
 
 const font1 = 'Inter';
 
@@ -108,6 +110,8 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
         const toast = useToast();
 
+        const id = 'addEmployeeToast'
+
         const { isOpen, onOpen, onClose } = useDisclosure()
 
         const EditEmployeeModal = () => {
@@ -121,23 +125,63 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
             const [firstName, changeFirstName] = useState(employee.f_name);
             const [lastName, changeLastName] = useState(employee.l_name);
             const [email, changeEmail] = useState(employee.email);
-            const [birthday, changeBirthday] = useState(employee.dob);
+            const [birthday, changeBirthday] = useState((employee.dob).getTime());
             const [skill, changeSkill] = useState(currSkill);
             const [activity, changeActivity] = useState(employee.is_active);
 
-            const formatDate = (date) => {
-                let dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+            const [firstNameValid, changeFirstNameValid] = useState(true);
+            const [lastNameValid, changeLastNameValid] = useState(true);
+            const [emailValid, changeEmailValid] = useState(true);
+            const [birthdayValid, changeBirthdayValid] = useState(true);
 
-                return dateString;
+            const handleChangeFirstName = (theFirstName) => {
+
+                changeFirstNameValid(validator.isAlpha(theFirstName.replace(/'/g, "")) && theFirstName.slice(-1) != "'")
+                changeFirstName(theFirstName)
+            }
+
+            const handleChangeLastName = (theLastName) => {
+                changeLastNameValid(validator.isAlpha(theLastName.replace(/'/g, "")) && theLastName.slice(-1) != "'")
+                changeLastName(theLastName)
+            }
+
+            const handleChangeEmail = (theEmail) => {
+                changeEmailValid(validator.isEmail(theEmail))
+                changeEmail(theEmail)
             }
 
             const handleChangeDate = (date) => {
+
+                console.log("go")
+
                 let theDate = new Date(date);
-                if (!isNaN(theDate)) {
-                    console.log(theDate)
-                    changeBirthday(theDate)
+                if (!isNaN(theDate) && !(GetAge(theDate) < 18)) {
+                    changeBirthdayValid(true)
+                    changeBirthday(date)
+                }
+                else {
+                    //console.log("Date is invalid")
+                    changeBirthday(0)
+                    changeBirthdayValid(false)
                 }
             }
+
+            function formatDate(date) {
+                let out = "";
+                let toDate = new Date(date)
+                let yyyy = toDate.getFullYear();
+                let mm = ((toDate.getMonth() + 1) < 10) ? `0${toDate.getMonth() + 1}` : toDate.getMonth() + 1
+                let dd = (toDate.getDate() < 10) ? `0${toDate.getDate()}` : toDate.getDate()
+
+                out = yyyy + "-" + mm + "-" + dd
+
+                return out;
+            }
+
+            // useEffect(() => {
+            //     const toDate = new Date(birthday)
+            //     console.log(birthday)
+            // console.log(toDate)}, [birthday])
 
             const handleChangeSkill = () => {
                 var index = document.getElementById("skillsDropDown").selectedIndex;
@@ -151,67 +195,101 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     changeActivity(1);
             }
 
+            function allValid() {
+
+                console.log("firstName: " + firstNameValid)
+                console.log("lastName: " + lastNameValid)
+                console.log("email: " + emailValid)
+                console.log("birthday: " + birthdayValid)
+
+
+                return (firstNameValid && lastNameValid && emailValid && birthdayValid)
+            }
+
             const handleSaveEmployee = () => {
-                // Find this employee by employee_id in the database and change their information.
 
-                let yyyy = birthday.getFullYear();
-                let mm = ((birthday.getMonth() + 1) < 10) ? `0${birthday.getMonth() + 1}` : birthday.getMonth() + 1
-                let dd = (birthday.getDate() < 10) ? `0${birthday.getDate()}` : birthday.getDate()
+                if (allValid()) {
+                    // Find this employee by employee_id in the database and change their information.
 
-                // If either name contains an apostrophe, "double up" the apostrophe
-                let f_name = firstName.replace("'", "''")
-                let l_name = lastName.replace("'", "''")
+                    const toDate = new Date(birthday)
 
-                console.log("Attempting to save " + f_name + " " + l_name + "...")
+                    let yyyy = toDate.getFullYear();
+                    let mm = ((toDate.getMonth() + 1) < 10) ? `0${toDate.getMonth() + 1}` : toDate.getMonth() + 1
+                    let dd = (toDate.getDate() < 10) ? `0${toDate.getDate()}` : toDate.getDate()
 
-                const putURL = "http://localhost:4000/employees/" + employee.employee_id;
+                    // If either name contains an apostrophe, "double up" the apostrophe
+                    let f_name = firstName.replace("'", "''")
+                    let l_name = lastName.replace("'", "''")
 
-                fetch(putURL, {
-                    method: "PUT",
-                    headers: {
-                        'employee_id': employee.employee_id,
-                        'f_name': f_name,
-                        'l_name': l_name,
-                        'yyyy': yyyy,
-                        'mm': mm,
-                        'dd': dd,
-                        'email': email,
-                        'skill_id': skill.skill_id,
-                        'is_active': activity
-                    }
-                }).then(
-                    response => response.json()
-                ).then(
-                    data => {
-                        console.log("Saved this employee...")
-                        employee.f_name = f_name;
-                        employee.l_name = l_name;
-                        employee.dob = birthday;
-                        employee.email = email;
-                        employee.skill_id = skill.skill_id
-                        employee.is_active = activity;
+                    console.log("Attempting to save " + f_name + " " + l_name + "...")
 
-                        toEmployees[thisEmployeeIndex] = employee;
+                    const putURL = "http://localhost:4000/employees/" + employee.employee_id;
 
-                        // This forces the dashboard to reload the employees state and immediately show the updated employee card, unfortunately it has the side effect of closing the current modal causing the close transition to appear abrupt.
+                    fetch(putURL, {
+                        method: "PUT",
+                        headers: {
+                            'employee_id': employee.employee_id,
+                            'f_name': f_name,
+                            'l_name': l_name,
+                            'yyyy': yyyy,
+                            'mm': mm,
+                            'dd': dd,
+                            'email': email,
+                            'skill_id': skill.skill_id,
+                            'is_active': activity
+                        }
+                    }).then(
+                        response => response.json()
+                    ).then(
+                        data => {
+                            console.log("Saved this employee...")
+                            employee.f_name = f_name;
+                            employee.l_name = l_name;
+                            employee.dob = new Date(birthday);
+                            employee.email = email;
+                            employee.skill_id = skill.skill_id
+                            employee.is_active = activity;
 
-                        onClose();
+                            toEmployees[thisEmployeeIndex] = employee;
 
+                            // This forces the dashboard to reload the employees state and immediately show the updated employee card, unfortunately it has the side effect of closing the current modal causing the close transition to appear abrupt.
+
+                            onClose();
+
+                            toast({
+                                render: () => (
+                                    <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                                        <HStack position="relative" align="center" minH="26px">
+                                            <CheckCircleIcon w={5} h={5} m="0.5" />
+                                            <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                                Saved
+                                            </Text>
+                                            <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                        </HStack>
+                                    </Box>
+                                ), status: 'error', duration: 3000
+                            })
+                        }
+                    )
+                }
+                else {
+                    if (!toast.isActive(id)) {
                         toast({
+                            id,
                             render: () => (
-                                 <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
-                                     <HStack position="relative" align="center" minH="26px">
-                                         <CheckCircleIcon w={5} h={5} m="0.5"/>
-                                         <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
-                                             Saved
-                                         </Text>
-                                         <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()}/>
-                                     </HStack>
-                                 </Box>
-                             ), status: 'error', duration: 3000
-                         })
+                                <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                                    <HStack position="relative" align="center" minH="26px">
+                                        <WarningIcon w={5} h={5} m="0.5" />
+                                        <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                            Please fix any empty or invalid fields
+                                        </Text>
+                                        <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                    </HStack>
+                                </Box>
+                            ), status: 'error', duration: 3000
+                        })
                     }
-                )
+                }
             }
 
             return (
@@ -221,18 +299,22 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     <ModalBody>
                         <HStack spacing="8">
                             <VStack spacing="8" w="1200px" h="328px">
-                                <FormControl isRequired>
-                                    <NameHeader />
-                                    <Input value={firstName} onChange={(e) => changeFirstName(e.target.value)} mb="2" />
-                                    <Input value={lastName} onChange={(e) => changeLastName(e.target.value)} />
-                                </FormControl>
-                                <FormControl isRequired mt="8">
+                                <VStack spacing="0" w="100%">
+                                    <FormControl isRequired isInvalid={!firstNameValid && firstName.length > 0}>
+                                        <NameHeader />
+                                        <Input value={firstName} onChange={(e) => { handleChangeFirstName(e.target.value) }} mb="2" />
+                                    </FormControl>
+                                    <FormControl isRequired isInvalid={(!lastNameValid && lastName.length > 0)}>
+                                        <Input value={lastName} onChange={(e) => { handleChangeLastName(e.target.value) }} />
+                                    </FormControl>
+                                </VStack>
+                                <FormControl isRequired mt="8" isInvalid={(!emailValid && email.length > 0)}>
                                     <EmailHeader />
-                                    <Input value={email} onChange={(e) => changeEmail(e.target.value)} />
+                                    <Input value={email} type="email" onChange={(e) => { handleChangeEmail(e.target.value) }} />
                                 </FormControl>
                                 <FormControl isRequired mt="8">
                                     <DOBHeader />
-                                    <Input value={formatDate(birthday)} onChange={(e) => handleChangeDate(e.target.value)} type="date" />
+                                    <Input onChange={(e) => { handleChangeDate(e.target.value) }} type="date" />
                                 </FormControl>
                             </VStack>
                             <VStack w="1200px" h="328px">

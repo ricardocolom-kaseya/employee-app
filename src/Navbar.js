@@ -7,7 +7,7 @@ export default function Navbar({navBarHeight, width}) {
 
     const primary = useColorModeValue('white', 'gray.800')
     const secondary = useColorModeValue('gray.200', 'gray.700')
-    const tertiary = useColorModeValue('gray.300', 'gray.600')
+    const tertiary = useColorModeValue('white', 'gray.600')
     const textPrimary = useColorModeValue('gray.800', 'gray.300')
 
     return (

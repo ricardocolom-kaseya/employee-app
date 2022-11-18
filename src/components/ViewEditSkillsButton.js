@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, useColorModeValue, Textarea, useToast, LightMode } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, CloseButton, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, useColorModeValue, Textarea, useToast, LightMode } from '@chakra-ui/react'
 import {
     FormControl,
     FormLabel,
@@ -23,7 +23,7 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
 } from '@chakra-ui/react'
-import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon, WarningIcon, ChevronDownIcon, CheckIcon, CheckCircleIcon } from '@chakra-ui/icons'
 import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
 import { faker } from '@faker-js/faker';
@@ -221,7 +221,19 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
                     onEditSkillClose();
 
-                    toast({ title: "Edited a skill", status: 'success', duration: 3000 })
+                    toast({
+                        render: () => (
+                            <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                                <HStack position="relative" align="center" minH="26px">
+                                    <CheckCircleIcon w={5} h={5} m="0.5" />
+                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        Saved!
+                                    </Text>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                </HStack>
+                            </Box>
+                        ), status: 'error', duration: 3000
+                    })
 
                     let editedSkill = { skill_id: skillID, skill_name: skillName, skill_desc: skillDesc }
 
@@ -295,7 +307,19 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
                     onNewSkillClose();
 
-                    toast({ title: "Added a skill!", status: 'success', duration: 3000 })
+                    toast({
+                        render: () => (
+                            <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                                <HStack position="relative" align="center" minH="26px">
+                                    <CheckCircleIcon w={5} h={5} m="0.5" />
+                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        Added a skill!
+                                    </Text>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                </HStack>
+                            </Box>
+                        ), status: 'error', duration: 3000
+                    })
 
                     let newSkill = { skill_id: skillID, skill_name: skillName, skill_desc: skillDesc }
 
@@ -361,6 +385,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                                 </Text>
                             </Button>
                             <Modal onClose={onNewSkillClose} isOpen={isNewSkillOpen} isCentered motionPreset='slideInBottom' size="xl" preserveScrollBarGap>
+                                <ModalOverlay />
                                 <NewSkillModalContent />
                             </Modal>
                         </VStack>

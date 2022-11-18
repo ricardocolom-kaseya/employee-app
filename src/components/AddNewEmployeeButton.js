@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, LightMode, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, CloseButton, LightMode, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast } from '@chakra-ui/react'
 import {
     Menu,
     MenuButton,
@@ -33,7 +33,7 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
 } from '@chakra-ui/react'
-import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
+import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
 import { faker } from '@faker-js/faker';
@@ -156,7 +156,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                 console.log("Attempting to add " + f_name + " " + l_name + "...")
 
                 fetch("http://localhost:4000/employees", {
-                    method: 'POST', 
+                    method: 'POST',
                     headers: {
                         'employee_id': employee_id,
                         'f_name': f_name,
@@ -182,13 +182,38 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                     }
                 )
 
-                toast({ title: "Added an employee!", status: 'success', duration: 3000 })
+                toast({
+                    render: () => (
+                        <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                            <HStack position="relative" align="center" minH="26px">
+                                <CheckCircleIcon w={5} h={5} m="0.5" />
+                                <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    Saved
+                                </Text>
+                                <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                            </HStack>
+                        </Box>
+                    ), status: 'error', duration: 3000
+                })
 
                 onClose();
             }
             else {
                 if (!toast.isActive(id)) {
-                    toast({ id, title: "Please fix any empty or invalid fields", status: 'error', duration: 3000 })
+                    toast({
+                        id,
+                        render: () => (
+                            <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                                <HStack position="relative" align="center" minH="26px">
+                                    <WarningIcon w={5} h={5} m="0.5" />
+                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        Please fix any empty or invalid fields
+                                    </Text>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                </HStack>
+                            </Box>
+                        ), status: 'error', duration: 3000
+                    })
                 }
             }
 
