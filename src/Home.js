@@ -17,11 +17,6 @@ import md5 from 'md5'
 export default function Home({ setAuth }) {
 
     const toast = useToast();
-    const toastIdRef = React.useRef()
-
-    function closeToast() {
-        toast.closeAll();
-    }
 
     const [userName, changeUserName] = useState("")
 
@@ -75,10 +70,10 @@ export default function Home({ setAuth }) {
                                     <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
                                         Invalid username or password
                                     </Text>
-                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => closeToast()}/>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()}/>
                                 </HStack>
                             </Box>
-                        ), status: 'error', duration: 5000
+                        ), status: 'error', duration: 3000
                     })
                 }
             }

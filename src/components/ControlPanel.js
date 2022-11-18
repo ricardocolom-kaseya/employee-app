@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast, useColorMode, useColorModeValue, LightMode } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, useColorMode, useColorModeValue, LightMode } from '@chakra-ui/react'
 import {
     Menu,
     MenuButton,
@@ -34,7 +34,7 @@ import {
     AlertDialogOverlay,
 } from '@chakra-ui/react'
 import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
-import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
+import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete, MdOutlineLogout } from 'react-icons/md'
 
 import { faker } from '@faker-js/faker';
 
@@ -232,61 +232,116 @@ export default function ControlPanel({ setAuth, employees, changeEmployees, skil
     const primary = useColorModeValue('white', 'gray.800')
     const secondary = useColorModeValue('gray.200', 'gray.700')
 
-    return (
-        <VStack w="100%" h="100%" bg={primary}>
-            <HStack w="100%" p="2" justify="right">
-                <HStack>
-                    <SunIcon />
-                    <LightMode>
-                        <Switch
-                            colorScheme="blackAlpha"
-                            defaultValue={colorMode}
-                            onChange={() => { setTimeout(function () { toggleColorMode() }, 100) }}
-                            sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'blackAlpha.500' } }}
-                            border="1px" borderRadius="2xl" borderColor="whiteAlpha.500" />
-                    </LightMode>
-                    <MoonIcon />
-                </HStack>
+    const LogOutButton = () => {
+
+        const { isOpen, onOpen, onClose } = useDisclosure()
+        const cancelRef = React.useRef()
+
+        const [willLogOut, changeWillLogOut] = useState(false)
+
+        return (
+            <>
+
+                <LightMode>
+                    <Button variant="link" size="xs" colorScheme="red" color="red.500" rightIcon={<MdOutlineLogout />} onClick={onOpen}>
+                        Log out
+                    </Button>
+                </LightMode>
+                <AlertDialog
+                    isOpen={isOpen}
+                    leastDestructiveRef={cancelRef}
+                    onClose={onClose}
+                    isCentered
+                    motionPreset="slideInBottom"
+                    preserveScrollBarGap
+                    onCloseComplete={() => {
+                        if(willLogOut)
+                            setAuth(false)
+                    }}
+                >
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                                Log out
+                            </AlertDialogHeader>
+                            <AlertDialogBody>
+                                <Text>Are you sure you would like to <strong>log out</strong>?</Text>
+                            </AlertDialogBody>
+                            <AlertDialogFooter>
+                                <Button ref={cancelRef} onClick={onClose}>
+                                    Cancel
+                                </Button>
+                                <LightMode>
+                                    <Button colorScheme='red' ml={3} onClick={() => {changeWillLogOut(true); onClose()}}>
+                                        Log out
+                                    </Button>
+                                </LightMode>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
+            </>
+        )
+}
+
+return (
+    <VStack w="100%" h="100%" bg={primary}>
+        <HStack w="100%" p="2" justify="right">
+            <HStack>
+                <SunIcon />
+                <LightMode>
+                    <Switch
+                        colorScheme="blackAlpha"
+                        defaultValue={colorMode}
+                        onChange={() => { setTimeout(function () { toggleColorMode() }, 100) }}
+                        sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'blackAlpha.500' } }}
+                        border="1px" borderRadius="2xl" borderColor="whiteAlpha.500" />
+                </LightMode>
+                <MoonIcon />
             </HStack>
-            <VStack py="9">
+        </HStack>
+        <VStack py="9" spacing="0">
+            <VStack>
                 <Avatar size="lg" label="Admin" />
                 <Heading fontSize="2xl" fontFamily={font1}>
                     Admin
                 </Heading>
             </VStack>
-            <Divider w="90%" />
-            <VStack align="left" w="100%" px="4">
+            <LogOutButton />
+        </VStack>
+        <Divider w="90%" />
+        <VStack align="left" w="100%" px="4">
+            <VStack w="100%">
+                <AddNewEmployeeButton employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
+                <ViewEditSkillsButton skills={skills} changeSkills={changeSkills} />
+            </VStack>
+            <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
+            <Heading fontSize="2xl" fontFamily={font1} py="4">
+                Controls
+            </Heading>
+            <VStack w="100%" spacing="220px">
                 <VStack w="100%">
-                    <AddNewEmployeeButton employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
-                    <ViewEditSkillsButton skills={skills} changeSkills={changeSkills} />
+                    <FormControl w="100%">
+                        <Input fontFamily="Inter" type="search" placeholder="Search..." />
+                    </FormControl>
+                    <Menu>
+                        <MenuButton w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
+                            Sort by...
+                        </MenuButton>
+                        <MenuList>
+                            <MenuItem>One</MenuItem>
+                            <MenuItem>Two</MenuItem>
+                            <MenuItem>Three</MenuItem>
+                            <MenuItem>Four</MenuItem>
+                        </MenuList>
+                    </Menu>
                 </VStack>
-                <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
-                <Heading fontSize="2xl" fontFamily={font1} py="4">
-                    Controls
-                </Heading>
-                <VStack w="100%" spacing="220px">
-                    <VStack w="100%">
-                        <FormControl w="100%">
-                            <Input fontFamily="Inter" type="search" placeholder="Search..." />
-                        </FormControl>
-                        <Menu>
-                            <MenuButton w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
-                                Sort by...
-                            </MenuButton>
-                            <MenuList>
-                                <MenuItem>One</MenuItem>
-                                <MenuItem>Two</MenuItem>
-                                <MenuItem>Three</MenuItem>
-                                <MenuItem>Four</MenuItem>
-                            </MenuList>
-                        </Menu>
-                    </VStack>
-                    <VStack w="100%" spacing="0">
-                        <DeleteAllEmployeesButton />
-                        <DeleteAllSkillsButton />
-                    </VStack>
+                <VStack w="100%" spacing="0">
+                    <DeleteAllEmployeesButton />
+                    <DeleteAllSkillsButton />
                 </VStack>
             </VStack>
         </VStack>
-    )
+    </VStack>
+)
 }

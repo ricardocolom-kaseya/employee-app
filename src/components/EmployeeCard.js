@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useToast, Avatar, Box, Text, HStack, VStack, LightMode, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, useColorModeValue } from '@chakra-ui/react'
+import { useToast, Avatar, Box, Text, HStack, VStack, LightMode, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, CloseButton, useDisclosure, Select, useColorModeValue } from '@chakra-ui/react'
 import {
     Modal,
     ModalOverlay,
@@ -31,7 +31,7 @@ import {
     FormHelperText,
 } from '@chakra-ui/react'
 
-import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon, CheckCircleIcon } from '@chakra-ui/icons'
 import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
 import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from './ModalHeaders'
@@ -194,7 +194,19 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
                         onClose();
 
-                        toast({ title: "Saved!", status: 'success', duration: 3000 })
+                        toast({
+                            render: () => (
+                                 <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                                     <HStack position="relative" align="center" minH="26px">
+                                         <CheckCircleIcon w={5} h={5} m="0.5"/>
+                                         <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                             Saved
+                                         </Text>
+                                         <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()}/>
+                                     </HStack>
+                                 </Box>
+                             ), status: 'error', duration: 3000
+                         })
                     }
                 )
             }
