@@ -197,10 +197,10 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
             function allValid() {
 
-                console.log("firstName: " + firstNameValid)
-                console.log("lastName: " + lastNameValid)
-                console.log("email: " + emailValid)
-                console.log("birthday: " + birthdayValid)
+                // console.log("firstName: " + firstNameValid)
+                // console.log("lastName: " + lastNameValid)
+                // console.log("email: " + emailValid)
+                // console.log("birthday: " + birthdayValid)
 
 
                 return (firstNameValid && lastNameValid && emailValid && birthdayValid)
@@ -222,6 +222,8 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     let l_name = lastName.replace("'", "''")
 
                     console.log("Attempting to save " + f_name + " " + l_name + "...")
+                    console.log(employee.employee_id)
+    
 
                     const putURL = "http://localhost:4000/employees/" + employee.employee_id;
 

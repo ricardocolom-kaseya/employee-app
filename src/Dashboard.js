@@ -71,6 +71,9 @@ export default function Dashboard({ navBarHeight, setAuth }) {
     const [employees, changeEmployees] = useState([]);
     const [skills, changeSkills] = useState([]);
 
+    const [search, changeSearch] = useState("");
+    const [sortAsc, changeSortAsc] = useState(true);
+
     const primary = useColorModeValue('white', 'gray.800')
     const secondary = useColorModeValue('gray.200', 'gray.700')
     const textPrimary = useColorModeValue('gray.800', 'gray.300')
@@ -93,18 +96,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
             }
         )
 
-        // Get all employees
-        fetch("http://localhost:4000/employees").then(
-            response => response.json()
-        ).then(
-            data => {
-                let toEmployees = data;
-                toEmployees.forEach(employee => {
-                    employee.dob = new Date(employee.dob)
-                });
-                changeEmployees(toEmployees)
-            }
-        )
+        fetchEmployees();
 
         function handleWindowResize() {
             setWindowSize(getWindowSize());
@@ -117,16 +109,48 @@ export default function Dashboard({ navBarHeight, setAuth }) {
         };
     }, [])
 
+    function fetchEmployees() {
+        // Get all employees
+        fetch("http://localhost:4000/employees", {
+            headers: {
+                contains: search,
+                order: (sortAsc ? "ASC" : "DESC")
+            }
+        }).then(
+            response => response.json()
+        ).then(
+            data => {
+                let toEmployees = data;
+                toEmployees.forEach(employee => {
+                    employee.dob = new Date(employee.dob)
+                });
+                changeEmployees(toEmployees)
+            }
+        )
+    }
+
+    useEffect(() => {
+        console.log("should do a search")
+        fetchEmployees();
+    }, [search, sortAsc])
+
     let width = "" + (windowSize.innerWidth - controlPanelWidth - 20) + "px"
 
     return (
         <VStack align="left" spacing="0" minH="100vh" w={width} bg={secondary}>
-            <Navbar navBarHeight={navBarHeight} width={width}/>
+            <Navbar navBarHeight={navBarHeight} width={width} />
             <HStack w={width} h="100%" spacing="0" pt={navBarHeight + "px"}>
                 <CardView windowSize={windowSize} employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
             </HStack>
             <Box pos="fixed" w={controlPanelWidth + "px"} h="100vh" right="0">
-                <ControlPanel setAuth={setAuth} employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
+                <ControlPanel
+                    setAuth={setAuth}
+                    changeSearch={changeSearch}
+                    changeSortAsc={changeSortAsc}
+                    employees={employees}
+                    changeEmployees={changeEmployees}
+                    skills={skills}
+                    changeSkills={changeSkills} />
             </Box>
         </VStack>
     )

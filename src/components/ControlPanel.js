@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, useColorMode, useColorModeValue, LightMode } from '@chakra-ui/react'
+import { Avatar, Box, Text, HStack, VStack, Heading, Input, Button, Icon, IconButton, Switch, Divider, useDisclosure, useColorMode, useColorModeValue, LightMode, ButtonGroup, InputGroup, InputLeftElement } from '@chakra-ui/react'
 import {
     Menu,
     MenuButton,
@@ -17,15 +17,6 @@ import {
     FormHelperText,
 } from '@chakra-ui/react'
 import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalFooter,
-    ModalBody,
-    ModalCloseButton,
-} from '@chakra-ui/react'
-import {
     AlertDialog,
     AlertDialogBody,
     AlertDialogFooter,
@@ -34,7 +25,9 @@ import {
     AlertDialogOverlay,
 } from '@chakra-ui/react'
 import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
-import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete, MdOutlineLogout } from 'react-icons/md'
+import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdHelp, MdOutlineLogout } from 'react-icons/md'
+import { BsSortAlphaDown, BsSortAlphaDownAlt } from "react-icons/bs"
+
 
 import { faker } from '@faker-js/faker';
 
@@ -51,14 +44,31 @@ function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-export default function ControlPanel({ setAuth, employees, changeEmployees, skills, changeSkills }) {
+export default function ControlPanel({
+    setAuth,
+    changeSearch,
+    changeSortAsc,
+    employees,
+    changeEmployees,
+    skills,
+    changeSkills }) {
 
     const { colorMode, toggleColorMode } = useColorMode()
+
+    const [panelSortAsc, changePanelSortAsc] = useState(true)
+    const [panelSearch, changePanelSearch] = useState("");
+
+    function goPressed() {
+        changeSortAsc(panelSortAsc);
+        changeSearch(panelSearch);
+    }
+
+    useEffect(() => { console.log(panelSearch) }, [panelSearch])
 
     let toEmployees = employees
     let toSkills = skills
 
-    const addDummyEmployee = () => {
+    const AddDummyEmployee = () => {
         console.log("Adding dummy employee")
 
         let employee_id = faker.datatype.uuid();
@@ -322,28 +332,47 @@ export default function ControlPanel({ setAuth, employees, changeEmployees, skil
             <VStack align="left" w="100%" px="4">
                 <VStack w="100%">
                     <AddNewEmployeeButton employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
+                    <Button variant="outline" pos="relative" rightIcon={<Icon as={MdHelp} w={6} h={6} />} onClick={() => AddDummyEmployee()} w="100%">
+                        <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                            Add a dummy employee
+                        </Text>
+                    </Button>
                     <ViewEditSkillsButton skills={skills} changeSkills={changeSkills} />
                 </VStack>
-                <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
                 </Heading>
                 <VStack w="100%" spacing="220px">
-                    <VStack w="100%">
-                        <FormControl w="100%">
-                            <Input fontFamily="Inter" type="search" placeholder="Search..." />
-                        </FormControl>
-                        <Menu>
-                            <MenuButton w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
-                                Sort by...
-                            </MenuButton>
-                            <MenuList>
-                                <MenuItem>One</MenuItem>
-                                <MenuItem>Two</MenuItem>
-                                <MenuItem>Three</MenuItem>
-                                <MenuItem>Four</MenuItem>
-                            </MenuList>
-                        </Menu>
+                    <VStack w="100%" align="end">
+                        <HStack w="100%">
+                            <FormControl w="100%">
+                                <InputGroup>
+                                    <InputLeftElement children={<SearchIcon />} />
+                                    <Input fontFamily="Inter" type="search" placeholder="Search..."
+                                        onChange={(e) => changePanelSearch(e.target.value)} />
+                                </InputGroup>
+                            </FormControl>
+                        </HStack>
+                        <HStack w="100%">
+                            <Menu>
+                                <MenuButton w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
+                                    Skill
+                                </MenuButton>
+                                <MenuList>
+                                    <MenuItem>All</MenuItem>
+                                    <MenuItem>Two</MenuItem>
+                                    <MenuItem>Three</MenuItem>
+                                    <MenuItem>Four</MenuItem>
+                                </MenuList>
+                            </Menu>
+                            <ButtonGroup isAttached variant="outline" w="122px">
+                                <IconButton variant={panelSortAsc ? "solid" : "outline"} icon={<Icon as={BsSortAlphaDown} w={6} h={6} />} onClick={() => changePanelSortAsc(true)} />
+                                <IconButton variant={!panelSortAsc ? "solid" : "outline"} icon={<Icon as={BsSortAlphaDownAlt} w={6} h={6} />} onClick={() => { console.log("GO"); changePanelSortAsc(false) }} />
+                            </ButtonGroup>
+                        </HStack>
+                        <Button w="80px" variant="solid" onClick={() => { goPressed() }}>
+                            Go
+                        </Button>
                     </VStack>
                     <VStack w="100%" spacing="0">
                         <DeleteAllEmployeesButton />
