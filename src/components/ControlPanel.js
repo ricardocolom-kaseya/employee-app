@@ -78,7 +78,8 @@ export default function ControlPanel({ setAuth, employees, changeEmployees, skil
 
         console.log("Attempting to create " + f_name + " " + l_name + "...")
 
-        fetch("http://localhost:4000/createemployee", {
+        fetch("http://localhost:4000/employees", {
+            method: 'POST',
             headers: {
                 'employee_id': employee_id,
                 'f_name': f_name,
@@ -113,7 +114,11 @@ export default function ControlPanel({ setAuth, employees, changeEmployees, skil
 
             console.log("Going to delete all employees... ");
 
-            fetch("http://localhost:4000/deleteallemployees").then(
+            fetch("http://localhost:4000/employees", {
+                headers: {
+                    delete_all: "true"
+                }
+            }).then(
                 response => response.json()
             ).then(
                 data => {
@@ -175,7 +180,11 @@ export default function ControlPanel({ setAuth, employees, changeEmployees, skil
 
             console.log("Going to delete all skills... ");
 
-            fetch("http://localhost:4000/deleteallskills").then(
+            fetch("http://localhost:4000/skills", {
+                headers: {
+                    delete_all: "true"
+                }
+            }).then(
                 response => response.json()
             ).then(
                 data => {
@@ -255,7 +264,7 @@ export default function ControlPanel({ setAuth, employees, changeEmployees, skil
                     motionPreset="slideInBottom"
                     preserveScrollBarGap
                     onCloseComplete={() => {
-                        if(willLogOut)
+                        if (willLogOut)
                             setAuth(false)
                     }}
                 >
@@ -272,7 +281,7 @@ export default function ControlPanel({ setAuth, employees, changeEmployees, skil
                                     Cancel
                                 </Button>
                                 <LightMode>
-                                    <Button colorScheme='red' ml={3} onClick={() => {changeWillLogOut(true); onClose()}}>
+                                    <Button colorScheme='red' ml={3} onClick={() => { changeWillLogOut(true); onClose() }}>
                                         Log out
                                     </Button>
                                 </LightMode>
@@ -282,66 +291,66 @@ export default function ControlPanel({ setAuth, employees, changeEmployees, skil
                 </AlertDialog>
             </>
         )
-}
+    }
 
-return (
-    <VStack w="100%" h="100%" bg={primary}>
-        <HStack w="100%" p="2" justify="right">
-            <HStack>
-                <SunIcon />
-                <LightMode>
-                    <Switch
-                        colorScheme="blackAlpha"
-                        defaultValue={colorMode}
-                        onChange={() => { setTimeout(function () { toggleColorMode() }, 100) }}
-                        sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'blackAlpha.500' } }}
-                        border="1px" borderRadius="2xl" borderColor="whiteAlpha.500" />
-                </LightMode>
-                <MoonIcon />
+    return (
+        <VStack w="100%" h="100%" bg={primary}>
+            <HStack w="100%" p="2" justify="right">
+                <HStack>
+                    <SunIcon />
+                    <LightMode>
+                        <Switch
+                            colorScheme="blackAlpha"
+                            defaultValue={colorMode}
+                            onChange={() => { setTimeout(function () { toggleColorMode() }, 100) }}
+                            sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'blackAlpha.500' } }}
+                            border="1px" borderRadius="2xl" borderColor="whiteAlpha.500" />
+                    </LightMode>
+                    <MoonIcon />
+                </HStack>
             </HStack>
-        </HStack>
-        <VStack py="9" spacing="0">
-            <VStack>
-                <Avatar size="lg" label="Admin" />
-                <Heading fontSize="2xl" fontFamily={font1}>
-                    Admin
-                </Heading>
+            <VStack py="9" spacing="0">
+                <VStack>
+                    <Avatar size="lg" label="Admin" />
+                    <Heading fontSize="2xl" fontFamily={font1}>
+                        Admin
+                    </Heading>
+                </VStack>
+                <LogOutButton />
             </VStack>
-            <LogOutButton />
-        </VStack>
-        <Divider w="90%" />
-        <VStack align="left" w="100%" px="4">
-            <VStack w="100%">
-                <AddNewEmployeeButton employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
-                <ViewEditSkillsButton skills={skills} changeSkills={changeSkills} />
-            </VStack>
-            <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
-            <Heading fontSize="2xl" fontFamily={font1} py="4">
-                Controls
-            </Heading>
-            <VStack w="100%" spacing="220px">
+            <Divider w="90%" />
+            <VStack align="left" w="100%" px="4">
                 <VStack w="100%">
-                    <FormControl w="100%">
-                        <Input fontFamily="Inter" type="search" placeholder="Search..." />
-                    </FormControl>
-                    <Menu>
-                        <MenuButton w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
-                            Sort by...
-                        </MenuButton>
-                        <MenuList>
-                            <MenuItem>One</MenuItem>
-                            <MenuItem>Two</MenuItem>
-                            <MenuItem>Three</MenuItem>
-                            <MenuItem>Four</MenuItem>
-                        </MenuList>
-                    </Menu>
+                    <AddNewEmployeeButton employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
+                    <ViewEditSkillsButton skills={skills} changeSkills={changeSkills} />
                 </VStack>
-                <VStack w="100%" spacing="0">
-                    <DeleteAllEmployeesButton />
-                    <DeleteAllSkillsButton />
+                <Button onClick={() => { addDummyEmployee() }}>Add dummy employee</Button>
+                <Heading fontSize="2xl" fontFamily={font1} py="4">
+                    Controls
+                </Heading>
+                <VStack w="100%" spacing="220px">
+                    <VStack w="100%">
+                        <FormControl w="100%">
+                            <Input fontFamily="Inter" type="search" placeholder="Search..." />
+                        </FormControl>
+                        <Menu>
+                            <MenuButton w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
+                                Sort by...
+                            </MenuButton>
+                            <MenuList>
+                                <MenuItem>One</MenuItem>
+                                <MenuItem>Two</MenuItem>
+                                <MenuItem>Three</MenuItem>
+                                <MenuItem>Four</MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </VStack>
+                    <VStack w="100%" spacing="0">
+                        <DeleteAllEmployeesButton />
+                        <DeleteAllSkillsButton />
+                    </VStack>
                 </VStack>
             </VStack>
         </VStack>
-    </VStack>
-)
+    )
 }

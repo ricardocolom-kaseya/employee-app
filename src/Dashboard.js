@@ -85,11 +85,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
     useEffect(() => {
 
         // Get all skills
-        fetch("http://localhost:4000/getskills", {
-            headers: {
-                'testHeader': "Test"
-            }
-        }).then(
+        fetch("http://localhost:4000/skills").then(
             response => response.json()
         ).then(
             data => {
@@ -98,11 +94,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
         )
 
         // Get all employees
-        fetch("http://localhost:4000/getemployees", {
-            headers: {
-                'testHeader': "Test"
-            }
-        }).then(
+        fetch("http://localhost:4000/employees").then(
             response => response.json()
         ).then(
             data => {

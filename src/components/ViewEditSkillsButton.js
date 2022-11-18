@@ -116,7 +116,8 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
             console.log("Attempting to delete skill...")
 
-            fetch("http://localhost:4000/deleteskill", {
+            fetch("http://localhost:4000/skills", {
+                method: "DELETE",
                 headers: {
                     'skill_id': skillID
                 }
@@ -203,7 +204,10 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
             console.log("Attempting to edit skill " + skillName)
 
-            fetch("http://localhost:4000/editskill", {
+            let putURL = "http://localhost:4000/skills/" + skillID
+
+            fetch(putURL, {
+                method: "PUT",
                 headers: {
                     'skill_id': skillID,
                     'skill_name': skillName,
@@ -276,7 +280,8 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
             console.log("Attempting to add skill " + skillName)
 
-            fetch("http://localhost:4000/createskill", {
+            fetch("http://localhost:4000/skills", {
+                method: "POST",
                 headers: {
                     'skill_id': skillID,
                     'skill_name': skillName,

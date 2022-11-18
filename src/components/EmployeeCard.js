@@ -164,7 +164,10 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
                 console.log("Attempting to save " + f_name + " " + l_name + "...")
 
-                fetch("http://localhost:4000/editemployee", {
+                const putURL = "http://localhost:4000/employees/" + employee.employee_id;
+
+                fetch(putURL, {
+                    method: "PUT",
                     headers: {
                         'employee_id': employee.employee_id,
                         'f_name': f_name,
@@ -293,7 +296,8 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
         function handleDeleteEmployee() {
             console.log("Attempting to delete this employee...")
 
-            fetch("http://localhost:4000/deleteemployee", {
+            fetch("http://localhost:4000/employees", {
+                method: "DELETE",
                 headers: {
                     'employee_id': employee.employee_id
                 }

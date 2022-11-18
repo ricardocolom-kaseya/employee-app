@@ -155,7 +155,8 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
 
                 console.log("Attempting to add " + f_name + " " + l_name + "...")
 
-                fetch("http://localhost:4000/createemployee", {
+                fetch("http://localhost:4000/employees", {
+                    method: 'POST', 
                     headers: {
                         'employee_id': employee_id,
                         'f_name': f_name,
