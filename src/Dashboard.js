@@ -66,7 +66,7 @@ const CardView = ({ employees, changeEmployees, skills }) => {
     )
 }
 
-export default function Dashboard({ navBarHeight }) {
+export default function Dashboard({ navBarHeight, setAuth }) {
 
     const [employees, changeEmployees] = useState([]);
     const [skills, changeSkills] = useState([]);
@@ -134,7 +134,7 @@ export default function Dashboard({ navBarHeight }) {
                 <CardView windowSize={windowSize} employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
             </HStack>
             <Box pos="fixed" w={controlPanelWidth + "px"} h="100vh" right="0">
-                <ControlPanel employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
+                <ControlPanel setAuth={setAuth} employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
             </Box>
         </VStack>
     )

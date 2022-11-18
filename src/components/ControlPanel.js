@@ -51,7 +51,7 @@ function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-export default function ControlPanel({ employees, changeEmployees, skills, changeSkills }) {
+export default function ControlPanel({ setAuth, employees, changeEmployees, skills, changeSkills }) {
 
     const { colorMode, toggleColorMode } = useColorMode()
 

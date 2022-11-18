@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Switch, Box, Text, HStack, VStack, InputRightElement, LightMode, Input, Code, Button, Tooltip, Icon, IconButton, Divider, useDisclosure, Select, SimpleGrid, InputGroup, InputLeftElement, useColorMode, useColorModeValue, Center } from '@chakra-ui/react'
+import { useToast, Switch, Box, Text, HStack, VStack, InputRightElement, LightMode, Input, Code, Button, Tooltip, Icon, IconButton, Divider, useDisclosure, Select, SimpleGrid, InputGroup, InputLeftElement, useColorMode, useColorModeValue, Center, CloseButton } from '@chakra-ui/react'
 import {
     FormControl,
     FormLabel,
@@ -10,11 +10,18 @@ import {
 import { MdCake, MdWork, MdOutlineDelete, MdSave, MdLock, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
-import { ArrowForwardIcon, LockIcon, ViewIcon, ViewOffIcon, SunIcon, MoonIcon } from '@chakra-ui/icons'
+import { ArrowForwardIcon, LockIcon, ViewIcon, ViewOffIcon, SunIcon, MoonIcon, WarningIcon, CheckCircleIcon } from '@chakra-ui/icons'
 
 import md5 from 'md5'
 
-export default function Home({setAuth}) {
+export default function Home({ setAuth }) {
+
+    const toast = useToast();
+    const toastIdRef = React.useRef()
+
+    function closeToast() {
+        toast.closeAll();
+    }
 
     const [userName, changeUserName] = useState("")
 
@@ -29,14 +36,23 @@ export default function Home({setAuth}) {
     const handleChangeSubmittedLogin = () => {
         console.log("Button clicked")
         console.log(userPassword)
+        changeSubmittedLogin(true)
         setTimeout(function () { authenticateUser() }, 1000);
     }
 
+    function hashPassword(text){
+        if(text != "")
+            changeUserPassword(md5(text))
+        else
+            changeUserPassword("");
+    }
+
     const authenticateUser = () => {
+        changeSubmittedLogin(false)
         console.log("Attempting to authenticate user...")
 
-         // Authenticate the user
-         fetch("http://localhost:4000/authenticate", {
+        // Authenticate the user
+        fetch("http://localhost:4000/authenticate", {
             method: 'POST',
             headers: {
                 'username': userName,
@@ -48,8 +64,23 @@ export default function Home({setAuth}) {
             data => {
                 console.log(data)
 
-                if(data == "valid")
+                if (data == "valid")
                     setAuth(true);
+                else {
+                    toast({
+                       render: () => (
+                            <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                                <HStack position="relative" align="center" minH="26px">
+                                    <WarningIcon w={5} h={5} m="0.5"/>
+                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        Invalid username or password
+                                    </Text>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => closeToast()}/>
+                                </HStack>
+                            </Box>
+                        ), status: 'error', duration: 5000
+                    })
+                }
             }
         )
     }
@@ -89,35 +120,35 @@ export default function Home({setAuth}) {
                     <Text fontFamily="Inter" fontSize="4xl" fontWeight="bold">kup</Text>
                 </HStack>
             </VStack>
-            <VStack w="lg" bg={primary} borderRadius="2xl" spacing="16" py="8" shadow="md">
-                <VStack w="100%" spacing="4">
+            <VStack w="md" bg={primary} borderRadius="2xl" spacing="16" py="8" shadow="md">
+                <VStack w="100%" spacing="2">
                     <VStack spacing="0" pos="relative">
                         <Text fontFamily="Inter" fontSize="xl" fontWeight="medium">Login</Text>
-                        <Box h="2px" w="100%" bg="green.400" mt="4" pos="absolute" bottom="-1" />
+                        <Box h="2px" w="100%" bg="green.400" pos="absolute" bottom="-1" />
                     </VStack>
-                    <VStack w="100%" justify="center" spacing="8" px="16" py="8">
+                    <VStack w="100%" justify="center" spacing="8" px="8" py="8">
                         <FormControl>
                             <InputGroup>
-                                <Input placeholder='Username' variant="flushed" type="text" onChange={(e) => {changeUserName(e.target.value)}}/>
+                                <Input placeholder='Username' variant="flushed" type="text" onChange={(e) => { changeUserName(e.target.value) }} />
                                 <InputLeftElement children={<Icon as={MdPerson} color="gray.300" />} />
                             </InputGroup>
                         </FormControl>
                         <FormControl>
                             <InputGroup>
-                                <Input placeholder='Password' variant="flushed" type={(hidePassword) ? "text" : "password"} onChange={(e) => {changeUserPassword(md5(e.target.value))}}/>
+                                <Input placeholder='Password' variant="flushed" type={(hidePassword) ? "text" : "password"} onChange={(e) => { hashPassword(e.target.value) }} />
                                 <InputLeftElement children={<LockIcon color="gray.300" />} />
-                                <InputRightElement children={<IconButton icon={(!hidePassword) ? <ViewOffIcon w={4} h={4} /> : <ViewIcon w={4} h={4} />} size="sm" variant="link" />} onClick={() => {changeHidePassword(!hidePassword)}} />
+                                <InputRightElement children={<IconButton icon={(!hidePassword) ? <ViewOffIcon w={4} h={4} /> : <ViewIcon w={4} h={4} />} size="sm" variant="link" />} onClick={() => { changeHidePassword(!hidePassword) }} />
                             </InputGroup>
                         </FormControl>
                         <LightMode>
-                            <Button w="100%" colorScheme="green" type="submit" rightIcon={<ArrowForwardIcon />} isLoading={submittedLogin} onClick={() => handleChangeSubmittedLogin()}>
+                            <Button w="100%" colorScheme="green" type="submit" rightIcon={<ArrowForwardIcon />} isLoading={submittedLogin} onClick={() => handleChangeSubmittedLogin()} isDisabled={!(userName != "" && userPassword != "")}>
                                 Go
                             </Button>
                         </LightMode>
                     </VStack>
                 </VStack>
             </VStack>
-            <VStack w="100%" pos="fixed" bottom="0" h="116px">
+            <VStack w="100%" pos="fixed" bottom="0" h="116px" bg={secondary}>
                 <Box pos="absolute" maxW="1000px" w="90%" bg={footerDivider} p="1px" top="0" />
                 <VStack h="100%" justify="center" spacing="0">
                     <Text fontSize="sm" pb="4">Technical Assignment - © Ricardo Colom</Text>

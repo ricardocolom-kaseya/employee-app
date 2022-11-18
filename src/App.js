@@ -16,7 +16,7 @@ function App() {
   function showDashboard() {
     if (auth)
       return (
-        <Dashboard navBarHeight={navBarHeight} />)
+        <Dashboard setAuth={setAuth} navBarHeight={navBarHeight} />)
     else
       return (
         <Home auth={auth} setAuth={setAuth}/>
