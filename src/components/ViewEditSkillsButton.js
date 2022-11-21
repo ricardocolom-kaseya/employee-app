@@ -60,7 +60,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
     // This is absolutely necessary as modalSkills hook is always loaded as long as the control panel is rendered, and it MUST change whenever skills changes.
     useEffect(() => {
-        console.log("skills was changed")
+        //console.log("skills was changed")
         changeModalSkills([...skills])
     }, [skills])
 
@@ -114,7 +114,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
         const handleDeleteSkill = () => {
             let skillID = modalSkills[index].skill_id
 
-            console.log("Attempting to delete skill...")
+            // console.log("Attempting to delete skill...")
 
             fetch("http://localhost:4000/skills", {
                 method: "DELETE",
@@ -122,10 +122,12 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     'skill_id': skillID
                 }
             }).then(
-                response => response.json()
+                response => {
+                    console.log("DELETE /skills Status Code: " + response.status);
+                    return response.json()}
             ).then(
                 data => {
-                    console.log("Skill deleted...")
+                    // console.log("Skill deleted...")
                     let newAllSkills = [];
 
                     for (var i = 0; i < modalSkills.length; ++i) {
@@ -202,7 +204,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
         const handleEditSkill = () => {
             let skillID = modalSkills[index].skill_id
 
-            console.log("Attempting to edit skill " + skillName)
+            // console.log("Attempting to edit skill " + skillName)
 
             let putURL = "http://localhost:4000/skills/" + skillID
 
@@ -214,10 +216,12 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     'skill_desc': skillDesc
                 }
             }).then(
-                response => response.json()
+                response => {
+                    console.log("PUT /skills Status Code: " + response.status);
+                    return response.json()}
             ).then(
                 data => {
-                    console.log("Edited this skill...")
+                    // console.log("Edited this skill...")
 
                     onEditSkillClose();
 
@@ -300,7 +304,9 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     'skill_desc': skillDesc
                 }
             }).then(
-                response => response.json()
+                response => {
+                    console.log("POST /skills Status Code: " + response.status);
+                    return response.json()}
             ).then(
                 data => {
                     console.log("Added this skill...")

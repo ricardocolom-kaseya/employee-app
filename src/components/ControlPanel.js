@@ -63,13 +63,11 @@ export default function ControlPanel({
         changeSearch(panelSearch);
     }
 
-    useEffect(() => { console.log(panelSearch) }, [panelSearch])
-
     let toEmployees = employees
     let toSkills = skills
 
     const AddDummyEmployee = () => {
-        console.log("Adding dummy employee")
+        // console.log("Adding dummy employee")
 
         let employee_id = faker.datatype.uuid();
         let f_name = faker.name.firstName();
@@ -86,7 +84,7 @@ export default function ControlPanel({
         f_name = f_name.replace("'", "''")
         l_name = l_name.replace("'", "''")
 
-        console.log("Attempting to create " + f_name + " " + l_name + "...")
+        // console.log("Attempting to create " + f_name + " " + l_name + "...")
 
         fetch("http://localhost:4000/employees", {
             method: 'POST',
@@ -102,7 +100,9 @@ export default function ControlPanel({
                 'is_active': is_active
             }
         }).then(
-            response => response.json()
+            response => {
+                console.log("POST /employees Status Code: " + response.status);
+                return response.json()}
         ).then(
             data => {
                 let newEmployee = data
@@ -125,6 +125,7 @@ export default function ControlPanel({
             console.log("Going to delete all employees... ");
 
             fetch("http://localhost:4000/employees", {
+                method: "DELETE",
                 headers: {
                     delete_all: "true"
                 }
@@ -191,6 +192,7 @@ export default function ControlPanel({
             console.log("Going to delete all skills... ");
 
             fetch("http://localhost:4000/skills", {
+                method: "DELETE",
                 headers: {
                     delete_all: "true"
                 }

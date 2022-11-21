@@ -89,14 +89,19 @@ export default function Dashboard({ navBarHeight, setAuth }) {
 
         // Get all skills
         fetch("http://localhost:4000/skills").then(
-            response => response.json()
+            response => {
+                console.log("GET /skills Status Code: " + response.status)
+                if(!response.ok)
+                {
+                    console.log("GET /skills: JWT Token Invalid")
+                }
+                return response.json();
+            }
         ).then(
             data => {
                 changeSkills(data)
             }
         )
-
-        fetchEmployees();
 
         function handleWindowResize() {
             setWindowSize(getWindowSize());
@@ -117,10 +122,17 @@ export default function Dashboard({ navBarHeight, setAuth }) {
                 order: (sortAsc ? "ASC" : "DESC")
             }
         }).then(
-            response => response.json()
+            response => {
+                console.log("GET /employees Status Code: " + response.status);
+                if(!response.ok)
+                {
+                    console.log("GET /employees JWT Token invalid")
+                }
+                return response.json()
+            }
         ).then(
             data => {
-                let toEmployees = data;
+                let toEmployees = [...data];
                 toEmployees.forEach(employee => {
                     employee.dob = new Date(employee.dob)
                 });
@@ -130,7 +142,6 @@ export default function Dashboard({ navBarHeight, setAuth }) {
     }
 
     useEffect(() => {
-        console.log("should do a search")
         fetchEmployees();
     }, [search, sortAsc])
 

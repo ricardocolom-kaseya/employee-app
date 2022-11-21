@@ -152,8 +152,6 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
             const handleChangeDate = (date) => {
 
-                console.log("go")
-
                 let theDate = new Date(date);
                 if (!isNaN(theDate) && !(GetAge(theDate) < 18)) {
                     changeBirthdayValid(true)
@@ -165,23 +163,6 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     changeBirthdayValid(false)
                 }
             }
-
-            function formatDate(date) {
-                let out = "";
-                let toDate = new Date(date)
-                let yyyy = toDate.getFullYear();
-                let mm = ((toDate.getMonth() + 1) < 10) ? `0${toDate.getMonth() + 1}` : toDate.getMonth() + 1
-                let dd = (toDate.getDate() < 10) ? `0${toDate.getDate()}` : toDate.getDate()
-
-                out = yyyy + "-" + mm + "-" + dd
-
-                return out;
-            }
-
-            // useEffect(() => {
-            //     const toDate = new Date(birthday)
-            //     console.log(birthday)
-            // console.log(toDate)}, [birthday])
 
             const handleChangeSkill = () => {
                 var index = document.getElementById("skillsDropDown").selectedIndex;
@@ -221,8 +202,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     let f_name = firstName.replace("'", "''")
                     let l_name = lastName.replace("'", "''")
 
-                    console.log("Attempting to save " + f_name + " " + l_name + "...")
-                    console.log(employee.employee_id)
+                    // console.log("Attempting to save " + f_name + " " + l_name + "...")
     
 
                     const putURL = "http://localhost:4000/employees/" + employee.employee_id;
@@ -241,10 +221,12 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                             'is_active': activity
                         }
                     }).then(
-                        response => response.json()
+                        response => {
+                          console.log("PUT /employees Status Code: " + response.status);
+                          return response.json()}
                     ).then(
                         data => {
-                            console.log("Saved this employee...")
+                            // console.log("Saved this employee...")
                             employee.f_name = f_name;
                             employee.l_name = l_name;
                             employee.dob = new Date(birthday);
@@ -378,18 +360,18 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
         const cancelRef = React.useRef()
 
         function handleDeleteEmployee() {
-            console.log("Attempting to delete this employee...")
-
             fetch("http://localhost:4000/employees", {
                 method: "DELETE",
                 headers: {
                     'employee_id': employee.employee_id
                 }
             }).then(
-                response => response.json()
+                response => {
+                  console.log("DELETE /employees Status Code: " + response.status);
+                  return response.json()
+                }
             ).then(
                 data => {
-                    console.log("Deleted this employee...")
                     let newToEmployees = [];
                     for (var i = 0; i < toEmployees.length; ++i) {
                         if (i != thisEmployeeIndex)

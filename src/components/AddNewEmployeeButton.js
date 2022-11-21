@@ -124,10 +124,10 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
 
         function allValid() {
 
-            console.log("firstName: " + firstNameValid)
-            console.log("lastName: " + lastNameValid)
-            console.log("email: " + emailValid)
-            console.log("birthday: " + birthdayValid)
+            // console.log("firstName: " + firstNameValid)
+            // console.log("lastName: " + lastNameValid)
+            // console.log("email: " + emailValid)
+            // console.log("birthday: " + birthdayValid)
 
 
             return (firstNameValid && lastNameValid && emailValid && birthdayValid)
@@ -169,11 +169,11 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                         'is_active': activity
                     }
                 }).then(
-                    response => response.json()
+                    response => {
+                        console.log("POST /employees Status Code: " + response.status);
+                        return response.json()}
                 ).then(
                     data => {
-                        // data variable is SELECT * FROM employees
-                        // change data to be only this employee.
                         console.log("Added this employee")
                         let newEmployee = data
                         newEmployee[0].dob = new Date(birthday);
