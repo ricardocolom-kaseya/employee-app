@@ -11,9 +11,16 @@ import {
   ArrowForwardIcon, LockIcon, ViewIcon, ViewOffIcon, SunIcon, MoonIcon, WarningIcon,
 } from '@chakra-ui/icons'
 
+import { useNavigate } from 'react-router-dom'
+
 import md5 from 'md5'
 
+import { useMousePosition } from './helpers/useMousePosition'
+
 export default function Home({ setAuth }) {
+
+  const navigate = useNavigate();
+
   const toast = useToast();
 
   const [userName, changeUserName] = useState('')
@@ -23,6 +30,20 @@ export default function Home({ setAuth }) {
   const [hidePassword, changeHidePassword] = useState(false)
 
   const [isAuthenticating, changeIsAuthenticating] = useState(false)
+
+  const mousePosition = useMousePosition();
+
+  const [eyePos, changeEyePos] = useState({ x: 0, y: 0 })
+
+  const clamp = (num, min, max) => {
+    return Math.min(Math.max(num, min), max)
+  }
+  useEffect(() => {
+    changeEyePos({
+      x: clamp(mousePosition.x - window.innerWidth / 2 - 46, 5, 11),
+      y: clamp(mousePosition.y - window.innerHeight / 2 + 265, 24, 32)
+    })
+  }, [mousePosition])
 
   const { colorMode, toggleColorMode } = useColorMode()
 
@@ -34,8 +55,6 @@ export default function Home({ setAuth }) {
       changeUserPassword('');
     }
   }
-
-  const [isDarkMode, changeIsDarkMode] = useState(true)
 
   const authenticateUser = () => {
     console.log('Attempting to authenticate user...')
@@ -75,13 +94,32 @@ export default function Home({ setAuth }) {
 
           }
           else {
-            setTimeout(function () { setAuth(true) }, 500)
+            setTimeout(function () { navigate("/dashboard") }, 500)
           }
           return response.json();
         }
       ).catch(err => {
         changeIsAuthenticating(false)
         console.log(err)
+
+        if (!toast.isActive('connection-error')) {
+          toast({
+            id: 'connection-error',
+            render: () => (
+              <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                <HStack position="relative" align="center" minH="26px">
+                  <WarningIcon w={5} h={5} m="0.5" />
+                  <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                    Could not connect to server
+                  </Text>
+                  <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                </HStack>
+              </Box>
+            ),
+            status: 'error',
+            duration: 3000,
+          })
+        }
       }
       )
     }
@@ -96,31 +134,26 @@ export default function Home({ setAuth }) {
 
   return (
     <VStack w="100vw" h="100vh" justify="center" bg={secondary}>
-      <HStack pos="absolute" right="4" top="4">
-        <SunIcon />
-        <LightMode>
-          <Switch
-            defaultChecked={(colorMode == "dark") ? true : false}
-            colorScheme="blackAlpha"
-            onChange={() => { setTimeout(() => { toggleColorMode(); }, 100) }}
-            sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'blackAlpha.500' } }}
-            border="1px"
-            borderRadius="2xl"
-            borderColor="whiteAlpha.500"
-          />
-        </LightMode>
-        <MoonIcon />
+      <HStack pos="absolute" right="2" top="2">
+        <IconButton icon={<SunIcon />} onClick={toggleColorMode} variant="outline" borderColor={footerDivider} />
       </HStack>
       <VStack pb="32">
+        {/* <VStack>
+          <Text>{JSON.stringify({
+              x: mousePosition.x - window.innerWidth / 2,
+              y: mousePosition.y - window.innerHeight / 2
+              })}</Text>
+            <Text>{JSON.stringify(eyePos.x)}</Text>
+        </VStack> */}
         <HStack spacing="0">
           <Text fontFamily="Inter" fontSize="4xl" fontWeight="bold">Employee L</Text>
           <HStack spacing="0" pos="relative">
             <Box pos="relative">
-              <Box bg={textColorVal} p="0.5" pos="absolute" left="11px" bottom="24px" borderRadius="full" />
+              <Box bg={textColorVal} p="0.5" pos="absolute" left={eyePos.x + "px"} top={eyePos.y + "px"} borderRadius="full" />
               <Text fontFamily="Inter" fontSize="4xl" fontWeight="normal">o</Text>
             </Box>
             <Box pos="relative">
-              <Box bg={textColorVal} p="0.5" pos="absolute" left="11px" bottom="24px" borderRadius="full" />
+              <Box bg={textColorVal} p="0.5" pos="absolute" left={eyePos.x + "px"} top={eyePos.y + "px"} borderRadius="full" />
               <Text fontFamily="Inter" fontSize="4xl" fontWeight="normal">o</Text>
             </Box>
           </HStack>

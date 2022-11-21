@@ -18,6 +18,8 @@ import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, C
 import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdHelp, MdOutlineLogout } from 'react-icons/md'
 import { BsSortAlphaDown, BsSortAlphaDownAlt } from "react-icons/bs"
 
+import { useNavigate } from 'react-router-dom'
+
 
 import { faker } from '@faker-js/faker';
 
@@ -43,6 +45,8 @@ export default function ControlPanel({
     changeEmployees,
     skills,
     changeSkills }) {
+
+    const navigate = useNavigate();
 
     const { colorMode, toggleColorMode } = useColorMode()
 
@@ -251,7 +255,6 @@ export default function ControlPanel({
     }
 
     const primary = useColorModeValue('white', 'gray.800')
-    const secondary = useColorModeValue('gray.200', 'gray.700')
 
     const LogOutButton = () => {
 
@@ -259,6 +262,11 @@ export default function ControlPanel({
         const cancelRef = React.useRef()
 
         const [willLogOut, changeWillLogOut] = useState(false)
+
+        function doLogOut() {
+            changeWillLogOut(true);
+            setTimeout(function () { navigate("/") }, 1000)
+        }
 
         return (
             <>
@@ -275,10 +283,6 @@ export default function ControlPanel({
                     isCentered
                     motionPreset="slideInBottom"
                     preserveScrollBarGap
-                    onCloseComplete={() => {
-                        if (willLogOut)
-                            setAuth(false)
-                    }}
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
@@ -293,7 +297,7 @@ export default function ControlPanel({
                                     Cancel
                                 </Button>
                                 <LightMode>
-                                    <Button colorScheme='red' ml={3} onClick={() => { changeWillLogOut(true); onClose() }}>
+                                    <Button colorScheme='red' ml={3} isLoading={willLogOut} onClick={() => { doLogOut() }}>
                                         Log out
                                     </Button>
                                 </LightMode>
@@ -307,7 +311,7 @@ export default function ControlPanel({
 
     const handleChangeSkill = () => {
         var index = document.getElementById("panelSkillsDropDown").selectedIndex;
-        if(index != 0)
+        if (index != 0)
             changePanelSearchSkill(skills[index - 1].skill_id);
         else
             changePanelSearchSkill("");
@@ -317,16 +321,7 @@ export default function ControlPanel({
         <VStack w="100%" h="100%" bg={primary}>
             <HStack w="100%" p="2" justify="right">
                 <HStack>
-                    <SunIcon />
-                    <LightMode>
-                        <Switch
-                            colorScheme="blackAlpha"
-                            defaultChecked={(colorMode == "dark") ? true : false}
-                            onChange={() => { setTimeout(function () { toggleColorMode() }, 100) }}
-                            sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'blackAlpha.500' } }}
-                            border="1px" borderRadius="2xl" borderColor="whiteAlpha.500" />
-                    </LightMode>
-                    <MoonIcon />
+                    <IconButton icon={<SunIcon />} onClick={toggleColorMode} variant="outline" />
                 </HStack>
             </HStack>
             <VStack py="9" spacing="0">

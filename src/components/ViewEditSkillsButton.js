@@ -227,7 +227,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
                     toast({
                         render: () => (
-                            <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <CheckCircleIcon w={5} h={5} m="0.5" />
                                     <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
@@ -315,7 +315,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
                     toast({
                         render: () => (
-                            <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <CheckCircleIcon w={5} h={5} m="0.5" />
                                     <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">

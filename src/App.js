@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react'
 
 import logo from './logo.svg';
 import './App.css';
-import { ChakraProvider, useColorMode } from '@chakra-ui/react';
+import { ChakraProvider } from '@chakra-ui/react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import Home from './Home';
 import Dashboard from './Dashboard';
@@ -13,19 +14,14 @@ function App() {
 
   const [auth, setAuth] = useState(false)
 
-  function showDashboard() {
-    if (auth)
-      return (
-        <Dashboard setAuth={setAuth} navBarHeight={navBarHeight} />)
-    else
-      return (
-        <Home auth={auth} setAuth={setAuth}/>
-      )
-  }
-
   return (
     <ChakraProvider>
-      {showDashboard()}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home auth={auth} setAuth={setAuth} />} />
+          <Route path="/dashboard" element={<Dashboard setAuth={setAuth} navBarHeight={navBarHeight} />} />
+        </Routes>
+      </BrowserRouter>
     </ChakraProvider>
   );
 }
