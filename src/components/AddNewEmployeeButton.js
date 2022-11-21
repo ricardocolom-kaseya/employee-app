@@ -112,7 +112,9 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
 
         const handleChangeSkill = () => {
             var index = document.getElementById("skillsDropDown").selectedIndex;
-            changeSkill(skills[index]);
+            console.log(index)
+            if(index != 0)
+                changeSkill(skills[index - 1]);
         }
 
         const handleChangeActivity = () => {
@@ -153,7 +155,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                 f_name = f_name.charAt(0).toUpperCase() + f_name.slice(1);
                 l_name = l_name.charAt(0).toUpperCase() + l_name.slice(1);
 
-                console.log("Attempting to add " + f_name + " " + l_name + "...")
+                // console.log("Attempting to add " + f_name + " " + l_name + "...")
 
                 fetch("http://localhost:4000/employees", {
                     method: 'POST',
@@ -174,7 +176,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                         return response.json()}
                 ).then(
                     data => {
-                        console.log("Added this employee")
+                        // console.log("Added this employee")
                         let newEmployee = data
                         newEmployee[0].dob = new Date(birthday);
                         toEmployees.push(newEmployee[0])
@@ -186,7 +188,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                     render: () => (
                         <Box m={3} color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
                             <HStack position="relative" align="center" minH="26px">
-                                <CheckCircleIcon w={5} h={5} m="0.5" />
+                                <CheckCircleIcon w={5} h={5} m="0.5" />,
                                 <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
                                     Saved
                                 </Text>
@@ -257,7 +259,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                             </VStack>
                             <FormControl isRequired pt="8">
                                 <SkillsHeader />
-                                <Select placeholder="Choose a skill" id="skillsDropDown" onChange={handleChangeSkill}>
+                                <Select placeholder="Skill" id="skillsDropDown" onChange={handleChangeSkill}>
                                     {skills.map((skill, i) => {
                                         return (<option key={i}>{skill.skill_name}</option>)
                                     })}

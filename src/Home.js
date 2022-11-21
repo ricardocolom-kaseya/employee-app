@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   useToast, Switch, Box, Text, HStack, VStack, InputRightElement, LightMode, Input, Button, Icon, IconButton, InputGroup, InputLeftElement, useColorMode, useColorModeValue, CloseButton,
 
@@ -34,6 +34,8 @@ export default function Home({ setAuth }) {
       changeUserPassword('');
     }
   }
+
+  const [isDarkMode, changeIsDarkMode] = useState(true)
 
   const authenticateUser = () => {
     console.log('Attempting to authenticate user...')
@@ -72,8 +74,7 @@ export default function Home({ setAuth }) {
             }
 
           }
-          else
-          {
+          else {
             setTimeout(function () { setAuth(true) }, 500)
           }
           return response.json();
@@ -85,7 +86,7 @@ export default function Home({ setAuth }) {
       )
     }
 
-    setTimeout(function () {doAuthenticate()}, 500)
+    setTimeout(function () { doAuthenticate() }, 500)
   }
 
   const primary = useColorModeValue('white', 'gray.700')
@@ -99,8 +100,8 @@ export default function Home({ setAuth }) {
         <SunIcon />
         <LightMode>
           <Switch
+            defaultChecked={(colorMode == "dark") ? true : false}
             colorScheme="blackAlpha"
-            defaultValue={colorMode}
             onChange={() => { setTimeout(() => { toggleColorMode(); }, 100) }}
             sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'blackAlpha.500' } }}
             border="1px"

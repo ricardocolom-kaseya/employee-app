@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, useColorModeValue } from '@chakra-ui/react'
-import {
-    FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
-} from '@chakra-ui/react'
+import { Box, HStack, VStack, useColorModeValue } from '@chakra-ui/react'
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
@@ -72,6 +66,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
     const [skills, changeSkills] = useState([]);
 
     const [search, changeSearch] = useState("");
+    const [searchSkill, changeSearchSkill] = useState("")
     const [sortAsc, changeSortAsc] = useState(true);
 
     const primary = useColorModeValue('white', 'gray.800')
@@ -115,10 +110,12 @@ export default function Dashboard({ navBarHeight, setAuth }) {
     }, [])
 
     function fetchEmployees() {
+        console.log(searchSkill)
         // Get all employees
         fetch("http://localhost:4000/employees", {
             headers: {
-                contains: search,
+                hasCharacters: search,
+                hasSkill: searchSkill,
                 order: (sortAsc ? "ASC" : "DESC")
             }
         }).then(
@@ -143,7 +140,11 @@ export default function Dashboard({ navBarHeight, setAuth }) {
 
     useEffect(() => {
         fetchEmployees();
-    }, [search, sortAsc])
+    }, [search, searchSkill, sortAsc])
+
+    useEffect(() => {
+        console.log(searchSkill)
+    }, [searchSkill])
 
     let width = "" + (windowSize.innerWidth - controlPanelWidth - 20) + "px"
 
@@ -157,6 +158,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
                 <ControlPanel
                     setAuth={setAuth}
                     changeSearch={changeSearch}
+                    changeSearchSkill={changeSearchSkill}
                     changeSortAsc={changeSortAsc}
                     employees={employees}
                     changeEmployees={changeEmployees}

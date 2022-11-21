@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, Heading, Input, Button, Icon, IconButton, Switch, Divider, useDisclosure, useColorMode, useColorModeValue, LightMode, ButtonGroup, InputGroup, InputLeftElement } from '@chakra-ui/react'
-import {
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    MenuItemOption,
-    MenuGroup,
-    MenuOptionGroup,
-    MenuDivider,
-} from '@chakra-ui/react'
+import { Avatar, Select, Text, HStack, VStack, Heading, Input, Button, Icon, IconButton, Switch, Divider, useDisclosure, useColorMode, useColorModeValue, LightMode, ButtonGroup, InputGroup, InputLeftElement, useTimeout } from '@chakra-ui/react'
 import {
     FormControl,
     FormLabel,
@@ -47,6 +37,7 @@ function randomInt(max) {
 export default function ControlPanel({
     setAuth,
     changeSearch,
+    changeSearchSkill,
     changeSortAsc,
     employees,
     changeEmployees,
@@ -57,10 +48,12 @@ export default function ControlPanel({
 
     const [panelSortAsc, changePanelSortAsc] = useState(true)
     const [panelSearch, changePanelSearch] = useState("");
+    const [panelSearchSkill, changePanelSearchSkill] = useState("")
 
     function goPressed() {
-        changeSortAsc(panelSortAsc);
-        changeSearch(panelSearch);
+        changeSearch(panelSearch)
+        changeSearchSkill(panelSearchSkill)
+        changeSortAsc(panelSortAsc)
     }
 
     let toEmployees = employees
@@ -69,10 +62,10 @@ export default function ControlPanel({
     const AddDummyEmployee = () => {
         // console.log("Adding dummy employee")
 
-        let employee_id = faker.datatype.uuid();
-        let f_name = faker.name.firstName();
-        let l_name = faker.name.lastName();
-        let dob = faker.date.birthdate();
+        let employee_id = faker.datatype.uuid()
+        let f_name = faker.name.firstName()
+        let l_name = faker.name.lastName()
+        let dob = faker.date.birthdate()
         let yyyy = dob.getFullYear()
         let mm = ((dob.getMonth() + 1) < 10) ? `0${dob.getMonth() + 1}` : dob.getMonth() + 1
         let dd = (dob.getDate() < 10) ? `0${dob.getDate()}` : dob.getDate()
@@ -102,7 +95,8 @@ export default function ControlPanel({
         }).then(
             response => {
                 console.log("POST /employees Status Code: " + response.status);
-                return response.json()}
+                return response.json()
+            }
         ).then(
             data => {
                 let newEmployee = data
@@ -122,7 +116,7 @@ export default function ControlPanel({
 
         const handleDeleteAllEmployees = () => {
 
-            console.log("Going to delete all employees... ");
+            // console.log("Going to delete all employees... ");
 
             fetch("http://localhost:4000/employees", {
                 method: "DELETE",
@@ -130,10 +124,13 @@ export default function ControlPanel({
                     delete_all: "true"
                 }
             }).then(
-                response => response.json()
+                response => {
+                    console.log("DELETE /employees Status Code: " + response.status);
+                    return response.json()
+                }
             ).then(
                 data => {
-                    console.log(data);
+                    // console.log(data);
                     toEmployees = [];
                     onClose();
                 }
@@ -197,10 +194,13 @@ export default function ControlPanel({
                     delete_all: "true"
                 }
             }).then(
-                response => response.json()
+                response => {
+                    console.log("DELETE /skills Status Code: " + response.status);
+                    return response.json()
+                }
             ).then(
                 data => {
-                    console.log(data);
+                    // console.log(data);
                     toSkills = [];
                     onClose();
                 }
@@ -305,6 +305,14 @@ export default function ControlPanel({
         )
     }
 
+    const handleChangeSkill = () => {
+        var index = document.getElementById("panelSkillsDropDown").selectedIndex;
+        if(index != 0)
+            changePanelSearchSkill(skills[index - 1].skill_id);
+        else
+            changePanelSearchSkill("");
+    }
+
     return (
         <VStack w="100%" h="100%" bg={primary}>
             <HStack w="100%" p="2" justify="right">
@@ -313,7 +321,7 @@ export default function ControlPanel({
                     <LightMode>
                         <Switch
                             colorScheme="blackAlpha"
-                            defaultValue={colorMode}
+                            defaultChecked={(colorMode == "dark") ? true : false}
                             onChange={() => { setTimeout(function () { toggleColorMode() }, 100) }}
                             sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'blackAlpha.500' } }}
                             border="1px" borderRadius="2xl" borderColor="whiteAlpha.500" />
@@ -356,20 +364,14 @@ export default function ControlPanel({
                             </FormControl>
                         </HStack>
                         <HStack w="100%">
-                            <Menu>
-                                <MenuButton w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter" as={Button} variant="outline" rightIcon={<ChevronDownIcon />}>
-                                    Skill
-                                </MenuButton>
-                                <MenuList>
-                                    <MenuItem>All</MenuItem>
-                                    <MenuItem>Two</MenuItem>
-                                    <MenuItem>Three</MenuItem>
-                                    <MenuItem>Four</MenuItem>
-                                </MenuList>
-                            </Menu>
+                            <Select placeholder="Any skill" id="panelSkillsDropDown" onChange={handleChangeSkill}>
+                                {skills.map((skill, i) => {
+                                    return (<option key={i}>{skill.skill_name}</option>)
+                                })}
+                            </Select>
                             <ButtonGroup isAttached variant="outline" w="122px">
                                 <IconButton variant={panelSortAsc ? "solid" : "outline"} icon={<Icon as={BsSortAlphaDown} w={6} h={6} />} onClick={() => changePanelSortAsc(true)} />
-                                <IconButton variant={!panelSortAsc ? "solid" : "outline"} icon={<Icon as={BsSortAlphaDownAlt} w={6} h={6} />} onClick={() => { console.log("GO"); changePanelSortAsc(false) }} />
+                                <IconButton variant={!panelSortAsc ? "solid" : "outline"} icon={<Icon as={BsSortAlphaDownAlt} w={6} h={6} />} onClick={() => { changePanelSortAsc(false) }} />
                             </ButtonGroup>
                         </HStack>
                         <Button w="80px" variant="solid" onClick={() => { goPressed() }}>
