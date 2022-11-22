@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Box, HStack, VStack, useColorModeValue } from '@chakra-ui/react'
+import { Box, HStack, VStack, useColorModeValue, Text, CloseButton, useToast } from '@chakra-ui/react'
+
+import { WarningIcon } from '@chakra-ui/icons'
 
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
@@ -15,7 +17,7 @@ const controlPanelWidth = "320"
 
 const width = "" + (window.innerWidth - controlPanelWidth) + "px";
 
-const CardView = ({ employees, changeEmployees, skills }) => {
+const CardView = ({ token, employees, changeEmployees, skills }) => {
 
     let leftCol = [];
     let midCol = [];
@@ -36,7 +38,7 @@ const CardView = ({ employees, changeEmployees, skills }) => {
                 {leftCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
-                            <EmployeeCard employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
+                            <EmployeeCard token={token} employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
                         )
                 })}
             </VStack>
@@ -44,7 +46,7 @@ const CardView = ({ employees, changeEmployees, skills }) => {
                 {midCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
-                            <EmployeeCard employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
+                            <EmployeeCard token={token} employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
                         )
                 })}
             </VStack>
@@ -52,7 +54,7 @@ const CardView = ({ employees, changeEmployees, skills }) => {
                 {rightCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
-                            <EmployeeCard employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
+                            <EmployeeCard token={token} employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
                         )
                 })}
             </VStack>
@@ -60,7 +62,7 @@ const CardView = ({ employees, changeEmployees, skills }) => {
     )
 }
 
-export default function Dashboard({ navBarHeight, setAuth }) {
+export default function Dashboard({ navBarHeight, setAuth, token, changeToken }) {
 
     const [employees, changeEmployees] = useState([]);
     const [skills, changeSkills] = useState([]);
@@ -80,23 +82,46 @@ export default function Dashboard({ navBarHeight, setAuth }) {
 
     const [windowSize, setWindowSize] = useState(getWindowSize())
 
+    const toast = useToast();
+
     useEffect(() => {
 
         // Get all skills
-        fetch("http://localhost:4000/skills").then(
+        fetch("http://localhost:4000/skills", {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        }
+        ).then(
             response => {
+                if (response.status != 200)
+                    throw new Error(response.status)
                 console.log("GET /skills Status Code: " + response.status)
-                if(!response.ok)
-                {
-                    console.log("GET /skills: JWT Token Invalid")
-                }
                 return response.json();
             }
         ).then(
             data => {
                 changeSkills(data)
             }
-        )
+        ).catch((err) => {
+            if (!toast.isActive('sessionExpiredToast')) {
+                toast({
+                    id: 'sessionExpiredToast',
+                    render: () => (
+                        <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                            <HStack position="relative" align="center" minH="26px">
+                                <WarningIcon w={5} h={5} m="0.5" />
+                                <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    Session Expired. Log out.
+                                </Text>
+                                <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                            </HStack>
+                        </Box>
+                    ), status: 'error', duration: 3000
+                })
+            }
+        })
 
         function handleWindowResize() {
             setWindowSize(getWindowSize());
@@ -110,21 +135,19 @@ export default function Dashboard({ navBarHeight, setAuth }) {
     }, [])
 
     function fetchEmployees() {
-        console.log(searchSkill)
+        let searchParams = { includesCharacters: search, includesSkill: searchSkill, order: (sortAsc ? "ASC" : "DESC") }
         // Get all employees
         fetch("http://localhost:4000/employees", {
             headers: {
-                hasCharacters: search,
-                hasSkill: searchSkill,
-                order: (sortAsc ? "ASC" : "DESC")
-            }
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+                "Search": JSON.stringify(searchParams),
+            },
         }).then(
             response => {
+                if (response.status != 200)
+                    throw new Error(response.status)
                 console.log("GET /employees Status Code: " + response.status);
-                if(!response.ok)
-                {
-                    console.log("GET /employees JWT Token invalid")
-                }
                 return response.json()
             }
         ).then(
@@ -135,16 +158,27 @@ export default function Dashboard({ navBarHeight, setAuth }) {
                 });
                 changeEmployees(toEmployees)
             }
-        )
+        ).catch((err) => {
+            toast({
+                id: 'sessionExpiredToast',
+                render: () => (
+                    <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                        <HStack position="relative" align="center" minH="26px">
+                            <WarningIcon w={5} h={5} m="0.5" />
+                            <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                Session Expired. Log out.
+                            </Text>
+                            <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                        </HStack>
+                    </Box>
+                ), status: 'error', duration: 3000
+            })
+        })
     }
 
     useEffect(() => {
         fetchEmployees();
     }, [search, searchSkill, sortAsc])
-
-    useEffect(() => {
-        console.log(searchSkill)
-    }, [searchSkill])
 
     let width = "" + (windowSize.innerWidth - controlPanelWidth - 20) + "px"
 
@@ -152,10 +186,18 @@ export default function Dashboard({ navBarHeight, setAuth }) {
         <VStack align="left" spacing="0" minH="100vh" w={width} bg={secondary}>
             <Navbar navBarHeight={navBarHeight} width={width} />
             <HStack w={width} h="100%" spacing="0" pt={navBarHeight + "px"}>
-                <CardView windowSize={windowSize} employees={employees} changeEmployees={changeEmployees} skills={skills} changeSkills={changeSkills} />
+                <CardView
+                    windowSize={windowSize}
+                    token={token}
+                    employees={employees}
+                    changeEmployees={changeEmployees}
+                    skills={skills}
+                    changeSkills={changeSkills} />
             </HStack>
             <Box pos="fixed" w={controlPanelWidth + "px"} h="100vh" right="0">
                 <ControlPanel
+                    token={token}
+                    changeToken={changeToken}
                     setAuth={setAuth}
                     changeSearch={changeSearch}
                     changeSearchSkill={changeSearchSkill}

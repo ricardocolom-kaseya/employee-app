@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { Avatar, Select, Text, HStack, VStack, Heading, Input, Button, Icon, IconButton, Switch, Divider, useDisclosure, useColorMode, useColorModeValue, LightMode, ButtonGroup, InputGroup, InputLeftElement, useTimeout } from '@chakra-ui/react'
+import React, { useState } from 'react'
+import { Avatar, Select, Text, HStack, VStack, Heading, Input, Button, Icon, IconButton, Divider, useDisclosure, useColorMode, useColorModeValue, LightMode, ButtonGroup, InputGroup, InputLeftElement, useToast, Box, CloseButton } from '@chakra-ui/react'
 import {
     FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
 } from '@chakra-ui/react'
 import {
     AlertDialog,
@@ -14,18 +11,14 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
 } from '@chakra-ui/react'
-import { DeleteIcon, EditIcon, SearchIcon, SunIcon, MoonIcon, ChevronDownIcon, CheckIcon } from '@chakra-ui/icons'
-import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdHelp, MdOutlineLogout } from 'react-icons/md'
+import { SearchIcon, SunIcon, WarningIcon } from '@chakra-ui/icons'
+import { MdHelp, MdOutlineLogout } from 'react-icons/md'
 import { BsSortAlphaDown, BsSortAlphaDownAlt } from "react-icons/bs"
 
 import { useNavigate } from 'react-router-dom'
 
 
 import { faker } from '@faker-js/faker';
-
-import validator from 'validator'
-
-import KaseyaLogoSmall from "../assets/kaseya-logo-small.png"
 
 import AddNewEmployeeButton from './AddNewEmployeeButton'
 import ViewEditSkillsButton from './ViewEditSkillsButton'
@@ -37,7 +30,8 @@ function randomInt(max) {
 }
 
 export default function ControlPanel({
-    setAuth,
+    token,
+    changeToken,
     changeSearch,
     changeSearchSkill,
     changeSortAsc,
@@ -47,6 +41,7 @@ export default function ControlPanel({
     changeSkills }) {
 
     const navigate = useNavigate();
+    const toast = useToast();
 
     const { colorMode, toggleColorMode } = useColorMode()
 
@@ -80,20 +75,22 @@ export default function ControlPanel({
         f_name = f_name.replace("'", "''")
         l_name = l_name.replace("'", "''")
 
-        let employee = {f_name, l_name, yyyy, mm, dd, email, skill_id, is_active}
-        let token = {token: "000"}
-        let body = {employee, token}
+        let employee = { f_name, l_name, yyyy, mm, dd, email, skill_id, is_active }
+        let body = { employee }
 
         // console.log("Attempting to create " + f_name + " " + l_name + "...")
 
         fetch("http://localhost:4000/employees", {
             method: 'POST',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
             },
             body: JSON.stringify(body)
         }).then(
             response => {
+                if (response.status != 200)
+                    throw new Error(response.status)
                 console.log("POST /employees Status Code: " + response.status);
                 return response.json()
             }
@@ -108,7 +105,24 @@ export default function ControlPanel({
                 toEmployees.push(newEmployee)
                 changeEmployees(toEmployees);
             }
-        )
+        ).catch((err) => {
+            if (!toast.isActive('sessionExpiredToast')) {
+                toast({
+                    id: 'sessionExpiredToast',
+                    render: () => (
+                        <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                            <HStack position="relative" align="center" minH="26px">
+                                <WarningIcon w={5} h={5} m="0.5" />
+                                <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    Session Expired. Log out.
+                                </Text>
+                                <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                            </HStack>
+                        </Box>
+                    ), status: 'error', duration: 3000
+                })
+            }
+        })
     }
 
     const DeleteAllEmployeesButton = () => {
@@ -122,10 +136,13 @@ export default function ControlPanel({
             fetch("http://localhost:4000/employees", {
                 method: "DELETE",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
             }).then(
                 response => {
+                    if (response.status != 200)
+                        throw new Error(response.status)
                     console.log("DELETE /employees Status Code: " + response.status);
                     return response.json()
                 }
@@ -135,7 +152,24 @@ export default function ControlPanel({
                     toEmployees = [];
                     onClose();
                 }
-            )
+            ).catch((err) => {
+                if (!toast.isActive('sessionExpiredToast')) {
+                    toast({
+                        id: 'sessionExpiredToast',
+                        render: () => (
+                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                                <HStack position="relative" align="center" minH="26px">
+                                    <WarningIcon w={5} h={5} m="0.5" />
+                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        Session Expired. Log out.
+                                    </Text>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                </HStack>
+                            </Box>
+                        ), status: 'error', duration: 3000
+                    })
+                }
+            })
         }
 
         return (
@@ -192,10 +226,13 @@ export default function ControlPanel({
             fetch("http://localhost:4000/skills", {
                 method: "DELETE",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
             }).then(
                 response => {
+                    if (response.status != 200)
+                        throw new Error(response.status)
                     console.log("DELETE /skills Status Code: " + response.status);
                     return response.json()
                 }
@@ -205,7 +242,24 @@ export default function ControlPanel({
                     toSkills = [];
                     onClose();
                 }
-            )
+            ).catch((err) => {
+                if (!toast.isActive('sessionExpiredToast')) {
+                    toast({
+                        id: 'sessionExpiredToast',
+                        render: () => (
+                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                                <HStack position="relative" align="center" minH="26px">
+                                    <WarningIcon w={5} h={5} m="0.5" />
+                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        Session Expired. Log out.
+                                    </Text>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                </HStack>
+                            </Box>
+                        ), status: 'error', duration: 3000
+                    })
+                }
+            })
         }
 
         return (
@@ -333,13 +387,13 @@ export default function ControlPanel({
             <Divider w="90%" />
             <VStack align="left" w="100%" px="4">
                 <VStack w="100%">
-                    <AddNewEmployeeButton employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
+                    <AddNewEmployeeButton token={token} employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
                     <Button variant="outline" pos="relative" rightIcon={<Icon as={MdHelp} w={6} h={6} />} onClick={() => AddDummyEmployee()} w="100%">
                         <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                             Add a dummy employee
                         </Text>
                     </Button>
-                    <ViewEditSkillsButton skills={skills} changeSkills={changeSkills} />
+                    <ViewEditSkillsButton token={token} skills={skills} changeSkills={changeSkills} />
                 </VStack>
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
@@ -373,6 +427,8 @@ export default function ControlPanel({
                     <VStack w="100%" spacing="0">
                         <DeleteAllEmployeesButton />
                         <DeleteAllSkillsButton />
+                        <Text w="100%" noOfLines="2">Token: {token}</Text>
+                        <Button onClick={() => changeToken("none")}>Reset token</Button>
                     </VStack>
                 </VStack>
             </VStack>

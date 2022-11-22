@@ -84,7 +84,7 @@ const SkillBlock = (skill) => {
     )
 }
 
-export default function EmployeeCard({ employee, skills, employees, changeEmployees }) {
+export default function EmployeeCard({ token, employee, skills, employees, changeEmployees }) {
 
     let toEmployees = employees;
     let thisEmployeeIndex = toEmployees.indexOf(employee);
@@ -215,6 +215,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
                         },
                         body: JSON.stringify(body)
                     }).then(
@@ -362,6 +363,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify({ employee_id: employee.employee_id })
             }).then(

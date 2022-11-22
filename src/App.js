@@ -13,13 +13,14 @@ const navBarHeight = 40;
 function App() {
 
   const [auth, setAuth] = useState(false)
+  const [token, changeToken] = useState("")
 
   return (
     <ChakraProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home auth={auth} setAuth={setAuth} />} />
-          <Route path="/dashboard" element={<Dashboard setAuth={setAuth} navBarHeight={navBarHeight} />} />
+          <Route path="/" element={<Home auth={auth} setAuth={setAuth} changeToken={changeToken} />} />
+          <Route path="/dashboard" element={<Dashboard setAuth={setAuth} token={token} changeToken={changeToken} navBarHeight={navBarHeight} />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

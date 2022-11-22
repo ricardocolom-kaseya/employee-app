@@ -59,7 +59,7 @@ function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-export default function AddNewEmployeeButton({ employees, changeEmployees, skills }) {
+export default function AddNewEmployeeButton({ token, employees, changeEmployees, skills }) {
 
     const toast = useToast();
 
@@ -159,11 +159,14 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                 fetch("http://localhost:4000/employees", {
                     method: 'POST',
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
                     },
                     body: JSON.stringify(body)
                 }).then(
                     response => {
+                        if (response.status != 200)
+                            throw new Error(response.status)
                         console.log("POST /employees Status Code: " + response.status);
                         return response.json()
                     }
@@ -176,21 +179,38 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
 
                         toEmployees.push(newEmployee)
                         changeEmployees(toEmployees);
-                    }
-                )
 
-                toast({
-                    render: () => (
-                        <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
-                            <HStack position="relative" align="center" minH="26px">
-                                <CheckCircleIcon w={5} h={5} m="0.5" />,
-                                <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
-                                    Saved
-                                </Text>
-                                <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                            </HStack>
-                        </Box>
-                    ), status: 'error', duration: 3000
+                        toast({
+                            render: () => (
+                                <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                                    <HStack position="relative" align="center" minH="26px">
+                                        <CheckCircleIcon w={5} h={5} m="0.5" />,
+                                        <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                            Saved
+                                        </Text>
+                                        <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                    </HStack>
+                                </Box>
+                            ), status: 'error', duration: 3000
+                        })
+                    }
+                ).catch((err) => {
+                    if (!toast.isActive('sessionExpiredToast')) {
+                        toast({
+                            id: 'sessionExpiredToast',
+                            render: () => (
+                                <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                                    <HStack position="relative" align="center" minH="26px">
+                                        <WarningIcon w={5} h={5} m="0.5" />
+                                        <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                            Session Expired. Log out.
+                                        </Text>
+                                        <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                    </HStack>
+                                </Box>
+                            ), status: 'error', duration: 3000
+                        })
+                    }
                 })
 
                 onClose();

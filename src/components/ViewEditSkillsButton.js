@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, CloseButton, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, useColorModeValue, Textarea, useToast, LightMode } from '@chakra-ui/react'
+import { Box, Text, HStack, VStack, CloseButton, Input, Button, Icon, useDisclosure, useColorModeValue, Textarea, useToast, LightMode } from '@chakra-ui/react'
 import {
     FormControl,
     FormLabel,
-    FormErrorMessage,
-    FormHelperText,
 } from '@chakra-ui/react'
 import {
     Modal,
@@ -23,7 +21,7 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
 } from '@chakra-ui/react'
-import { DeleteIcon, EditIcon, WarningIcon, ChevronDownIcon, CheckIcon, CheckCircleIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon, WarningIcon, CheckIcon, CheckCircleIcon } from '@chakra-ui/icons'
 import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
 
 import { faker } from '@faker-js/faker';
@@ -45,7 +43,7 @@ function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-export default function ViewEditSkillsButton({ skills, changeSkills }) {
+export default function ViewEditSkillsButton({ token, skills, changeSkills }) {
 
     const toast = useToast();
 
@@ -120,10 +118,13 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify({ skill_id: skillID })
             }).then(
                 response => {
+                    if (response.status != 200)
+                        throw new Error(response.status)
                     console.log("DELETE /skills Status Code: " + response.status);
                     return response.json()
                 }
@@ -139,7 +140,24 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
                     changeModalSkills(newAllSkills);
                 }
-            )
+            ).catch((err) => {
+                if (!toast.isActive('sessionExpiredToast')) {
+                    toast({
+                        id: 'sessionExpiredToast',
+                        render: () => (
+                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                                <HStack position="relative" align="center" minH="26px">
+                                    <WarningIcon w={5} h={5} m="0.5" />
+                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        Session Expired. Log out.
+                                    </Text>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                </HStack>
+                            </Box>
+                        ), status: 'error', duration: 3000
+                    })
+                }
+            })
         }
 
         if (modalSkills.length > 0) {
@@ -219,10 +237,13 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify(skillInfo)
             }).then(
                 response => {
+                    if (response.status != 200)
+                        throw new Error(response.status)
                     console.log("PUT /skills Status Code: " + response.status);
                     return response.json()
                 }
@@ -305,16 +326,19 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
             let skill_name = skillName.replace(/'/g, "''")
             let skill_desc = skillDesc.replace(/'/g, "''")
 
-            let skillInfo = { skill_name, skill_desc}
+            let skillInfo = { skill_name, skill_desc }
 
             fetch("http://localhost:4000/skills", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify(skillInfo)
             }).then(
                 response => {
+                    if (response.status != 200)
+                        throw new Error(response.status)
                     console.log("POST /skills Status Code: " + response.status);
                     return response.json()
                 }
@@ -345,7 +369,24 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     newAllSkills.push(newSkill)
                     changeModalSkills(newAllSkills);
                 }
-            )
+            ).catch((err) => {
+                if (!toast.isActive('sessionExpiredToast')) {
+                    toast({
+                        id: 'sessionExpiredToast',
+                        render: () => (
+                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                                <HStack position="relative" align="center" minH="26px">
+                                    <WarningIcon w={5} h={5} m="0.5" />
+                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        Session Expired. Log out.
+                                    </Text>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                </HStack>
+                            </Box>
+                        ), status: 'error', duration: 3000
+                    })
+                }
+            })
         }
 
         return (

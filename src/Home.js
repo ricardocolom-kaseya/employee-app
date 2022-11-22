@@ -17,7 +17,7 @@ import md5 from 'md5'
 
 import { useMousePosition } from './helpers/useMousePosition'
 
-export default function Home({ setAuth }) {
+export default function Home({ changeToken }) {
 
   const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ export default function Home({ setAuth }) {
   }
   useEffect(() => {
     changeEyePos({
-      x: clamp(mousePosition.x - window.innerWidth / 2 - 46, 5, 11),
+      x: clamp(mousePosition.x - window.innerWidth / 2 - 55, 5, 11),
       y: clamp(mousePosition.y - window.innerHeight / 2 + 265, 24, 32)
     })
   }, [mousePosition])
@@ -65,10 +65,10 @@ export default function Home({ setAuth }) {
       fetch('http://localhost:4000/authenticate', {
         method: 'POST',
         headers: {
-            "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({username: userName, userpassword: userPassword})
-        
+        body: JSON.stringify({ username: userName, userpassword: userPassword })
+
       }).then(
         (response) => {
           console.log("POST /authorize Status Code: " + response.status);
@@ -98,6 +98,11 @@ export default function Home({ setAuth }) {
             setTimeout(function () { navigate("/dashboard") }, 500)
           }
           return response.json();
+        }
+      ).then(
+        data => {
+          console.log(data)
+          changeToken(data.accessToken)
         }
       ).catch(err => {
         changeIsAuthenticating(false)
@@ -138,13 +143,6 @@ export default function Home({ setAuth }) {
         <IconButton icon={<SunIcon />} onClick={toggleColorMode} variant="outline" borderColor={footerDivider} />
       </HStack>
       <VStack pb="32">
-        <VStack>
-          {/* <Text>{JSON.stringify({
-              x: mousePosition.x - window.innerWidth / 2,
-              y: mousePosition.y - window.innerHeight / 2
-              })}</Text>
-            <Text>{JSON.stringify(eyePos.x)}</Text> */}
-        </VStack>
         <HStack spacing="0">
           <Text fontFamily="Inter" fontSize="4xl" fontWeight="bold">Employee L</Text>
           <HStack spacing="0" pos="relative">
