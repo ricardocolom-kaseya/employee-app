@@ -65,9 +65,10 @@ export default function Home({ setAuth }) {
       fetch('http://localhost:4000/authenticate', {
         method: 'POST',
         headers: {
-          username: userName,
-          userpassword: userPassword,
+            "Content-Type": "application/json",
         },
+        body: JSON.stringify({username: userName, userpassword: userPassword})
+        
       }).then(
         (response) => {
           console.log("POST /authorize Status Code: " + response.status);
