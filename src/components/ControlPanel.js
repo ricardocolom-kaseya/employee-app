@@ -66,7 +66,6 @@ export default function ControlPanel({
     const AddDummyEmployee = () => {
         // console.log("Adding dummy employee")
 
-        let employee_id = faker.datatype.uuid()
         let f_name = faker.name.firstName()
         let l_name = faker.name.lastName()
         let dob = faker.date.birthdate()
@@ -81,7 +80,7 @@ export default function ControlPanel({
         f_name = f_name.replace("'", "''")
         l_name = l_name.replace("'", "''")
 
-        let employee = {employee_id, f_name, l_name, yyyy, mm, dd, email, skill_id, is_active}
+        let employee = {f_name, l_name, yyyy, mm, dd, email, skill_id, is_active}
         let token = {token: "000"}
         let body = {employee, token}
 
@@ -100,9 +99,8 @@ export default function ControlPanel({
             }
         ).then(
             data => {
-                console.log(data)
                 let newEmployee = {
-                    employee_id, f_name, l_name, dob, email, skill_id, is_active
+                    employee_id: data, f_name, l_name, dob, email, skill_id, is_active
                 }
 
                 let toEmployees = [...employees]

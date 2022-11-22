@@ -104,7 +104,6 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                 changeBirthday(date)
             }
             else {
-                console.log("Date is invalid")
                 changeBirthday(0)
                 changeBirthdayValid(false)
             }
@@ -112,7 +111,6 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
 
         const handleChangeSkill = () => {
             var index = document.getElementById("skillsDropDown").selectedIndex;
-            console.log(index)
             if(index != 0)
                 changeSkill(skills[index - 1]);
         }
@@ -138,9 +136,6 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
         const handleAddEmployee = () => {
 
             if (allValid()) {
-                // Selecting the last skill dropdown returns an error "Cannot read properties of undefined (reading 'skill_id')"
-
-                let employee_id = faker.datatype.uuid();
 
                 const toDate = new Date(birthday)
 
@@ -155,31 +150,30 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                 f_name = f_name.charAt(0).toUpperCase() + f_name.slice(1);
                 l_name = l_name.charAt(0).toUpperCase() + l_name.slice(1);
 
+                let employee = {f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity}
+                let token = {token: "000"}
+                let body = {employee, token}
+
                 // console.log("Attempting to add " + f_name + " " + l_name + "...")
 
                 fetch("http://localhost:4000/employees", {
                     method: 'POST',
                     headers: {
-                        'employee_id': employee_id,
-                        'f_name': f_name,
-                        'l_name': l_name,
-                        'yyyy': yyyy,
-                        'mm': mm,
-                        'dd': dd,
-                        'email': email,
-                        'skill_id': skill.skill_id,
-                        'is_active': activity
-                    }
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
                 }).then(
                     response => {
                         console.log("POST /employees Status Code: " + response.status);
                         return response.json()}
                 ).then(
                     data => {
-                        // console.log("Added this employee")
-                        let newEmployee = data
-                        newEmployee[0].dob = new Date(birthday);
-                        toEmployees.push(newEmployee[0])
+                        let dob = new Date(birthday)
+                        let newEmployee = {
+                            employee_id: data, f_name, l_name, dob, email, skill_id: skill.skill_id, is_active: activity
+                        }
+
+                        toEmployees.push(newEmployee)
                         changeEmployees(toEmployees);
                     }
                 )
