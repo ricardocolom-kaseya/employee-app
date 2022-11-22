@@ -122,8 +122,8 @@ export default function ControlPanel({
             fetch("http://localhost:4000/employees", {
                 method: "DELETE",
                 headers: {
-                    delete_all: "true"
-                }
+                    "Content-Type": "application/json"
+                },
             }).then(
                 response => {
                     console.log("DELETE /employees Status Code: " + response.status);
@@ -192,8 +192,8 @@ export default function ControlPanel({
             fetch("http://localhost:4000/skills", {
                 method: "DELETE",
                 headers: {
-                    delete_all: "true"
-                }
+                    "Content-Type": "application/json"
+                },
             }).then(
                 response => {
                     console.log("DELETE /skills Status Code: " + response.status);

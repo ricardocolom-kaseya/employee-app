@@ -199,44 +199,42 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     let dd = (toDate.getDate() < 10) ? `0${toDate.getDate()}` : toDate.getDate()
 
                     // If either name contains an apostrophe, "double up" the apostrophe
-                    let f_name = firstName.replace("'", "''")
-                    let l_name = lastName.replace("'", "''")
+                    let f_name = firstName.replace(/'/g, "''")
+                    let l_name = lastName.replace(/'/g, "''")
 
                     // console.log("Attempting to save " + f_name + " " + l_name + "...")
-    
+
 
                     const putURL = "http://localhost:4000/employees/" + employee.employee_id;
+
+                    let employeeInfo = { f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity }
+
+                    let token = { token: "000" }
+                    let body = { employee: employeeInfo, token }
 
                     fetch(putURL, {
                         method: "PUT",
                         headers: {
-                            'employee_id': employee.employee_id,
-                            'f_name': f_name,
-                            'l_name': l_name,
-                            'yyyy': yyyy,
-                            'mm': mm,
-                            'dd': dd,
-                            'email': email,
-                            'skill_id': skill.skill_id,
-                            'is_active': activity
-                        }
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(body)
                     }).then(
                         response => {
-                          console.log("PUT /employees Status Code: " + response.status);
-                          return response.json()}
+                            console.log("PUT /employees Status Code: " + response.status);
+                            return response.json()
+                        }
                     ).then(
                         data => {
                             // console.log("Saved this employee...")
-                            employee.f_name = f_name;
-                            employee.l_name = l_name;
+                            console.log(data);
+                            employee.f_name = data.f_name;
+                            employee.l_name = data.l_name;
                             employee.dob = new Date(birthday);
-                            employee.email = email;
-                            employee.skill_id = skill.skill_id
-                            employee.is_active = activity;
+                            employee.email = data.email;
+                            employee.skill_id = data.skill_id
+                            employee.is_active = data.is_active;
 
                             toEmployees[thisEmployeeIndex] = employee;
-
-                            // This forces the dashboard to reload the employees state and immediately show the updated employee card, unfortunately it has the side effect of closing the current modal causing the close transition to appear abrupt.
 
                             onClose();
 
@@ -360,25 +358,26 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
         const cancelRef = React.useRef()
 
         function handleDeleteEmployee() {
+
             fetch("http://localhost:4000/employees", {
                 method: "DELETE",
                 headers: {
-                    'employee_id': employee.employee_id
-                }
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ employee_id: employee.employee_id })
             }).then(
                 response => {
-                  console.log("DELETE /employees Status Code: " + response.status);
-                  return response.json()
-                }
-            ).then(
-                data => {
-                    let newToEmployees = [];
-                    for (var i = 0; i < toEmployees.length; ++i) {
-                        if (i != thisEmployeeIndex)
-                            newToEmployees.push(toEmployees[i])
+                    if (response.ok) {
+                        console.log("DELETE /employees Status Code: " + response.status);
+
+                        let newToEmployees = [];
+                        for (var i = 0; i < toEmployees.length; ++i) {
+                            if (i != thisEmployeeIndex)
+                                newToEmployees.push(toEmployees[i])
+                        }
+                        toEmployees = [...newToEmployees];
+                        onClose();
                     }
-                    toEmployees = [...newToEmployees];
-                    onClose();
                 }
             )
         }

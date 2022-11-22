@@ -119,12 +119,14 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
             fetch("http://localhost:4000/skills", {
                 method: "DELETE",
                 headers: {
-                    'skill_id': skillID
-                }
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ skill_id: skillID })
             }).then(
                 response => {
                     console.log("DELETE /skills Status Code: " + response.status);
-                    return response.json()}
+                    return response.json()
+                }
             ).then(
                 data => {
                     // console.log("Skill deleted...")
@@ -208,17 +210,22 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
             let putURL = "http://localhost:4000/skills/" + skillID
 
+            let skill_name = skillName.replace(/'/g, "''")
+            let skill_desc = skillDesc.replace(/'/g, "''")
+
+            let skillInfo = { skill_name, skill_desc }
+
             fetch(putURL, {
                 method: "PUT",
                 headers: {
-                    'skill_id': skillID,
-                    'skill_name': skillName,
-                    'skill_desc': skillDesc
-                }
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(skillInfo)
             }).then(
                 response => {
                     console.log("PUT /skills Status Code: " + response.status);
-                    return response.json()}
+                    return response.json()
+                }
             ).then(
                 data => {
                     // console.log("Edited this skill...")
@@ -292,24 +299,29 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
         const [skillDesc, changeSkillDesc] = useState("")
 
         const handleAddSkill = () => {
-            let skillID = faker.datatype.uuid()
 
             console.log("Attempting to add skill " + skillName)
+
+            let skill_name = skillName.replace(/'/g, "''")
+            let skill_desc = skillDesc.replace(/'/g, "''")
+
+            let skillInfo = { skill_name, skill_desc}
 
             fetch("http://localhost:4000/skills", {
                 method: "POST",
                 headers: {
-                    'skill_id': skillID,
-                    'skill_name': skillName,
-                    'skill_desc': skillDesc
-                }
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(skillInfo)
             }).then(
                 response => {
                     console.log("POST /skills Status Code: " + response.status);
-                    return response.json()}
+                    return response.json()
+                }
             ).then(
                 data => {
                     console.log("Added this skill...")
+                    console.log(data)
 
                     onNewSkillClose();
 
@@ -324,10 +336,10 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
                                 </HStack>
                             </Box>
-                        ), status: 'error', duration: 3000
+                        ), duration: 3000
                     })
 
-                    let newSkill = { skill_id: skillID, skill_name: skillName, skill_desc: skillDesc }
+                    let newSkill = { skill_id: data, skill_name: skillName, skill_desc: skillDesc }
 
                     let newAllSkills = [...modalSkills]
                     newAllSkills.push(newSkill)

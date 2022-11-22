@@ -111,7 +111,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
 
         const handleChangeSkill = () => {
             var index = document.getElementById("skillsDropDown").selectedIndex;
-            if(index != 0)
+            if (index != 0)
                 changeSkill(skills[index - 1]);
         }
 
@@ -144,15 +144,15 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                 let dd = (toDate.getDate() < 10) ? `0${toDate.getDate()}` : toDate.getDate()
 
                 // If either name contains an apostrophe, "double up" the apostrophe
-                let f_name = firstName.replace("'", "''")
-                let l_name = lastName.replace("'", "''")
+                let f_name = firstName.replace(/'/g, "''")
+                let l_name = lastName.replace(/'/g, "''")
 
                 f_name = f_name.charAt(0).toUpperCase() + f_name.slice(1);
                 l_name = l_name.charAt(0).toUpperCase() + l_name.slice(1);
 
-                let employee = {f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity}
-                let token = {token: "000"}
-                let body = {employee, token}
+                let employee = { f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity }
+                let token = { token: "000" }
+                let body = { employee, token }
 
                 // console.log("Attempting to add " + f_name + " " + l_name + "...")
 
@@ -165,7 +165,8 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                 }).then(
                     response => {
                         console.log("POST /employees Status Code: " + response.status);
-                        return response.json()}
+                        return response.json()
+                    }
                 ).then(
                     data => {
                         let dob = new Date(birthday)
