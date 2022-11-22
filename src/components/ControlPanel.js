@@ -81,21 +81,18 @@ export default function ControlPanel({
         f_name = f_name.replace("'", "''")
         l_name = l_name.replace("'", "''")
 
+        let employee = {employee_id, f_name, l_name, yyyy, mm, dd, email, skill_id, is_active}
+        let token = {token: "000"}
+        let body = {employee, token}
+
         // console.log("Attempting to create " + f_name + " " + l_name + "...")
 
         fetch("http://localhost:4000/employees", {
             method: 'POST',
             headers: {
-                'employee_id': employee_id,
-                'f_name': f_name,
-                'l_name': l_name,
-                'yyyy': yyyy,
-                'mm': mm,
-                'dd': dd,
-                'email': email,
-                'skill_id': skill_id,
-                'is_active': is_active
-            }
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
         }).then(
             response => {
                 console.log("POST /employees Status Code: " + response.status);
@@ -103,12 +100,14 @@ export default function ControlPanel({
             }
         ).then(
             data => {
-                let newEmployee = data
-                newEmployee[0].dob = new Date(dob);
+                console.log(data)
+                let newEmployee = {
+                    employee_id, f_name, l_name, dob, email, skill_id, is_active
+                }
 
                 let toEmployees = [...employees]
 
-                toEmployees.push(newEmployee[0])
+                toEmployees.push(newEmployee)
                 changeEmployees(toEmployees);
             }
         )

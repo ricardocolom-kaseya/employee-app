@@ -131,29 +131,28 @@ export default function Home({ setAuth }) {
   const textColorVal = useColorModeValue('gray.800', 'white')
   const secondary = useColorModeValue('gray.200', 'gray.800')
   const footerDivider = useColorModeValue('gray.400', 'gray.700')
-
   return (
     <VStack w="100vw" h="100vh" justify="center" bg={secondary}>
       <HStack pos="absolute" right="2" top="2">
         <IconButton icon={<SunIcon />} onClick={toggleColorMode} variant="outline" borderColor={footerDivider} />
       </HStack>
       <VStack pb="32">
-        {/* <VStack>
-          <Text>{JSON.stringify({
+        <VStack>
+          {/* <Text>{JSON.stringify({
               x: mousePosition.x - window.innerWidth / 2,
               y: mousePosition.y - window.innerHeight / 2
               })}</Text>
-            <Text>{JSON.stringify(eyePos.x)}</Text>
-        </VStack> */}
+            <Text>{JSON.stringify(eyePos.x)}</Text> */}
+        </VStack>
         <HStack spacing="0">
           <Text fontFamily="Inter" fontSize="4xl" fontWeight="bold">Employee L</Text>
           <HStack spacing="0" pos="relative">
             <Box pos="relative">
-              <Box bg={textColorVal} p="0.5" pos="absolute" left={eyePos.x + "px"} top={eyePos.y + "px"} borderRadius="full" />
+              <Box id="leftPupil" bg={textColorVal} p="0.5" pos="absolute" left={eyePos.x + "px"} top={eyePos.y + "px"} borderRadius="full" />
               <Text fontFamily="Inter" fontSize="4xl" fontWeight="normal">o</Text>
             </Box>
             <Box pos="relative">
-              <Box bg={textColorVal} p="0.5" pos="absolute" left={eyePos.x + "px"} top={eyePos.y + "px"} borderRadius="full" />
+              <Box id="rightPupil" bg={textColorVal} p="0.5" pos="absolute" left={eyePos.x + "px"} top={eyePos.y + "px"} borderRadius="full" />
               <Text fontFamily="Inter" fontSize="4xl" fontWeight="normal">o</Text>
             </Box>
           </HStack>
