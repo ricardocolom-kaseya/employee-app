@@ -90,7 +90,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
     let thisEmployeeIndex = toEmployees.indexOf(employee);
 
     let skillName = "None";
-    let skillDesc = "empty desc"
+    let skillDesc = "No skill selected"
 
     const findSkill = () => {
 
@@ -99,7 +99,6 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                 skillName = skill.skill_name;
                 skillDesc = skill.skill_desc;
             }
-
         });
     }
 
