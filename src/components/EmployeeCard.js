@@ -86,6 +86,8 @@ const SkillBlock = (skill) => {
 
 export default function EmployeeCard({ token, employee, skills, employees, changeEmployees }) {
 
+    const toast = useToast();
+
     let toEmployees = employees;
     let thisEmployeeIndex = toEmployees.indexOf(employee);
 
@@ -368,6 +370,8 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                 body: JSON.stringify({ employee_id: employee.employee_id })
             }).then(
                 response => {
+                    if (response.status != 200)
+                        throw new Error(response.status)
                     if (response.ok) {
                         console.log("DELETE /employees Status Code: " + response.status);
 
@@ -380,7 +384,24 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                         onClose();
                     }
                 }
-            )
+            ).catch((err) => {
+                if (!toast.isActive('sessionExpiredToast')) {
+                    toast({
+                        id: 'sessionExpiredToast',
+                        render: () => (
+                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                                <HStack position="relative" align="center" minH="26px">
+                                    <WarningIcon w={5} h={5} m="0.5" />
+                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        Session Expired. Log out.
+                                    </Text>
+                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                </HStack>
+                            </Box>
+                        ), status: 'error', duration: 3000
+                    })
+                }
+            })
         }
 
         return (
