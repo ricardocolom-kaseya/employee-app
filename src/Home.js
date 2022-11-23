@@ -101,7 +101,6 @@ export default function Home({ changeToken }) {
         }
       ).then(
         data => {
-          console.log(data)
           changeToken(data.accessToken)
         }
       ).catch(err => {

@@ -315,7 +315,7 @@ export default function ControlPanel({
 
         function doLogOut() {
             changeWillLogOut(true);
-            setTimeout(function () { navigate("/") }, 1000)
+            setTimeout(function () { navigate("/login") }, 1000)
         }
 
         return (
