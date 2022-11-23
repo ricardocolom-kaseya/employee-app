@@ -157,7 +157,7 @@ export default function Home({ changeToken }) {
           </HStack>
           <Text fontFamily="Inter" fontSize="4xl" fontWeight="bold">kup</Text>
         </HStack>
-        <Text fontSize="lg">Add, edit, or remove Employees</Text>
+        <Text fontSize="lg">Add, edit, or remove employees.</Text>
       </VStack>
       <VStack w="md" bg={primary} borderRadius="2xl" spacing="16" py="8" shadow="md">
         <VStack w="100%" spacing="2">

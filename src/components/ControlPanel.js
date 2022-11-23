@@ -113,7 +113,7 @@ export default function ControlPanel({
                             <HStack position="relative" align="center" minH="26px">
                                 <WarningIcon w={5} h={5} m="0.5" />
                                 <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
-                                    Session Expired. Log out.
+                                    Session expired. Please log out.
                                 </Text>
                                 <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
                             </HStack>
@@ -160,7 +160,7 @@ export default function ControlPanel({
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
                                     <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
-                                        Session Expired. Please log out.
+                                        Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
                                 </HStack>
@@ -250,7 +250,7 @@ export default function ControlPanel({
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
                                     <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
-                                        Session Expired. Log out.
+                                        Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
                                 </HStack>
@@ -430,7 +430,7 @@ export default function ControlPanel({
                         </Button>
                     </HStack>
                 </VStack>
-                <VStack w="100%" pb="56">
+                <VStack w="100%">
                     <AddNewEmployeeButton token={token} employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
                     <Button variant="outline" pos="relative" rightIcon={<Icon as={MdHelp} w={6} h={6} />} onClick={() => AddDummyEmployee()} w="100%">
                         <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">

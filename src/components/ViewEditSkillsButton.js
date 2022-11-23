@@ -149,7 +149,7 @@ export default function ViewEditSkillsButton({ token, skills, changeSkills }) {
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
                                     <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
-                                        Session Expired. Log out.
+                                        Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
                                 </HStack>
@@ -375,7 +375,7 @@ export default function ViewEditSkillsButton({ token, skills, changeSkills }) {
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
                                     <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
-                                        Session Expired. Log out.
+                                        Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
                                 </HStack>

@@ -54,7 +54,16 @@ const GetAge = (dob) => {
 const RenderEmployeeActivity = (isActive) => {
     if (isActive) {
         return (
-            <AvatarBadge boxSize="1.25em" bg="green.500" />
+            <Tooltip label="Active" hasArrow borderRadius="lg">
+                <AvatarBadge boxSize="1.25em" bg="green.500" />
+            </Tooltip>
+        )
+    }
+    else {
+        return (
+            <Tooltip label="Inctive" hasArrow borderRadius="lg">
+                <AvatarBadge boxSize="1.25em" bg="red.500" />
+            </Tooltip>
         )
     }
 }
@@ -72,7 +81,7 @@ const SkillBlock = (skill) => {
                 <Code bg="transparent">
                     SKILL ID:
                 </Code>
-                <Tooltip label={skill.skill_id} borderRadius="lg">
+                <Tooltip hasArrow label={skill.skill_id} borderRadius="lg">
                     <Button size="xs" variant="outline" onClick={() => navigator.clipboard.writeText(skill.skill_id)}>
                         <Code bg="transparent">
                             Copy
@@ -297,7 +306,8 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                                 </FormControl>
                                 <FormControl isRequired mt="8">
                                     <DOBHeader />
-                                    <Input onChange={(e) => { handleChangeDate(e.target.value) }} type="date" />
+                                    <Input onChange={(e) => { handleChangeDate(e.target.value) }}
+                                        placeholder={(employee.dob).toLocaleDateString()} />
                                 </FormControl>
                             </VStack>
                             <VStack w="1200px" h="328px">
@@ -338,14 +348,16 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
 
         return (
             <>
-                <IconButton
-                    colorScheme='gray'
-                    aria-label='Edit Employee'
-                    size="sm"
-                    icon={<EditIcon fontSize="12pt" />}
-                    variant="ghost"
-                    onClick={onOpen}
-                />
+                <Tooltip hasArrow label="Edit">
+                    <IconButton
+                        colorScheme='gray'
+                        aria-label='Edit Employee'
+                        size="sm"
+                        icon={<EditIcon fontSize="12pt" />}
+                        variant="ghost"
+                        onClick={onOpen}
+                    />
+                </Tooltip>
                 <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { changeEmployees(toEmployees) }} preserveScrollBarGap>
                     <ModalOverlay />
                     <EditEmployeeModal />
@@ -392,7 +404,7 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
                                     <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
-                                        Session Expired. Log out.
+                                        Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
                                 </HStack>
@@ -405,14 +417,16 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
 
         return (
             <>
-                <IconButton
-                    colorScheme='red'
-                    aria-label='Delete Employee'
-                    size="sm"
-                    icon={<DeleteIcon fontSize="12pt" color="red.500" />}
-                    variant="ghost"
-                    onClick={onOpen}
-                />
+                <Tooltip hasArrow label="Delete">
+                    <IconButton
+                        colorScheme='red'
+                        aria-label='Delete Employee'
+                        size="sm"
+                        icon={<DeleteIcon fontSize="12pt" color="red.500" />}
+                        variant="ghost"
+                        onClick={onOpen}
+                    />
+                </Tooltip>
                 <AlertDialog
                     isOpen={isOpen}
                     leastDestructiveRef={cancelRef}
@@ -513,7 +527,7 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                     <Code bg="transparent">
                         ID:
                     </Code>
-                    <Tooltip label={employee.employee_id} borderRadius="lg">
+                    <Tooltip hasArrow label={employee.employee_id} borderRadius="lg">
                         <Button size="xs" onClick={() => navigator.clipboard.writeText(employee.employee_id)}>
                             <Code bg="transparent">
                                 Copy
