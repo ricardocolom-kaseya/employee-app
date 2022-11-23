@@ -210,7 +210,6 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
 
                     let employeeInfo = { f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity }
 
-                    let token = { token: "000" }
                     let body = { employee: employeeInfo, token }
 
                     fetch(putURL, {
@@ -228,7 +227,7 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                     ).then(
                         data => {
                             // console.log("Saved this employee...")
-                            console.log(data);
+                            // console.log(data);
                             employee.f_name = data.f_name;
                             employee.l_name = data.l_name;
                             employee.dob = new Date(birthday);
@@ -487,7 +486,7 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                 </HStack>
                 <VStack spacing="0" align="left" pos="relative">
                     <Text fontSize="xs" pos="absolute" bg={primary} px="1" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
-                        SKILLS
+                        SKILL
                     </Text>
                     <Accordion allowToggle pt="3" pb="8" w="100%">
                         <AccordionItem borderLeftWidth="1px" borderRightWidth="1px" borderRadius="lg">

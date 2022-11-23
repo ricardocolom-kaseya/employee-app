@@ -344,9 +344,6 @@ export default function ViewEditSkillsButton({ token, skills, changeSkills }) {
                 }
             ).then(
                 data => {
-                    console.log("Added this skill...")
-                    console.log(data)
-
                     onNewSkillClose();
 
                     toast({

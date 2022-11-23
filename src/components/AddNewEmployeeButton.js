@@ -151,7 +151,6 @@ export default function AddNewEmployeeButton({ token, employees, changeEmployees
                 l_name = l_name.charAt(0).toUpperCase() + l_name.slice(1);
 
                 let employee = { f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity }
-                let token = { token: "000" }
                 let body = { employee, token }
 
                 // console.log("Attempting to add " + f_name + " " + l_name + "...")
@@ -165,6 +164,7 @@ export default function AddNewEmployeeButton({ token, employees, changeEmployees
                     body: JSON.stringify(body)
                 }).then(
                     response => {
+                        console.log(response.status)
                         if (response.status != 200)
                             throw new Error(response.status)
                         console.log("POST /employees Status Code: " + response.status);

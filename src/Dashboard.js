@@ -31,7 +31,7 @@ const CardView = ({ token, employees, changeEmployees, skills }) => {
     });
 
     return (
-        <HStack w="100%" align="center" justify="center" spacing="1" h="100%">
+        <HStack w="100%" align="center" justify="center" spacing="1" h="100%" pt="2">
             <VStack h="100%" spacing="0">
                 {leftCol.map((currEmployee, i) => {
                     if (currEmployee)

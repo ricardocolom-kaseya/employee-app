@@ -57,7 +57,6 @@ export default function ControlPanel({
 
     let toEmployees = employees
     let toSkills = skills
-
     const AddDummyEmployee = () => {
         // console.log("Adding dummy employee")
 
@@ -161,7 +160,7 @@ export default function ControlPanel({
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
                                     <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
-                                        Session Expired. Log out.
+                                        Session Expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
                                 </HStack>
@@ -323,7 +322,7 @@ export default function ControlPanel({
             <>
 
                 <LightMode>
-                    <Button variant="link" size="xs" colorScheme="red" color="red.500" rightIcon={<MdOutlineLogout />} onClick={onOpen}>
+                    <Button variant="link" size="sm" colorScheme="red" rightIcon={<MdOutlineLogout />} onClick={onOpen}>
                         Log out
                     </Button>
                 </LightMode>
@@ -361,11 +360,21 @@ export default function ControlPanel({
     }
 
     const handleChangeSkill = () => {
-        var index = document.getElementById("panelSkillsDropDown").selectedIndex;
-        if (index != 0)
-            changePanelSearchSkill(skills[index - 1].skill_id);
+        let dropDownIndex = document.getElementById("panelSkillsDropDown").selectedIndex;
+        if (dropDownIndex != 0)
+            changePanelSearchSkill(skills[dropDownIndex - 1].skill_id);
         else
             changePanelSearchSkill("");
+    }
+
+    function resetSearch() {
+        changePanelSearchSkill("")
+        changePanelSearch("")
+        changePanelSortAsc("ASC")
+
+        changeSearch("")
+        changeSearchSkill("")
+        changeSortAsc("ASC")
     }
 
     return (
@@ -375,7 +384,7 @@ export default function ControlPanel({
                     <IconButton icon={<SunIcon />} onClick={toggleColorMode} variant="outline" />
                 </HStack>
             </HStack>
-            <VStack py="9" spacing="0">
+            <VStack py="9" spacing="1">
                 <VStack>
                     <Avatar size="lg" label="Admin" />
                     <Heading fontSize="2xl" fontFamily={font1}>
@@ -385,8 +394,43 @@ export default function ControlPanel({
                 <LogOutButton />
             </VStack>
             <Divider w="90%" />
-            <VStack align="left" w="100%" px="6">
-                <VStack w="100%">
+            <VStack align="left" w="100%" px="6" h="100%" justify="space-between">
+                <VStack w="100%" align="end">
+                    <Heading fontSize="2xl" fontFamily={font1} py="4" w="100%" textAlign="left">
+                        Controls
+                    </Heading>
+                    <HStack w="100%">
+                        <FormControl w="100%">
+                            <InputGroup>
+                                <InputLeftElement children={<SearchIcon />} />
+                                <Input fontFamily="Inter" type="search" placeholder="Name..." value={panelSearch}
+                                    onChange={(e) => changePanelSearch(e.target.value)} />
+                            </InputGroup>
+                        </FormControl>
+                    </HStack>
+                    <HStack w="100%">
+                        <Select placeholder="Any skill" id="panelSkillsDropDown" onChange={handleChangeSkill}>
+                            {skills.map((skill, i) => {
+                                return (<option key={i}>{skill.skill_name}</option>)
+                            })}
+                        </Select>
+                        <ButtonGroup isAttached variant="outline" w="122px">
+                            <IconButton variant={panelSortAsc ? "solid" : "outline"} icon={<Icon as={BsSortAlphaDown} w={6} h={6} />} onClick={() => changePanelSortAsc(true)} />
+                            <IconButton variant={!panelSortAsc ? "solid" : "outline"} icon={<Icon as={BsSortAlphaDownAlt} w={6} h={6} />} onClick={() => { changePanelSortAsc(false) }} />
+                        </ButtonGroup>
+                    </HStack>
+                    <HStack justify="space-between" w="100%">
+                        <LightMode>
+                            <Button colorScheme="red" w="100%" onClick={() => resetSearch()}>
+                                Reset Search
+                            </Button>
+                        </LightMode>
+                        <Button w="100%" variant="solid" onClick={() => { goPressed() }}>
+                            Search
+                        </Button>
+                    </HStack>
+                </VStack>
+                <VStack w="100%" pb="56">
                     <AddNewEmployeeButton token={token} employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
                     <Button variant="outline" pos="relative" rightIcon={<Icon as={MdHelp} w={6} h={6} />} onClick={() => AddDummyEmployee()} w="100%">
                         <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
@@ -395,42 +439,12 @@ export default function ControlPanel({
                     </Button>
                     <ViewEditSkillsButton token={token} skills={skills} changeSkills={changeSkills} />
                 </VStack>
-                <Heading fontSize="2xl" fontFamily={font1} py="4">
-                    Controls
-                </Heading>
-                <VStack w="100%" spacing="200px">
-                    <VStack w="100%" align="end">
-                        <HStack w="100%">
-                            <FormControl w="100%">
-                                <InputGroup>
-                                    <InputLeftElement children={<SearchIcon />} />
-                                    <Input fontFamily="Inter" type="search" placeholder="Search..."
-                                        onChange={(e) => changePanelSearch(e.target.value)} />
-                                </InputGroup>
-                            </FormControl>
-                        </HStack>
-                        <HStack w="100%">
-                            <Select placeholder="Any skill" id="panelSkillsDropDown" onChange={handleChangeSkill}>
-                                {skills.map((skill, i) => {
-                                    return (<option key={i}>{skill.skill_name}</option>)
-                                })}
-                            </Select>
-                            <ButtonGroup isAttached variant="outline" w="122px">
-                                <IconButton variant={panelSortAsc ? "solid" : "outline"} icon={<Icon as={BsSortAlphaDown} w={6} h={6} />} onClick={() => changePanelSortAsc(true)} />
-                                <IconButton variant={!panelSortAsc ? "solid" : "outline"} icon={<Icon as={BsSortAlphaDownAlt} w={6} h={6} />} onClick={() => { changePanelSortAsc(false) }} />
-                            </ButtonGroup>
-                        </HStack>
-                        <Button w="80px" variant="solid" onClick={() => { goPressed() }}>
-                            Go
-                        </Button>
-                    </VStack>
-                    <VStack w="100%" spacing="2">
-                        <Button variant="outline" w="100%" rightIcon={<Icon as={MdHistory} w={6} h={6} />} onClick={() => changeToken("none")}>
-                            <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">Force invalidate JWT</Text>
-                        </Button>
-                        <DeleteAllEmployeesButton />
-                        <DeleteAllSkillsButton />
-                    </VStack>
+                <VStack w="100%" spacing="2" pb="8">
+                    <Button variant="outline" w="100%" rightIcon={<Icon as={MdHistory} w={6} h={6} />} onClick={() => changeToken("none")}>
+                        <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">Force invalidate JWT</Text>
+                    </Button>
+                    <DeleteAllEmployeesButton />
+                    <DeleteAllSkillsButton />
                 </VStack>
             </VStack>
         </VStack>
