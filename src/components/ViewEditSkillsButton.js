@@ -76,7 +76,7 @@ export default function ViewEditSkillsButton({ token, skills, changeSkills }) {
     const ShowSelectedIcon = (i) => {
         if (i == index)
             return (
-                <CheckIcon color={primary == 'white' ? "gray.200" : 'white'} />
+                <CheckIcon color={textPrimary} />
             )
     }
 
