@@ -398,7 +398,7 @@ export default function ControlPanel({
                 <Heading fontSize="2xl" fontFamily={font1} py="4">
                     Controls
                 </Heading>
-                <VStack w="100%" spacing="220px">
+                <VStack w="100%" spacing="200px">
                     <VStack w="100%" align="end">
                         <HStack w="100%">
                             <FormControl w="100%">
@@ -425,11 +425,11 @@ export default function ControlPanel({
                         </Button>
                     </VStack>
                     <VStack w="100%" spacing="2">
-                        <DeleteAllEmployeesButton />
-                        <DeleteAllSkillsButton />
                         <Button variant="outline" w="100%" rightIcon={<Icon as={MdHistory} w={6} h={6} />} onClick={() => changeToken("none")}>
                             <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">Force invalidate JWT</Text>
                         </Button>
+                        <DeleteAllEmployeesButton />
+                        <DeleteAllSkillsButton />
                     </VStack>
                 </VStack>
             </VStack>
