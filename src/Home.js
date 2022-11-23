@@ -40,8 +40,8 @@ export default function Home({ changeToken }) {
   }
   useEffect(() => {
     changeEyePos({
-      x: clamp(mousePosition.x - window.innerWidth / 2 - 55, 5, 11),
-      y: clamp(mousePosition.y - window.innerHeight / 2 + 265, 24, 32)
+      x: clamp(mousePosition.x - window.innerWidth / 2 - 57, 5, 11),
+      y: clamp(mousePosition.y - window.innerHeight / 2 + 266, 24, 32)
     })
   }, [mousePosition])
 

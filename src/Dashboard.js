@@ -3,6 +3,8 @@ import { Box, HStack, VStack, useColorModeValue, Text, CloseButton, useToast } f
 
 import { WarningIcon } from '@chakra-ui/icons'
 
+import { Scrollbars } from 'react-custom-scrollbars-2'
+
 import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
 
 import EmployeeCard from './components/EmployeeCard'
@@ -12,10 +14,6 @@ import Navbar from './Navbar'
 const font1 = 'Inter';
 
 const today = new Date();
-
-const controlPanelWidth = "320"
-
-const width = "" + (window.innerWidth - controlPanelWidth) + "px";
 
 const CardView = ({ token, employees, changeEmployees, skills }) => {
 
@@ -33,7 +31,7 @@ const CardView = ({ token, employees, changeEmployees, skills }) => {
     });
 
     return (
-        <HStack w="100%" align="left" justify="center" p="6px" spacing="0" h="100%">
+        <HStack w="100%" align="center" justify="center" spacing="1" h="100%">
             <VStack h="100%" spacing="0">
                 {leftCol.map((currEmployee, i) => {
                     if (currEmployee)
@@ -75,13 +73,6 @@ export default function Dashboard({ navBarHeight, setAuth, token, changeToken })
     const secondary = useColorModeValue('gray.200', 'gray.700')
     const textPrimary = useColorModeValue('gray.800', 'gray.300')
 
-    function getWindowSize() {
-        const { innerWidth, innerHeight } = window;
-        return { innerWidth, innerHeight }
-    }
-
-    const [windowSize, setWindowSize] = useState(getWindowSize())
-
     const toast = useToast();
 
     useEffect(() => {
@@ -122,16 +113,6 @@ export default function Dashboard({ navBarHeight, setAuth, token, changeToken })
                 })
             }
         })
-
-        function handleWindowResize() {
-            setWindowSize(getWindowSize());
-        }
-
-        window.addEventListener('resize', handleWindowResize);
-
-        return () => {
-            window.removeEventListener('resize', handleWindowResize);
-        };
     }, [])
 
     function fetchEmployees() {
@@ -180,21 +161,22 @@ export default function Dashboard({ navBarHeight, setAuth, token, changeToken })
         fetchEmployees();
     }, [search, searchSkill, sortAsc])
 
-    let width = "" + (windowSize.innerWidth - controlPanelWidth - 20) + "px"
+    const cardViewWidth = (window.innerWidth - 320) + "px"
 
     return (
-        <VStack align="left" spacing="0" minH="100vh" w={width} bg={secondary}>
-            <Navbar navBarHeight={navBarHeight} width={width} />
-            <HStack w={width} h="100%" spacing="0" pt={navBarHeight + "px"}>
-                <CardView
-                    windowSize={windowSize}
-                    token={token}
-                    employees={employees}
-                    changeEmployees={changeEmployees}
-                    skills={skills}
-                    changeSkills={changeSkills} />
-            </HStack>
-            <Box pos="fixed" w={controlPanelWidth + "px"} h="100vh" right="0">
+        <HStack spacing="0" h="100vh" w="100%" bg={secondary}>
+            <VStack h="100%" w={cardViewWidth} spacing="0" pt={navBarHeight + "px"}>
+                <Scrollbars>
+                    <CardView
+                        token={token}
+                        employees={employees}
+                        changeEmployees={changeEmployees}
+                        skills={skills}
+                        changeSkills={changeSkills} />
+                </Scrollbars>
+            </VStack>
+            <Box h="100%" pos="absolute">
+                <Navbar navBarHeight={navBarHeight} />
                 <ControlPanel
                     token={token}
                     changeToken={changeToken}
@@ -207,6 +189,6 @@ export default function Dashboard({ navBarHeight, setAuth, token, changeToken })
                     skills={skills}
                     changeSkills={changeSkills} />
             </Box>
-        </VStack>
+        </HStack>
     )
 }

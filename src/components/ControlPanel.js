@@ -369,7 +369,7 @@ export default function ControlPanel({
     }
 
     return (
-        <VStack w="100%" h="100%" bg={primary}>
+        <VStack pos="fixed" right="0" w="320px" h="100vh" bg={primary}>
             <HStack w="100%" p="2" justify="right">
                 <HStack>
                     <IconButton icon={<SunIcon />} onClick={toggleColorMode} variant="outline" />
@@ -385,7 +385,7 @@ export default function ControlPanel({
                 <LogOutButton />
             </VStack>
             <Divider w="90%" />
-            <VStack align="left" w="100%" px="4">
+            <VStack align="left" w="100%" px="6">
                 <VStack w="100%">
                     <AddNewEmployeeButton token={token} employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
                     <Button variant="outline" pos="relative" rightIcon={<Icon as={MdHelp} w={6} h={6} />} onClick={() => AddDummyEmployee()} w="100%">

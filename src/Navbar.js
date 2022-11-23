@@ -1,7 +1,7 @@
 import React from 'react'
 import { Box, HStack, Text, useColorModeValue } from '@chakra-ui/react'
 
-export default function Navbar({navBarHeight, width}) {
+export default function Navbar({ navBarHeight, width }) {
 
     const h = navBarHeight + "px";
 
@@ -11,8 +11,8 @@ export default function Navbar({navBarHeight, width}) {
     const textPrimary = useColorModeValue('gray.800', 'gray.300')
 
     return (
-        <Box bg={tertiary} shadow="md" h={h} w={width} justify="center" pos="fixed" left="0" top="0" zIndex="2">
-            <HStack align="center" justify="center" h="100%" mx="3">
+        <Box bg={primary} shadow="md" h={h} w="100vw" zIndex="0" pos="fixed" left="0" align="center" justify="center">
+            <HStack w="100%" h="100%" align="center" justify="center">
                 <Text fontFamily="Inter" fontWeight="medium">Employee Lookup</Text>
             </HStack>
         </Box>
