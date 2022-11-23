@@ -41,7 +41,7 @@ export default function Home({ changeToken }) {
   useEffect(() => {
     changeEyePos({
       x: clamp(mousePosition.x - window.innerWidth / 2 - 57, 5, 11),
-      y: clamp(mousePosition.y - window.innerHeight / 2 + 266, 24, 32)
+      y: clamp(mousePosition.y - window.innerHeight / 2 + 246, 24, 32)
     })
   }, [mousePosition])
 
@@ -142,7 +142,7 @@ export default function Home({ changeToken }) {
       <HStack pos="absolute" right="2" top="2">
         <IconButton icon={<SunIcon />} onClick={toggleColorMode} variant="outline" borderColor={footerDivider} />
       </HStack>
-      <VStack pb="32">
+      <VStack pb="8" spacing="8">
         <HStack spacing="0">
           <Text fontFamily="Inter" fontSize="4xl" fontWeight="bold">Employee L</Text>
           <HStack spacing="0" pos="relative">
@@ -157,6 +157,7 @@ export default function Home({ changeToken }) {
           </HStack>
           <Text fontFamily="Inter" fontSize="4xl" fontWeight="bold">kup</Text>
         </HStack>
+        <Text fontSize="lg">Add, edit, or remove Employees</Text>
       </VStack>
       <VStack w="md" bg={primary} borderRadius="2xl" spacing="16" py="8" shadow="md">
         <VStack w="100%" spacing="2">

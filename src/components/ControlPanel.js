@@ -12,7 +12,7 @@ import {
     AlertDialogOverlay,
 } from '@chakra-ui/react'
 import { SearchIcon, SunIcon, WarningIcon } from '@chakra-ui/icons'
-import { MdHelp, MdOutlineLogout } from 'react-icons/md'
+import { MdHelp, MdOutlineLogout, MdHistory } from 'react-icons/md'
 import { BsSortAlphaDown, BsSortAlphaDownAlt } from "react-icons/bs"
 
 import { useNavigate } from 'react-router-dom'
@@ -175,7 +175,7 @@ export default function ControlPanel({
         return (
             <>
                 <LightMode>
-                    <Button colorScheme="red" my="2" onClick={onOpen} w="100%">
+                    <Button colorScheme="red" onClick={onOpen} w="100%">
                         <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
                             Delete All Employees
                         </Text>
@@ -265,7 +265,7 @@ export default function ControlPanel({
         return (
             <>
                 <LightMode>
-                    <Button colorScheme="red" onClick={onOpen} w="100%" my="2">
+                    <Button colorScheme="red" onClick={onOpen} w="100%">
                         <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
                             Delete All Skills
                         </Text>
@@ -424,11 +424,12 @@ export default function ControlPanel({
                             Go
                         </Button>
                     </VStack>
-                    <VStack w="100%" spacing="0">
+                    <VStack w="100%" spacing="2">
                         <DeleteAllEmployeesButton />
                         <DeleteAllSkillsButton />
-                        <Text w="100%" noOfLines="2">Token: {token}</Text>
-                        <Button onClick={() => changeToken("none")}>Reset token</Button>
+                        <Button variant="outline" w="100%" rightIcon={<Icon as={MdHistory} w={6} h={6} />} onClick={() => changeToken("none")}>
+                            <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">Force invalidate JWT</Text>
+                        </Button>
                     </VStack>
                 </VStack>
             </VStack>
