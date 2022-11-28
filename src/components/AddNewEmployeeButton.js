@@ -46,8 +46,6 @@ import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from
 
 const font1 = 'Inter';
 
-const today = new Date();
-
 const GetAge = (dob) => {
     const today = new Date();
 
@@ -55,11 +53,15 @@ const GetAge = (dob) => {
     return Math.floor(currAge);
 }
 
+function getToken(){
+    return localStorage.getItem('token')
+}
+
 function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-export default function AddNewEmployeeButton({ token, employees, changeEmployees, skills }) {
+export default function AddNewEmployeeButton({ employees, changeEmployees, skills }) {
 
     const toast = useToast();
 
@@ -151,7 +153,7 @@ export default function AddNewEmployeeButton({ token, employees, changeEmployees
                 l_name = l_name.charAt(0).toUpperCase() + l_name.slice(1);
 
                 let employee = { f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity }
-                let body = { employee, token }
+                let body = { employee }
 
                 // console.log("Attempting to add " + f_name + " " + l_name + "...")
 
@@ -159,7 +161,7 @@ export default function AddNewEmployeeButton({ token, employees, changeEmployees
                     method: 'POST',
                     headers: {
                         "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`,
+                        "Authorization": `Bearer ${getToken()}`,
                     },
                     body: JSON.stringify(body)
                 }).then(

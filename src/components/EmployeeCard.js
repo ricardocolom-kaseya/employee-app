@@ -44,6 +44,10 @@ function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
+function getToken(){
+    return localStorage.getItem('token')
+}
+
 const GetAge = (dob) => {
     const today = new Date();
 
@@ -61,7 +65,7 @@ const RenderEmployeeActivity = (isActive) => {
     }
     else {
         return (
-            <Tooltip label="Inctive" hasArrow borderRadius="lg">
+            <Tooltip label="Inactive" hasArrow borderRadius="lg">
                 <AvatarBadge boxSize="1.25em" bg="red.500" />
             </Tooltip>
         )
@@ -93,7 +97,7 @@ const SkillBlock = (skill) => {
     )
 }
 
-export default function EmployeeCard({ token, employee, skills, employees, changeEmployees }) {
+export default function EmployeeCard({ employee, skills, employees, changeEmployees }) {
 
     const toast = useToast();
 
@@ -224,13 +228,13 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
 
                     let employeeInfo = { f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity }
 
-                    let body = { employee: employeeInfo, token }
+                    let body = { employee: employeeInfo }
 
                     fetch(putURL, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
+                            "Authorization": `Bearer ${getToken()}`,
                         },
                         body: JSON.stringify(body)
                     }).then(
@@ -380,7 +384,7 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${getToken()}`,
                 },
                 body: JSON.stringify({ employee_id: employee.employee_id })
             }).then(

@@ -39,11 +39,15 @@ const GetAge = (dob) => {
     return Math.floor(currAge);
 }
 
+function getToken(){
+    return localStorage.getItem('token')
+}
+
 function randomInt(max) {
     return Math.floor(Math.random() * max);
 }
 
-export default function ViewEditSkillsButton({ token, skills, changeSkills }) {
+export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
     const toast = useToast();
 
@@ -118,7 +122,7 @@ export default function ViewEditSkillsButton({ token, skills, changeSkills }) {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${getToken()}`,
                 },
                 body: JSON.stringify({ skill_id: skillID })
             }).then(
@@ -237,7 +241,7 @@ export default function ViewEditSkillsButton({ token, skills, changeSkills }) {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${getToken()}`,
                 },
                 body: JSON.stringify(skillInfo)
             }).then(
@@ -332,7 +336,7 @@ export default function ViewEditSkillsButton({ token, skills, changeSkills }) {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${getToken()}`,
                 },
                 body: JSON.stringify(skillInfo)
             }).then(

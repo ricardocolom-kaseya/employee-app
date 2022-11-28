@@ -30,8 +30,6 @@ function randomInt(max) {
 }
 
 export default function ControlPanel({
-    token,
-    changeToken,
     changeSearch,
     changeSearchSkill,
     changeSortAsc,
@@ -39,6 +37,10 @@ export default function ControlPanel({
     changeEmployees,
     skills,
     changeSkills }) {
+
+    function getToken(){
+        return localStorage.getItem('token')
+    }
 
     const navigate = useNavigate();
     const toast = useToast();
@@ -83,7 +85,7 @@ export default function ControlPanel({
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
+                "Authorization": `Bearer ${getToken()}`,
             },
             body: JSON.stringify(body)
         }).then(
@@ -136,7 +138,7 @@ export default function ControlPanel({
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${getToken()}`,
                 },
             }).then(
                 response => {
@@ -226,7 +228,7 @@ export default function ControlPanel({
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
+                    "Authorization": `Bearer ${getToken()}`,
                 },
             }).then(
                 response => {
@@ -431,16 +433,16 @@ export default function ControlPanel({
                     </HStack>
                 </VStack>
                 <VStack w="100%">
-                    <AddNewEmployeeButton token={token} employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
+                    <AddNewEmployeeButton token={getToken()} employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
                     <Button variant="outline" pos="relative" rightIcon={<Icon as={MdHelp} w={6} h={6} />} onClick={() => AddDummyEmployee()} w="100%">
                         <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
                             Add a dummy employee
                         </Text>
                     </Button>
-                    <ViewEditSkillsButton token={token} skills={skills} changeSkills={changeSkills} />
+                    <ViewEditSkillsButton token={getToken()} skills={skills} changeSkills={changeSkills} />
                 </VStack>
                 <VStack w="100%" spacing="2" pb="8">
-                    <Button variant="outline" w="100%" rightIcon={<Icon as={MdHistory} w={6} h={6} />} onClick={() => changeToken("none")}>
+                    <Button variant="outline" w="100%" rightIcon={<Icon as={MdHistory} w={6} h={6} />} onClick={() => localStorage.setItem('token', 'invalid')}>
                         <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">Force invalidate JWT</Text>
                     </Button>
                     <DeleteAllEmployeesButton />

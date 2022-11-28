@@ -17,7 +17,7 @@ import md5 from 'md5'
 
 import { useMousePosition } from './helpers/useMousePosition'
 
-export default function Home({ changeToken }) {
+export default function Home() {
 
   const navigate = useNavigate();
 
@@ -101,7 +101,7 @@ export default function Home({ changeToken }) {
         }
       ).then(
         data => {
-          changeToken(data.accessToken)
+          localStorage.setItem('token', data.accessToken)
         }
       ).catch(err => {
         changeIsAuthenticating(false)

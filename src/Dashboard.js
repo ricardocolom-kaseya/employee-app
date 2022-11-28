@@ -13,9 +13,11 @@ import Navbar from './Navbar'
 
 const font1 = 'Inter';
 
-const today = new Date();
+function getToken(){
+    return localStorage.getItem('token')
+}
 
-const CardView = ({ token, employees, changeEmployees, skills }) => {
+const CardView = ({ employees, changeEmployees, skills }) => {
 
     let leftCol = [];
     let midCol = [];
@@ -36,7 +38,7 @@ const CardView = ({ token, employees, changeEmployees, skills }) => {
                 {leftCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
-                            <EmployeeCard token={token} employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
+                            <EmployeeCard employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
                         )
                 })}
             </VStack>
@@ -44,7 +46,7 @@ const CardView = ({ token, employees, changeEmployees, skills }) => {
                 {midCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
-                            <EmployeeCard token={token} employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
+                            <EmployeeCard employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
                         )
                 })}
             </VStack>
@@ -52,7 +54,7 @@ const CardView = ({ token, employees, changeEmployees, skills }) => {
                 {rightCol.map((currEmployee, i) => {
                     if (currEmployee)
                         return (
-                            <EmployeeCard token={token} employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
+                            <EmployeeCard employee={currEmployee} skills={[...skills]} employees={[...employees]} changeEmployees={changeEmployees} key={i} />
                         )
                 })}
             </VStack>
@@ -60,7 +62,7 @@ const CardView = ({ token, employees, changeEmployees, skills }) => {
     )
 }
 
-export default function Dashboard({ navBarHeight, setAuth, token, changeToken }) {
+export default function Dashboard({ navBarHeight, setAuth }) {
 
     const [employees, changeEmployees] = useState([]);
     const [skills, changeSkills] = useState([]);
@@ -81,7 +83,7 @@ export default function Dashboard({ navBarHeight, setAuth, token, changeToken })
         fetch("http://localhost:4000/skills", {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
+                "Authorization": `Bearer ${getToken()}`
             }
         }
         ).then(
@@ -121,7 +123,7 @@ export default function Dashboard({ navBarHeight, setAuth, token, changeToken })
         fetch("http://localhost:4000/employees", {
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
+                "Authorization": `Bearer ${getToken()}`,
                 "Search": JSON.stringify(searchParams),
             },
         }).then(
@@ -168,7 +170,6 @@ export default function Dashboard({ navBarHeight, setAuth, token, changeToken })
             <VStack h="100%" w={cardViewWidth} spacing="0" pt={navBarHeight + "px"}>
                 <Scrollbars>
                     <CardView
-                        token={token}
                         employees={employees}
                         changeEmployees={changeEmployees}
                         skills={skills}
@@ -178,8 +179,6 @@ export default function Dashboard({ navBarHeight, setAuth, token, changeToken })
             <Box h="100%" pos="absolute">
                 <Navbar navBarHeight={navBarHeight} />
                 <ControlPanel
-                    token={token}
-                    changeToken={changeToken}
                     setAuth={setAuth}
                     changeSearch={changeSearch}
                     changeSearchSkill={changeSearchSkill}
