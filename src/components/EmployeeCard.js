@@ -160,6 +160,11 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                 changeEmail(theEmail)
             }
 
+            function formatDate(date) {
+                const toDate = new Date(date).toISOString().split('T')[0];
+                return toDate;                
+            }
+
             const handleChangeDate = (date) => {
 
                 let theDate = new Date(date);
@@ -306,8 +311,7 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                                 </FormControl>
                                 <FormControl isRequired mt="8">
                                     <DOBHeader />
-                                    <Input onChange={(e) => { handleChangeDate(e.target.value) }}
-                                        placeholder={(employee.dob).toLocaleDateString()} />
+                                    <Input type="date" defaultValue={formatDate(birthday)} onChange={(e) => {handleChangeDate(e.target.value)}}/>
                                 </FormControl>
                             </VStack>
                             <VStack w="1200px" h="328px">
@@ -348,7 +352,7 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
 
         return (
             <>
-                <Tooltip hasArrow label="Edit">
+                <Tooltip hasArrow label="Edit" borderRadius="lg">
                     <IconButton
                         colorScheme='gray'
                         aria-label='Edit Employee'
@@ -417,7 +421,7 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
 
         return (
             <>
-                <Tooltip hasArrow label="Delete">
+                <Tooltip hasArrow label="Delete" borderRadius="lg">
                     <IconButton
                         colorScheme='red'
                         aria-label='Delete Employee'
@@ -487,7 +491,6 @@ export default function EmployeeCard({ token, employee, skills, employees, chang
                             <Text fontWeight="bold" fontSize="xl" lineHeight="1" fontFamily={font1}>
                                 {employee.f_name} {employee.l_name}
                             </Text>
-
                         </HStack>
                         <HStack spacing="2" position="relative">
                             <Icon as={MdEmail} boxSize={4} position="absolute" bottom="2px" />
