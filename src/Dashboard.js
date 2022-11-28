@@ -5,7 +5,7 @@ import { WarningIcon } from '@chakra-ui/icons'
 
 import { Scrollbars } from 'react-custom-scrollbars-2'
 
-import { font1, getToken } from './helpers/Helpers'
+import { font1, getToken, SessionExpiredToast } from './helpers/Helpers'
 
 import EmployeeCard from './components/EmployeeCard'
 import ControlPanel from './components/ControlPanel'
@@ -18,9 +18,9 @@ const CardView = ({ employees, changeEmployees, skills }) => {
     let rightCol = [];
 
     employees.forEach(element => {
-        if (employees.indexOf(element) % 3 == 0)
+        if (employees.indexOf(element) % 3 === 0)
             leftCol.push(element)
-        else if (employees.indexOf(element) % 3 == 1)
+        else if (employees.indexOf(element) % 3 === 1)
             midCol.push(element)
         else
             rightCol.push(element)
@@ -56,7 +56,7 @@ const CardView = ({ employees, changeEmployees, skills }) => {
     )
 }
 
-export default function Dashboard({ navBarHeight, setAuth }) {
+export default function Dashboard({ navBarHeight }) {
 
     const [employees, changeEmployees] = useState([]);
     const [skills, changeSkills] = useState([]);
@@ -80,7 +80,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
         }
         ).then(
             response => {
-                if (response.status != 200)
+                if (response.status !== 200)
                     throw new Error(response.status)
                 console.log("GET /skills Status Code: " + response.status)
                 return response.json();
@@ -90,22 +90,6 @@ export default function Dashboard({ navBarHeight, setAuth }) {
                 changeSkills(data)
             }
         ).catch((err) => {
-            if (!toast.isActive('sessionExpiredToast')) {
-                toast({
-                    id: 'sessionExpiredToast',
-                    render: () => (
-                        <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                            <HStack position="relative" align="center" minH="26px">
-                                <WarningIcon w={5} h={5} m="0.5" />
-                                <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                    Session expired. Please log out.
-                                </Text>
-                                <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                            </HStack>
-                        </Box>
-                    ), status: 'error', duration: 3000
-                })
-            }
         })
     }, [])
 
@@ -120,7 +104,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
             },
         }).then(
             response => {
-                if (response.status != 200)
+                if (response.status !== 200)
                     throw new Error(response.status)
                 console.log("GET /employees Status Code: " + response.status);
                 return response.json()
@@ -134,20 +118,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
                 changeEmployees(toEmployees)
             }
         ).catch((err) => {
-            toast({
-                id: 'sessionExpiredToast',
-                render: () => (
-                    <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                        <HStack position="relative" align="center" minH="26px">
-                            <WarningIcon w={5} h={5} m="0.5" />
-                            <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                Session expired. Please log out.
-                            </Text>
-                            <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                        </HStack>
-                    </Box>
-                ), status: 'error', duration: 3000
-            })
+            SessionExpiredToast(toast)
         })
     }
 
@@ -171,7 +142,6 @@ export default function Dashboard({ navBarHeight, setAuth }) {
             <Box h="100%" pos="absolute">
                 <Navbar navBarHeight={navBarHeight} />
                 <ControlPanel
-                    setAuth={setAuth}
                     changeSearch={changeSearch}
                     changeSearchSkill={changeSearchSkill}
                     changeSortAsc={changeSortAsc}

@@ -28,14 +28,14 @@ import {
     FormControl,
 } from '@chakra-ui/react'
 
-import { DeleteIcon, EditIcon, WarningIcon, CheckCircleIcon } from '@chakra-ui/icons'
+import { DeleteIcon, EditIcon, CheckCircleIcon } from '@chakra-ui/icons'
 import { MdSave, MdEmail } from 'react-icons/md'
 
 import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from './ModalHeaders'
 
 import validator from 'validator'
 
-import { font1, getToken, getAge } from '../helpers/Helpers'
+import { font1, getToken, getAge, SessionExpiredToast } from '../helpers/Helpers'
 
 const RenderEmployeeActivity = (isActive) => {
     if (isActive) {
@@ -89,7 +89,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
     const findSkill = () => {
 
         skills.forEach(skill => {
-            if (skill.skill_id == employee.skill_id) {
+            if (skill.skill_id === employee.skill_id) {
                 skillName = skill.skill_name;
                 skillDesc = skill.skill_desc;
             }
@@ -102,8 +102,6 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
     const EditButton = () => {
 
         const toast = useToast();
-
-        const id = 'addEmployeeToast'
 
         const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -129,12 +127,12 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
             const handleChangeFirstName = (theFirstName) => {
 
-                changeFirstNameValid(validator.isAlpha(theFirstName.replace(/'/g, "")) && theFirstName.slice(-1) != "'")
+                changeFirstNameValid(validator.isAlpha(theFirstName.replace(/'/g, "")) && theFirstName.slice(-1) !== "'")
                 changeFirstName(theFirstName)
             }
 
             const handleChangeLastName = (theLastName) => {
-                changeLastNameValid(validator.isAlpha(theLastName.replace(/'/g, "")) && theLastName.slice(-1) != "'")
+                changeLastNameValid(validator.isAlpha(theLastName.replace(/'/g, "")) && theLastName.slice(-1) !== "'")
                 changeLastName(theLastName)
             }
 
@@ -244,22 +242,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     )
                 }
                 else {
-                    if (!toast.isActive(id)) {
-                        toast({
-                            id,
-                            render: () => (
-                                <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                                    <HStack position="relative" align="center" minH="26px">
-                                        <WarningIcon w={5} h={5} m="0.5" />
-                                        <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                            Please fix any empty or invalid fields
-                                        </Text>
-                                        <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                                    </HStack>
-                                </Box>
-                            ), status: 'error', duration: 3000
-                        })
-                    }
+                    SessionExpiredToast(toast)
                 }
             }
 
@@ -359,14 +342,14 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                 body: JSON.stringify({ employee_id: employee.employee_id })
             }).then(
                 response => {
-                    if (response.status != 200)
+                    if (response.status !== 200)
                         throw new Error(response.status)
                     if (response.ok) {
                         console.log("DELETE /employees Status Code: " + response.status);
 
                         let newToEmployees = [];
                         for (var i = 0; i < toEmployees.length; ++i) {
-                            if (i != thisEmployeeIndex)
+                            if (i !== thisEmployeeIndex)
                                 newToEmployees.push(toEmployees[i])
                         }
                         toEmployees = [...newToEmployees];
@@ -374,22 +357,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     }
                 }
             ).catch((err) => {
-                if (!toast.isActive('sessionExpiredToast')) {
-                    toast({
-                        id: 'sessionExpiredToast',
-                        render: () => (
-                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                                <HStack position="relative" align="center" minH="26px">
-                                    <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                        Session expired. Please log out.
-                                    </Text>
-                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                                </HStack>
-                            </Box>
-                        ), status: 'error', duration: 3000
-                    })
-                }
+                SessionExpiredToast(toast)
             })
         }
 
@@ -421,11 +389,9 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                             <AlertDialogHeader fontFamily={font1} fontSize='lg' fontWeight='medium'>
                                 Delete Employee
                             </AlertDialogHeader>
-
                             <AlertDialogBody>
                                 <Text fontFamily={font1}>Are you sure you would like to delete <strong>{employee.f_name} {employee.l_name}</strong>?</Text>
                             </AlertDialogBody>
-
                             <AlertDialogFooter>
                                 <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
                                     Cancel

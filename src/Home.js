@@ -40,10 +40,10 @@ export default function Home() {
     })
   }, [mousePosition])
 
-  const { colorMode, toggleColorMode } = useColorMode()
+  const { toggleColorMode } = useColorMode()
 
   function hashPassword(text) {
-    if (text != '') {
+    if (text !== '') {
       changeUserPassword(md5(text));
     }
     else {
@@ -174,7 +174,7 @@ export default function Home() {
               </InputGroup>
             </FormControl>
             <LightMode>
-              <Button fontFamily={font1} w="100%" colorScheme="green" type="submit" rightIcon={<ArrowForwardIcon />} isLoading={isAuthenticating} onClick={() => authenticateUser()} isDisabled={!(userName != '' && userPassword != '')}>
+              <Button fontFamily={font1} w="100%" colorScheme="green" type="submit" rightIcon={<ArrowForwardIcon />} isLoading={isAuthenticating} onClick={() => authenticateUser()} isDisabled={!(userName !== '' && userPassword !== '')}>
                 Go
               </Button>
             </LightMode>

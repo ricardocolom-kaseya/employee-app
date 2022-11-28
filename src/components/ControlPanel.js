@@ -17,13 +17,12 @@ import { BsSortAlphaDown, BsSortAlphaDownAlt } from "react-icons/bs"
 
 import { useNavigate } from 'react-router-dom'
 
-
 import { faker } from '@faker-js/faker';
 
 import AddNewEmployeeButton from './AddNewEmployeeButton'
 import ViewEditSkillsButton from './ViewEditSkillsButton'
 
-import { font1, randomInt, getToken } from "../helpers/Helpers"
+import { font1, randomInt, getToken, SessionExpiredToast } from "../helpers/Helpers"
 
 export default function ControlPanel({
     changeSearch,
@@ -34,10 +33,10 @@ export default function ControlPanel({
     skills,
     changeSkills }) {
 
-    const navigate = useNavigate();
     const toast = useToast();
 
-    const { colorMode, toggleColorMode } = useColorMode()
+    const navigate = useNavigate();
+    const { toggleColorMode } = useColorMode()
 
     const [panelSortAsc, changePanelSortAsc] = useState(true)
     const [panelSearch, changePanelSearch] = useState("");
@@ -53,6 +52,7 @@ export default function ControlPanel({
     let toSkills = skills
     const AddDummyEmployee = () => {
         // console.log("Adding dummy employee")
+
 
         let f_name = faker.name.firstName()
         let l_name = faker.name.lastName()
@@ -70,8 +70,8 @@ export default function ControlPanel({
 
         let employee = { f_name, l_name, yyyy, mm, dd, email, skill_id, is_active }
         let body = { employee }
-
-        // console.log("Attempting to create " + f_name + " " + l_name + "...")
+        
+        console.log("TEST")
 
         fetch("http://localhost:4000/employees", {
             method: 'POST',
@@ -82,7 +82,7 @@ export default function ControlPanel({
             body: JSON.stringify(body)
         }).then(
             response => {
-                if (response.status != 200)
+                if (response.status !== 200)
                     throw new Error(response.status)
                 console.log("POST /employees Status Code: " + response.status);
                 return response.json()
@@ -99,22 +99,7 @@ export default function ControlPanel({
                 changeEmployees(toEmployees);
             }
         ).catch((err) => {
-            if (!toast.isActive('sessionExpiredToast')) {
-                toast({
-                    id: 'sessionExpiredToast',
-                    render: () => (
-                        <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                            <HStack position="relative" align="center" minH="26px">
-                                <WarningIcon w={5} h={5} m="0.5" />
-                                <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                    Session expired. Please log out.
-                                </Text>
-                                <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                            </HStack>
-                        </Box>
-                    ), status: 'error', duration: 3000
-                })
-            }
+            SessionExpiredToast(toast)
         })
     }
 
@@ -124,8 +109,6 @@ export default function ControlPanel({
 
         const handleDeleteAllEmployees = () => {
 
-            // console.log("Going to delete all employees... ");
-
             fetch("http://localhost:4000/employees", {
                 method: "DELETE",
                 headers: {
@@ -134,34 +117,18 @@ export default function ControlPanel({
                 },
             }).then(
                 response => {
-                    if (response.status != 200)
+                    if (response.status !== 200)
                         throw new Error(response.status)
                     console.log("DELETE /employees Status Code: " + response.status);
                     return response.json()
                 }
             ).then(
                 data => {
-                    // console.log(data);
                     toEmployees = [];
                     onClose();
                 }
             ).catch((err) => {
-                if (!toast.isActive('sessionExpiredToast')) {
-                    toast({
-                        id: 'sessionExpiredToast',
-                        render: () => (
-                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                                <HStack position="relative" align="center" minH="26px">
-                                    <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                        Session expired. Please log out.
-                                    </Text>
-                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                                </HStack>
-                            </Box>
-                        ), status: 'error', duration: 3000
-                    })
-                }
+                SessionExpiredToast(toast)
             })
         }
 
@@ -224,7 +191,7 @@ export default function ControlPanel({
                 },
             }).then(
                 response => {
-                    if (response.status != 200)
+                    if (response.status !== 200)
                         throw new Error(response.status)
                     console.log("DELETE /skills Status Code: " + response.status);
                     return response.json()
@@ -236,22 +203,7 @@ export default function ControlPanel({
                     onClose();
                 }
             ).catch((err) => {
-                if (!toast.isActive('sessionExpiredToast')) {
-                    toast({
-                        id: 'sessionExpiredToast',
-                        render: () => (
-                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                                <HStack position="relative" align="center" minH="26px">
-                                    <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                        Session expired. Please log out.
-                                    </Text>
-                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                                </HStack>
-                            </Box>
-                        ), status: 'error', duration: 3000
-                    })
-                }
+                SessionExpiredToast(toast)
             })
         }
 
@@ -314,7 +266,6 @@ export default function ControlPanel({
 
         return (
             <>
-
                 <LightMode>
                     <Button fontFamily={font1} variant="link" size="sm" colorScheme="red" rightIcon={<MdOutlineLogout />} onClick={onOpen}>
                         Log out
@@ -355,7 +306,7 @@ export default function ControlPanel({
 
     const handleChangeSkill = () => {
         let dropDownIndex = document.getElementById("panelSkillsDropDown").selectedIndex;
-        if (dropDownIndex != 0)
+        if (dropDownIndex !== 0)
             changePanelSearchSkill(skills[dropDownIndex - 1].skill_id);
         else
             changePanelSearchSkill("");

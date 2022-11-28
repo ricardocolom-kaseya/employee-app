@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
-import logo from './logo.svg';
 import './App.css';
 import { ChakraProvider } from '@chakra-ui/react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -12,17 +11,14 @@ const navBarHeight = 40;
 
 function App() {
 
-  const [auth, setAuth] = useState(false)
-  const [token, changeToken] = useState("")
-
   return (
     <ChakraProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<Home auth={auth} setAuth={setAuth} changeToken={changeToken} />} />
+          <Route path="/login" element={<Home/>}/>
           <Route path="/" element={<Navigate to ="/login" />}/>
           <Route path="/home" element={<Navigate to ="/login" />}/>
-          <Route path="/dashboard" element={<Dashboard setAuth={setAuth} token={token} changeToken={changeToken} navBarHeight={navBarHeight} />} />
+          <Route path="/dashboard" element={<Dashboard navBarHeight={navBarHeight} />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

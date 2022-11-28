@@ -26,7 +26,7 @@ import { MdSave, MdBadge, MdAddCircle } from 'react-icons/md'
 
 import validator from 'validator'
 
-import { font1, getToken } from '../helpers/Helpers'
+import { font1, getToken, SessionExpiredToast } from '../helpers/Helpers'
 
 export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
@@ -56,7 +56,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
     const { isOpen: isNewSkillOpen, onOpen: onNewSkillOpen, onClose: onNewSkillClose } = useDisclosure()
 
     const ShowSelectedIcon = (i) => {
-        if (i == index)
+        if (i === index)
             return (
                 <CheckIcon color={textPrimary} />
             )
@@ -69,11 +69,11 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     {modalSkills.map((skill, i) => {
                         return (
                             <Box onClick={() => { changeIndex(i) }}
-                                _hover={primary == 'white' ? { background: "gray.100", cursor: "pointer", transition: "linear 0.1s" } : { background: "whiteAlpha.200", cursor: "pointer", transition: "linear 0.1s" }}
+                                _hover={primary === 'white' ? { background: "gray.100", cursor: "pointer", transition: "linear 0.1s" } : { background: "whiteAlpha.200", cursor: "pointer", transition: "linear 0.1s" }}
                                 key={i}
                                 w="100%"
                                 border="1px"
-                                borderBottom={(i < modalSkills.length - 1) ? "0px" : "1px"} borderTopRadius={(i == 0) ? "md" : "0px"} borderBottomRadius={(i == modalSkills.length - 1) ? "md" : "0px"}
+                                borderBottom={(i < modalSkills.length - 1) ? "0px" : "1px"} borderTopRadius={(i === 0) ? "md" : "0px"} borderBottomRadius={(i === modalSkills.length - 1) ? "md" : "0px"}
                                 borderColor={borderColorVal}
                                 p="2">
                                 <HStack justify="space-between" px="2">
@@ -105,7 +105,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                 body: JSON.stringify({ skill_id: skillID })
             }).then(
                 response => {
-                    if (response.status != 200)
+                    if (response.status !== 200)
                         throw new Error(response.status)
                     console.log("DELETE /skills Status Code: " + response.status);
                     return response.json()
@@ -116,29 +116,14 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     let newAllSkills = [];
 
                     for (var i = 0; i < modalSkills.length; ++i) {
-                        if (modalSkills[i].skill_id != skillID)
+                        if (modalSkills[i].skill_id !== skillID)
                             newAllSkills.push(modalSkills[i])
                     }
 
                     changeModalSkills(newAllSkills);
                 }
             ).catch((err) => {
-                if (!toast.isActive('sessionExpiredToast')) {
-                    toast({
-                        id: 'sessionExpiredToast',
-                        render: () => (
-                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                                <HStack position="relative" align="center" minH="26px">
-                                    <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                        Session expired. Please log out.
-                                    </Text>
-                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                                </HStack>
-                            </Box>
-                        ), status: 'error', duration: 3000
-                    })
-                }
+                SessionExpiredToast(toast)
             })
         }
 
@@ -159,18 +144,18 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     >
                         <AlertDialogOverlay>
                             <AlertDialogContent>
-                                <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                                <AlertDialogHeader fontSize='lg' fontWeight='medium' fontFamily={font1}>
                                     Delete Skill
                                 </AlertDialogHeader>
                                 <AlertDialogBody>
-                                    <Text>Are you sure you would like to delete <strong>{modalSkills[index].skill_name}</strong>?</Text>
+                                    <Text fontFamily={font1}>Are you sure you would like to delete <strong>{modalSkills[index].skill_name}</strong>?</Text>
                                 </AlertDialogBody>
                                 <AlertDialogFooter>
-                                    <Button ref={cancelRef} onClick={onClose}>
+                                    <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
                                         Cancel
                                     </Button>
                                     <LightMode>
-                                        <Button colorScheme='red' onClick={handleDeleteSkill} ml={3}>
+                                        <Button fontFamily={font1} colorScheme='red' onClick={handleDeleteSkill} ml={3}>
                                             Delete
                                         </Button>
                                     </LightMode>
@@ -224,15 +209,13 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                 body: JSON.stringify(skillInfo)
             }).then(
                 response => {
-                    if (response.status != 200)
+                    if (response.status !== 200)
                         throw new Error(response.status)
                     console.log("PUT /skills Status Code: " + response.status);
                     return response.json()
                 }
             ).then(
                 data => {
-                    // console.log("Edited this skill...")
-
                     onEditSkillClose();
 
                     toast({
@@ -254,14 +237,16 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     let newAllSkills = [...modalSkills]
 
                     for (var i = 0; i < newAllSkills.length; ++i) {
-                        if (newAllSkills[i].skill_id == skillID) {
+                        if (newAllSkills[i].skill_id === skillID) {
                             newAllSkills[i] = editedSkill;
                         }
                     }
 
                     changeModalSkills(newAllSkills);
                 }
-            )
+            ).catch((err) => {
+                SessionExpiredToast(toast)
+            })
         }
 
         return (
@@ -319,7 +304,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                 body: JSON.stringify(skillInfo)
             }).then(
                 response => {
-                    if (response.status != 200)
+                    if (response.status !== 200)
                         throw new Error(response.status)
                     console.log("POST /skills Status Code: " + response.status);
                     return response.json()
@@ -349,22 +334,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     changeModalSkills(newAllSkills);
                 }
             ).catch((err) => {
-                if (!toast.isActive('sessionExpiredToast')) {
-                    toast({
-                        id: 'sessionExpiredToast',
-                        render: () => (
-                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                                <HStack position="relative" align="center" minH="26px">
-                                    <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                        Session expired. Please log out.
-                                    </Text>
-                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                                </HStack>
-                            </Box>
-                        ), status: 'error', duration: 3000
-                    })
-                }
+                SessionExpiredToast(toast)
             })
         }
 

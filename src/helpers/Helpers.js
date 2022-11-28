@@ -1,5 +1,9 @@
 import React from 'react'
 
+import { Box, HStack, Text, CloseButton } from '@chakra-ui/react'
+
+import { WarningIcon } from '@chakra-ui/icons'
+
 export const font1 = "Inter"
 
 export function randomInt(max) {
@@ -15,6 +19,25 @@ export function getAge(dob) {
 
     const currAge = (today - dob) / 31536000000;
     return Math.floor(currAge);
+}
+
+export const SessionExpiredToast = (toast) => {
+
+    if(!toast.isActive('sessionExpiredToast'))
+    toast({
+        id: 'sessionExpiredToast',
+        render: () => (
+            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
+                <HStack position="relative" align="center" minH="26px">
+                    <WarningIcon w={5} h={5} m="0.5" />
+                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
+                        Session expired. Please log out.
+                    </Text>
+                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                </HStack>
+            </Box>
+        ), status: 'error', duration: 3000
+    })
 }
 
 export const useMousePosition = () => {

@@ -1,20 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { Avatar, Box, Text, HStack, VStack, CloseButton, LightMode, Input, Code, Button, Tooltip, Icon, IconButton, Switch, Divider, useDisclosure, Select, Textarea, useToast } from '@chakra-ui/react'
-import {
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    MenuItemOption,
-    MenuGroup,
-    MenuOptionGroup,
-    MenuDivider,
-} from '@chakra-ui/react'
+import React, { useState } from 'react'
+import { Box, Text, HStack, VStack, CloseButton, LightMode, Input, Button, Icon, Switch, useDisclosure, Select, useToast } from '@chakra-ui/react'
 import {
     FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
 } from '@chakra-ui/react'
 import {
     Modal,
@@ -25,26 +12,14 @@ import {
     ModalBody,
     ModalCloseButton,
 } from '@chakra-ui/react'
-import {
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogContent,
-    AlertDialogOverlay,
-} from '@chakra-ui/react'
 import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
-import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
-
-import { faker } from '@faker-js/faker';
+import { MdAddCircle } from 'react-icons/md'
 
 import validator from 'validator'
 
-import KaseyaLogoSmall from "../assets/kaseya-logo-small.png"
-
 import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from './ModalHeaders'
 
-import { font1, getAge, getToken, randomInt } from '../helpers/Helpers'
+import { font1, getAge, getToken, SessionExpiredToast } from '../helpers/Helpers'
 
 export default function AddNewEmployeeButton({ employees, changeEmployees, skills }) {
 
@@ -70,12 +45,12 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
         const [birthdayValid, changeBirthdayValid] = useState(false);
 
         const handleChangeFirstName = (theFirstName) => {
-            changeFirstNameValid(validator.isAlpha(theFirstName.replace(/'/g, "")) && theFirstName.slice(-1) != "'")
+            changeFirstNameValid(validator.isAlpha(theFirstName.replace(/'/g, "")) && theFirstName.slice(-1) !== "'")
             changeFirstName(theFirstName)
         }
 
         const handleChangeLastName = (theLastName) => {
-            changeLastNameValid(validator.isAlpha(theLastName.replace(/'/g, "")) && theLastName.slice(-1) != "'")
+            changeLastNameValid(validator.isAlpha(theLastName.replace(/'/g, "")) && theLastName.slice(-1) !== "'")
             changeLastName(theLastName)
         }
 
@@ -98,7 +73,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
 
         const handleChangeSkill = () => {
             var index = document.getElementById("skillsDropDown").selectedIndex;
-            if (index != 0)
+            if (index !== 0)
                 changeSkill(skills[index - 1]);
         }
 
@@ -146,7 +121,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                 }).then(
                     response => {
                         console.log(response.status)
-                        if (response.status != 200)
+                        if (response.status !== 200)
                             throw new Error(response.status)
                         console.log("POST /employees Status Code: " + response.status);
                         return response.json()
@@ -176,22 +151,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                         })
                     }
                 ).catch((err) => {
-                    if (!toast.isActive('sessionExpiredToast')) {
-                        toast({
-                            id: 'sessionExpiredToast',
-                            render: () => (
-                                <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
-                                    <HStack position="relative" align="center" minH="26px">
-                                        <WarningIcon w={5} h={5} m="0.5" />
-                                        <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                            Session expired. Please log out.
-                                        </Text>
-                                        <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                                    </HStack>
-                                </Box>
-                            ), status: 'error', duration: 3000
-                        })
-                    }
+                    SessionExpiredToast(toast)
                 })
 
                 onClose();
