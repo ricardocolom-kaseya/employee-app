@@ -440,14 +440,14 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     </VStack>
                 </HStack>
                 <VStack spacing="0" align="left" pos="relative">
-                    <Text fontSize="xs" pos="absolute" bg={primary} px="1" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
+                    <Text fontSize="xs" pos="absolute" bg={primary} px="2" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
                         SKILL
                     </Text>
                     <Accordion allowToggle pt="3" pb="8" w="100%">
                         <AccordionItem borderLeftWidth="1px" borderRightWidth="1px" borderRadius="lg">
                             <AccordionButton>
                                 <HStack w="100%" justify="space-between">
-                                    <Text size="sm" fontWeight="bold" fontFamily={font1}>{skillName}</Text>
+                                    <Text fontWeight="bold" fontFamily={font1} w="100%" textAlign="left">{skillName}</Text>
                                     <AccordionIcon />
                                 </HStack>
                             </AccordionButton>
