@@ -132,9 +132,9 @@ export default function Home() {
     setTimeout(function () { doAuthenticate() }, 500)
   }
 
-  const primary = useColorModeValue('white', 'gray.700')
+  const primary = useColorModeValue('gray.100', 'gray.700')
   const textColorVal = useColorModeValue('gray.800', 'white')
-  const secondary = useColorModeValue('gray.200', 'gray.800')
+  const secondary = useColorModeValue('white', 'gray.800')
   const footerDivider = useColorModeValue('gray.400', 'gray.700')
   return (
     <VStack w="100vw" h="100vh" justify="center" bg={secondary}>
@@ -172,7 +172,7 @@ export default function Home() {
               </InputGroup>
             </FormControl>
             <FormControl>
-              <InputGroup>
+              <InputGroup onKeyUp={(e) => {if(e.keyCode === 13) authenticateUser()}}>
                 <Input placeholder="Password" variant="flushed" type={(hidePassword) ? 'text' : 'password'} onChange={(e) => { hashPassword(e.target.value); }} />
                 <InputLeftElement children={<LockIcon color="gray.300" />} />
                 <InputRightElement children={<IconButton icon={(!hidePassword) ? <ViewOffIcon w={4} h={4} /> : <ViewIcon w={4} h={4} />} size="sm" variant="link" />} onClick={() => { changeHidePassword(!hidePassword); }} />
