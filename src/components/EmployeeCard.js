@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useToast, Avatar, Box, Text, HStack, VStack, LightMode, AvatarBadge, Input, Code, Button, Tooltip, Icon, IconButton, Switch, CloseButton, useDisclosure, Select, useColorModeValue } from '@chakra-ui/react'
 import {
     Modal,
@@ -26,46 +26,28 @@ import {
 } from '@chakra-ui/react'
 import {
     FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
 } from '@chakra-ui/react'
 
-import { DeleteIcon, EditIcon, WarningIcon, MoonIcon, ChevronDownIcon, CheckIcon, CheckCircleIcon } from '@chakra-ui/icons'
-import { MdCake, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
+import { DeleteIcon, EditIcon, WarningIcon, CheckCircleIcon } from '@chakra-ui/icons'
+import { MdSave, MdEmail } from 'react-icons/md'
 
 import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from './ModalHeaders'
 
 import validator from 'validator'
 
-const font1 = 'Inter';
-
-function randomInt(max) {
-    return Math.floor(Math.random() * max);
-}
-
-function getToken(){
-    return localStorage.getItem('token')
-}
-
-const GetAge = (dob) => {
-    const today = new Date();
-
-    const currAge = (today - dob) / 31536000000;
-    return Math.floor(currAge);
-}
+import { font1, getToken, getAge } from '../helpers/Helpers'
 
 const RenderEmployeeActivity = (isActive) => {
     if (isActive) {
         return (
-            <Tooltip label="Active" hasArrow borderRadius="lg">
+            <Tooltip fontFamily={font1} label="Active" hasArrow borderRadius="lg">
                 <AvatarBadge boxSize="1.25em" bg="green.500" />
             </Tooltip>
         )
     }
     else {
         return (
-            <Tooltip label="Inactive" hasArrow borderRadius="lg">
+            <Tooltip fontFamily={font1} label="Inactive" hasArrow borderRadius="lg">
                 <AvatarBadge boxSize="1.25em" bg="red.500" />
             </Tooltip>
         )
@@ -75,9 +57,6 @@ const RenderEmployeeActivity = (isActive) => {
 const SkillBlock = (skill) => {
     return (
         <VStack align="left" spacing="0" position="relative" pb={(skill.i < skill.totalCount - 1) ? "16" : "8"}>
-            {/* <Text w="100%" textAlign="left" fontSize="xl" fontWeight="bold" fontFamily={font1}>
-                {skill.name}
-            </Text> */}
             <Text fontFamily={font1}>
                 {skill.desc}
             </Text>
@@ -85,7 +64,7 @@ const SkillBlock = (skill) => {
                 <Code bg="transparent">
                     SKILL ID:
                 </Code>
-                <Tooltip hasArrow label={skill.skill_id} borderRadius="lg">
+                <Tooltip hasArrow fontFamily={font1} label={skill.skill_id} borderRadius="lg">
                     <Button size="xs" variant="outline" onClick={() => navigator.clipboard.writeText(skill.skill_id)}>
                         <Code bg="transparent">
                             Copy
@@ -172,12 +151,11 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
             const handleChangeDate = (date) => {
 
                 let theDate = new Date(date);
-                if (!isNaN(theDate) && !(GetAge(theDate) < 18)) {
+                if (!isNaN(theDate) && !(getAge(theDate) < 18)) {
                     changeBirthdayValid(true)
                     changeBirthday(date)
                 }
                 else {
-                    //console.log("Date is invalid")
                     changeBirthday(0)
                     changeBirthdayValid(false)
                 }
@@ -196,12 +174,6 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
             }
 
             function allValid() {
-
-                // console.log("firstName: " + firstNameValid)
-                // console.log("lastName: " + lastNameValid)
-                // console.log("email: " + emailValid)
-                // console.log("birthday: " + birthdayValid)
-
 
                 return (firstNameValid && lastNameValid && emailValid && birthdayValid)
             }
@@ -223,7 +195,6 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
                     // console.log("Attempting to save " + f_name + " " + l_name + "...")
 
-
                     const putURL = "http://localhost:4000/employees/" + employee.employee_id;
 
                     let employeeInfo = { f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity }
@@ -244,8 +215,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                         }
                     ).then(
                         data => {
-                            // console.log("Saved this employee...")
-                            // console.log(data);
+
                             employee.f_name = data.f_name;
                             employee.l_name = data.l_name;
                             employee.dob = new Date(birthday);
@@ -262,7 +232,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                                     <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
                                         <HStack position="relative" align="center" minH="26px">
                                             <CheckCircleIcon w={5} h={5} m="0.5" />
-                                            <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                            <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                                 Saved
                                             </Text>
                                             <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -281,7 +251,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                                 <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                                     <HStack position="relative" align="center" minH="26px">
                                         <WarningIcon w={5} h={5} m="0.5" />
-                                        <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                             Please fix any empty or invalid fields
                                         </Text>
                                         <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -295,7 +265,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
             return (
                 <ModalContent>
-                    <ModalHeader fontFamily="Inter" fontWeight="medium">Edit employee</ModalHeader>
+                    <ModalHeader fontFamily={font1} fontWeight="medium">Edit employee</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <HStack spacing="8">
@@ -303,37 +273,37 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                                 <VStack spacing="0" w="100%">
                                     <FormControl isRequired isInvalid={!firstNameValid && firstName.length > 0}>
                                         <NameHeader />
-                                        <Input value={firstName} onChange={(e) => { handleChangeFirstName(e.target.value) }} mb="2" />
+                                        <Input fontFamily={font1} value={firstName} onChange={(e) => { handleChangeFirstName(e.target.value) }} mb="2" />
                                     </FormControl>
                                     <FormControl isRequired isInvalid={(!lastNameValid && lastName.length > 0)}>
-                                        <Input value={lastName} onChange={(e) => { handleChangeLastName(e.target.value) }} />
+                                        <Input fontFamily={font1} value={lastName} onChange={(e) => { handleChangeLastName(e.target.value) }} />
                                     </FormControl>
                                 </VStack>
                                 <FormControl isRequired mt="8" isInvalid={(!emailValid && email.length > 0)}>
                                     <EmailHeader />
-                                    <Input value={email} type="email" onChange={(e) => { handleChangeEmail(e.target.value) }} />
+                                    <Input fontFamily={font1} value={email} type="email" onChange={(e) => { handleChangeEmail(e.target.value) }} />
                                 </FormControl>
                                 <FormControl isRequired mt="8">
                                     <DOBHeader />
-                                    <Input type="date" defaultValue={formatDate(birthday)} onChange={(e) => {handleChangeDate(e.target.value)}}/>
+                                    <Input fontFamily={font1} type="date" defaultValue={formatDate(birthday)} onChange={(e) => {handleChangeDate(e.target.value)}}/>
                                 </FormControl>
                             </VStack>
                             <VStack w="1200px" h="328px">
                                 <VStack w="100%" spacing="0" justify="left">
                                     <ActivityHeader />
                                     <HStack w="100%" justify="center">
-                                        <Text>Inactive</Text>
+                                        <Text fontFamily={font1}>Inactive</Text>
                                         <LightMode>
                                             <Switch isChecked={activity} onChange={handleChangeActivity} size="lg" colorScheme="green" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'red.500' } }} />
                                         </LightMode>
-                                        <Text>Active</Text>
+                                        <Text fontFamily={font1}>Active</Text>
                                     </HStack>
                                 </VStack>
                                 <FormControl isRequired pt="8">
                                     <SkillsHeader />
-                                    <Select defaultValue={skill.skill_name} id="skillsDropDown" onChange={handleChangeSkill}>
+                                    <Select fontFamily={font1} defaultValue={skill.skill_name} id="skillsDropDown" onChange={handleChangeSkill}>
                                         {skills.map((skill, i) => {
-                                            return (<option key={i} onClick={() => console.log("FIRED")}>{skill.skill_name}</option>)
+                                            return (<option key={i}>{skill.skill_name}</option>)
                                         })}
                                     </Select>
                                 </FormControl>
@@ -342,9 +312,9 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     </ModalBody>
                     <ModalFooter>
                         <HStack>
-                            <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                            <Button onClick={onClose} fontFamily={font1} fontWeight="medium">Cancel</Button>
                             <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={handleSaveEmployee}>
-                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                                     Save
                                 </Text>
                             </Button>
@@ -411,7 +381,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                             <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                         Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -448,20 +418,20 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
-                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                            <AlertDialogHeader fontFamily={font1} fontSize='lg' fontWeight='medium'>
                                 Delete Employee
                             </AlertDialogHeader>
 
                             <AlertDialogBody>
-                                <Text>Are you sure you would like to delete <strong>{employee.f_name} {employee.l_name}</strong>?</Text>
+                                <Text fontFamily={font1}>Are you sure you would like to delete <strong>{employee.f_name} {employee.l_name}</strong>?</Text>
                             </AlertDialogBody>
 
                             <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
+                                <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
                                 <LightMode>
-                                    <Button colorScheme='red' onClick={handleDeleteEmployee} ml={3}>
+                                    <Button fontFamily={font1} colorScheme='red' onClick={handleDeleteEmployee} ml={3}>
                                         Delete
                                     </Button>
                                 </LightMode>
@@ -474,8 +444,6 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
     }
 
     const primary = useColorModeValue('white', 'gray.800')
-    const secondary = useColorModeValue('gray.200', 'gray.700')
-    const textPrimary = useColorModeValue('gray.800', 'gray.300')
 
     return (
         <Box pos="relative" w="lg" style={{ margin: "6px" }} shadow="md" borderRadius="2xl" bg={primary}>
@@ -525,16 +493,16 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                 </VStack>
             </VStack>
             <HStack pos="absolute" w="100%" bottom="0" px="4" py="2">
-                <Tooltip hasArrow label={(employee.dob).toLocaleDateString()} borderRadius="lg">
+                <Tooltip fontFamily={font1} hasArrow label={(employee.dob).toLocaleDateString()} borderRadius="lg">
                     <Text fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1} w="122px">
-                        {GetAge(employee.dob)} years old
+                        {getAge(employee.dob)} years old
                     </Text>
                 </Tooltip>
                 <HStack spacing="0" w="100%" justify="end">
                     <Code bg="transparent">
                         ID:
                     </Code>
-                    <Tooltip hasArrow label={employee.employee_id} borderRadius="lg">
+                    <Tooltip fontFamily={font1} hasArrow label={employee.employee_id} borderRadius="lg">
                         <Button size="xs" onClick={() => navigator.clipboard.writeText(employee.employee_id)}>
                             <Code bg="transparent">
                                 Copy

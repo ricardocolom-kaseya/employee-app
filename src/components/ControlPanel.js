@@ -23,11 +23,7 @@ import { faker } from '@faker-js/faker';
 import AddNewEmployeeButton from './AddNewEmployeeButton'
 import ViewEditSkillsButton from './ViewEditSkillsButton'
 
-const font1 = 'Inter';
-
-function randomInt(max) {
-    return Math.floor(Math.random() * max);
-}
+import { font1, randomInt, getToken } from "../helpers/Helpers"
 
 export default function ControlPanel({
     changeSearch,
@@ -37,10 +33,6 @@ export default function ControlPanel({
     changeEmployees,
     skills,
     changeSkills }) {
-
-    function getToken(){
-        return localStorage.getItem('token')
-    }
 
     const navigate = useNavigate();
     const toast = useToast();
@@ -114,7 +106,7 @@ export default function ControlPanel({
                         <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                             <HStack position="relative" align="center" minH="26px">
                                 <WarningIcon w={5} h={5} m="0.5" />
-                                <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                     Session expired. Please log out.
                                 </Text>
                                 <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -161,7 +153,7 @@ export default function ControlPanel({
                             <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                         Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -177,7 +169,7 @@ export default function ControlPanel({
             <>
                 <LightMode>
                     <Button colorScheme="red" onClick={onOpen} w="100%">
-                        <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
+                        <Text w="100%" textAlign="center" fontWeight="normal" fontFamily={font1}>
                             Delete All Employees
                         </Text>
                     </Button>
@@ -193,18 +185,18 @@ export default function ControlPanel({
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
-                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                            <AlertDialogHeader fontFamily={font1} fontSize='lg' fontWeight='medium'>
                                 Delete All Employees
                             </AlertDialogHeader>
                             <AlertDialogBody>
-                                <Text>Are you sure you would like to delete <strong>all employees</strong>?</Text>
+                                <Text fontFamily={font1}>Are you sure you would like to delete <strong>all employees</strong>?</Text>
                             </AlertDialogBody>
                             <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
+                                <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
                                 <LightMode>
-                                    <Button colorScheme='red' onClick={handleDeleteAllEmployees} ml={3}>
+                                    <Button fontFamily={font1} colorScheme='red' onClick={handleDeleteAllEmployees} ml={3}>
                                         Delete All
                                     </Button>
                                 </LightMode>
@@ -251,7 +243,7 @@ export default function ControlPanel({
                             <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                         Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -267,7 +259,7 @@ export default function ControlPanel({
             <>
                 <LightMode>
                     <Button colorScheme="red" onClick={onOpen} w="100%">
-                        <Text w="100%" textAlign="center" fontWeight="normal" fontFamily="Inter">
+                        <Text w="100%" textAlign="center" fontWeight="normal" fontFamily={font1}>
                             Delete All Skills
                         </Text>
                     </Button>
@@ -283,18 +275,18 @@ export default function ControlPanel({
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
-                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                            <AlertDialogHeader fontSize='lg' fontFamily={font1}>
                                 Delete All Skills
                             </AlertDialogHeader>
                             <AlertDialogBody>
-                                <Text>Are you sure you would like to delete <strong>all skills</strong>?</Text>
+                                <Text fontFamily={font1}>Are you sure you would like to delete <strong>all skills</strong>?</Text>
                             </AlertDialogBody>
                             <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
+                                <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
                                 <LightMode>
-                                    <Button colorScheme='red' onClick={handleDeleteAllSkills} ml={3}>
+                                    <Button fontFamily={font1} colorScheme='red' onClick={handleDeleteAllSkills} ml={3}>
                                         Delete All
                                     </Button>
                                 </LightMode>
@@ -324,7 +316,7 @@ export default function ControlPanel({
             <>
 
                 <LightMode>
-                    <Button variant="link" size="sm" colorScheme="red" rightIcon={<MdOutlineLogout />} onClick={onOpen}>
+                    <Button fontFamily={font1} variant="link" size="sm" colorScheme="red" rightIcon={<MdOutlineLogout />} onClick={onOpen}>
                         Log out
                     </Button>
                 </LightMode>
@@ -338,18 +330,18 @@ export default function ControlPanel({
                 >
                     <AlertDialogOverlay>
                         <AlertDialogContent>
-                            <AlertDialogHeader fontSize='lg' fontWeight='medium'>
+                            <AlertDialogHeader fontFamily={font1} fontSize='lg' fontWeight='medium'>
                                 Log out
                             </AlertDialogHeader>
                             <AlertDialogBody>
-                                <Text>Are you sure you would like to <strong>log out</strong>?</Text>
+                                <Text fontFamily={font1}>Are you sure you would like to <strong>log out</strong>?</Text>
                             </AlertDialogBody>
                             <AlertDialogFooter>
-                                <Button ref={cancelRef} onClick={onClose}>
+                                <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
                                 <LightMode>
-                                    <Button colorScheme='red' ml={3} isLoading={willLogOut} onClick={() => { doLogOut() }}>
+                                    <Button fontFamily={font1} colorScheme='red' ml={3} isLoading={willLogOut} onClick={() => { doLogOut() }}>
                                         Log out
                                     </Button>
                                 </LightMode>
@@ -405,13 +397,13 @@ export default function ControlPanel({
                         <FormControl w="100%">
                             <InputGroup>
                                 <InputLeftElement children={<SearchIcon />} />
-                                <Input fontFamily="Inter" type="search" placeholder="Name..." value={panelSearch}
+                                <Input fontFamily={font1} type="search" placeholder="Name..." value={panelSearch}
                                     onChange={(e) => changePanelSearch(e.target.value)} />
                             </InputGroup>
                         </FormControl>
                     </HStack>
                     <HStack w="100%">
-                        <Select placeholder="Any skill" id="panelSkillsDropDown" onChange={handleChangeSkill}>
+                        <Select fontFamily={font1} placeholder="Any skill" id="panelSkillsDropDown" onChange={handleChangeSkill}>
                             {skills.map((skill, i) => {
                                 return (<option key={i}>{skill.skill_name}</option>)
                             })}
@@ -423,11 +415,11 @@ export default function ControlPanel({
                     </HStack>
                     <HStack justify="space-between" w="100%">
                         <LightMode>
-                            <Button colorScheme="red" w="100%" onClick={() => resetSearch()}>
+                            <Button fontFamily={font1} colorScheme="red" w="100%" onClick={() => resetSearch()}>
                                 Reset Search
                             </Button>
                         </LightMode>
-                        <Button w="100%" variant="solid" onClick={() => { goPressed() }}>
+                        <Button fontFamily={font1} w="100%" variant="solid" onClick={() => { goPressed() }}>
                             Search
                         </Button>
                     </HStack>
@@ -435,7 +427,7 @@ export default function ControlPanel({
                 <VStack w="100%">
                     <AddNewEmployeeButton token={getToken()} employees={[...employees]} changeEmployees={changeEmployees} skills={[...skills]} />
                     <Button variant="outline" pos="relative" rightIcon={<Icon as={MdHelp} w={6} h={6} />} onClick={() => AddDummyEmployee()} w="100%">
-                        <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                        <Text fontFamily={font1} w="100%" textAlign="left" fontWeight="normal">
                             Add a dummy employee
                         </Text>
                     </Button>
@@ -443,7 +435,9 @@ export default function ControlPanel({
                 </VStack>
                 <VStack w="100%" spacing="2" pb="8">
                     <Button variant="outline" w="100%" rightIcon={<Icon as={MdHistory} w={6} h={6} />} onClick={() => localStorage.setItem('token', 'invalid')}>
-                        <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">Force invalidate JWT</Text>
+                        <Text fontFamily={font1} w="100%" textAlign="left" fontWeight="normal">
+                            Force invalidate JWT
+                        </Text>
                     </Button>
                     <DeleteAllEmployeesButton />
                     <DeleteAllSkillsButton />

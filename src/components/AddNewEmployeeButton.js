@@ -44,22 +44,7 @@ import KaseyaLogoSmall from "../assets/kaseya-logo-small.png"
 
 import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from './ModalHeaders'
 
-const font1 = 'Inter';
-
-const GetAge = (dob) => {
-    const today = new Date();
-
-    const currAge = (today - dob) / 31536000000;
-    return Math.floor(currAge);
-}
-
-function getToken(){
-    return localStorage.getItem('token')
-}
-
-function randomInt(max) {
-    return Math.floor(Math.random() * max);
-}
+import { font1, getAge, getToken, randomInt } from '../helpers/Helpers'
 
 export default function AddNewEmployeeButton({ employees, changeEmployees, skills }) {
 
@@ -101,7 +86,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
 
         const handleChangeDate = (date) => {
             let theDate = new Date(date);
-            if (!isNaN(theDate) && !(GetAge(theDate) < 18)) {
+            if (!isNaN(theDate) && !(getAge(theDate) < 18)) {
                 changeBirthdayValid(true)
                 changeBirthday(date)
             }
@@ -125,12 +110,6 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
         }
 
         function allValid() {
-
-            // console.log("firstName: " + firstNameValid)
-            // console.log("lastName: " + lastNameValid)
-            // console.log("email: " + emailValid)
-            // console.log("birthday: " + birthdayValid)
-
 
             return (firstNameValid && lastNameValid && emailValid && birthdayValid)
         }
@@ -187,7 +166,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                                 <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
                                     <HStack position="relative" align="center" minH="26px">
                                         <CheckCircleIcon w={5} h={5} m="0.5" />,
-                                        <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                             Saved
                                         </Text>
                                         <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -204,7 +183,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                                 <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                                     <HStack position="relative" align="center" minH="26px">
                                         <WarningIcon w={5} h={5} m="0.5" />
-                                        <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                        <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                             Session expired. Please log out.
                                         </Text>
                                         <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -225,7 +204,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                             <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                         Please fix any empty or invalid fields
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -240,7 +219,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
 
         return (
             <ModalContent >
-                <ModalHeader fontFamily="Inter" fontWeight="medium">Add a new employee</ModalHeader>
+                <ModalHeader fontFamily={font1} fontWeight="medium">Add a new employee</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <HStack spacing="8">
@@ -248,35 +227,35 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                             <VStack spacing="0" w="100%">
                                 <FormControl isRequired isInvalid={(!firstNameValid && firstName.length > 0)}>
                                     <NameHeader />
-                                    <Input placeholder="First name" onChange={(e) => { handleChangeFirstName(e.target.value) }} mb="2" />
+                                    <Input fontFamily={font1} placeholder="First name" onChange={(e) => { handleChangeFirstName(e.target.value) }} mb="2" />
                                 </FormControl>
                                 <FormControl isRequired isInvalid={(!lastNameValid && lastName.length > 0)}>
-                                    <Input placeholder="Last name" onChange={(e) => { handleChangeLastName(e.target.value) }} />
+                                    <Input fontFamily={font1} placeholder="Last name" onChange={(e) => { handleChangeLastName(e.target.value) }} />
                                 </FormControl>
                             </VStack>
                             <FormControl isRequired mt="8" isInvalid={(!emailValid && email.length > 0)}>
                                 <EmailHeader />
-                                <Input placeholder="Email" type="email" onChange={(e) => { handleChangeEmail(e.target.value) }} />
+                                <Input fontFamily={font1} placeholder="Email" type="email" onChange={(e) => { handleChangeEmail(e.target.value) }} />
                             </FormControl>
                             <FormControl isRequired mt="8">
                                 <DOBHeader />
-                                <Input type="date" onChange={(e) => { handleChangeDate(e.target.value) }} />
+                                <Input fontFamily={font1} type="date" onChange={(e) => { handleChangeDate(e.target.value) }} />
                             </FormControl>
                         </VStack>
                         <VStack w="1200px" h="328px">
                             <VStack w="100%" spacing="0" justify="left">
                                 <ActivityHeader />
                                 <HStack w="100%" justify="center">
-                                    <Text>Inactive</Text>
+                                    <Text fontFamily={font1}>Inactive</Text>
                                     <LightMode>
                                         <Switch isChecked={activity} onChange={handleChangeActivity} size="lg" colorScheme="green" sx={{ 'span.chakra-switch__track:not([data-checked])': { backgroundColor: 'red.500' } }} />
                                     </LightMode>
-                                    <Text>Active</Text>
+                                    <Text fontFamily={font1}>Active</Text>
                                 </HStack>
                             </VStack>
                             <FormControl isRequired pt="8">
                                 <SkillsHeader />
-                                <Select placeholder="Skill" id="skillsDropDown" onChange={handleChangeSkill}>
+                                <Select fontFamily={font1} placeholder="Skill" id="skillsDropDown" onChange={handleChangeSkill}>
                                     {skills.map((skill, i) => {
                                         return (<option key={i}>{skill.skill_name}</option>)
                                     })}
@@ -287,10 +266,10 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                 </ModalBody>
                 <ModalFooter>
                     <HStack>
-                        <Button onClick={onClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                        <Button onClick={onClose} fontFamily={font1} fontWeight="medium">Cancel</Button>
                         <LightMode>
                             <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} w={4} h={4} />} onClick={handleAddEmployee}>
-                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                <Text  w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                                     Add
                                 </Text>
                             </Button>
@@ -304,7 +283,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
     return (
         <>
             <Button variant="outline" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} onClick={onOpen} w="100%">
-                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                     Add a new employee
                 </Text>
             </Button>

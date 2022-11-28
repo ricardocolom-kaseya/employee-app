@@ -21,31 +21,12 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
 } from '@chakra-ui/react'
-import { DeleteIcon, EditIcon, WarningIcon, CheckIcon, CheckCircleIcon } from '@chakra-ui/icons'
-import { MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
-
-import { faker } from '@faker-js/faker';
+import { EditIcon, WarningIcon, CheckIcon, CheckCircleIcon } from '@chakra-ui/icons'
+import { MdSave, MdBadge, MdAddCircle } from 'react-icons/md'
 
 import validator from 'validator'
 
-const font1 = 'Inter';
-
-const today = new Date();
-
-const GetAge = (dob) => {
-    const today = new Date();
-
-    const currAge = (today - dob) / 31536000000;
-    return Math.floor(currAge);
-}
-
-function getToken(){
-    return localStorage.getItem('token')
-}
-
-function randomInt(max) {
-    return Math.floor(Math.random() * max);
-}
+import { font1, getToken } from '../helpers/Helpers'
 
 export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
@@ -54,10 +35,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
     const [modalSkills, changeModalSkills] = useState([])
 
     const primary = useColorModeValue('white', 'gray.800')
-    const secondary = useColorModeValue('gray.200', 'gray.700')
     const borderColorVal = useColorModeValue('gray.200', 'gray.600')
-    const hoverColorVal = useColorModeValue('red.100', 'gray.100')
-    const tertiary = useColorModeValue('gray.300', 'gray.600')
     const textPrimary = useColorModeValue('gray.800', 'gray.300')
 
     // This is absolutely necessary as modalSkills hook is always loaded as long as the control panel is rendered, and it MUST change whenever skills changes.
@@ -152,7 +130,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                             <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                         Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -169,7 +147,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
             return (
                 <>
                     <LightMode>
-                        <Button onClick={onOpen} fontFamily="Inter" colorScheme="red" fontWeight="medium">Delete Selected</Button>
+                        <Button onClick={onOpen} fontFamily={font1} colorScheme="red" fontWeight="medium">Delete Selected</Button>
                     </LightMode>
                     <AlertDialog
                         isOpen={isOpen}
@@ -209,7 +187,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
         if (modalSkills.length > 0) {
             return (
                 <Button my="4" rightIcon={<EditIcon w={4} h={4} />} onClick={onEditSkillOpen}>
-                    <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                    <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                         Edit
                     </Text>
                 </Button>
@@ -262,7 +240,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                             <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <CheckCircleIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                         Saved!
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -288,27 +266,27 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
         return (
             <ModalContent>
-                <ModalHeader fontFamily="Inter" fontWeight="medium">Edit Skill</ModalHeader>
+                <ModalHeader fontFamily={font1} fontWeight="medium">Edit Skill</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <HStack spacing="8">
                         <VStack spacing="8" w="1200px" h="328px">
                             <FormControl isRequired>
-                                <FormLabel>Name</FormLabel>
-                                <Input value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
+                                <FormLabel fontFamily={font1}>Name</FormLabel>
+                                <Input fontFamily={font1} value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
                             </FormControl>
                             <FormControl isRequired mt="8">
-                                <FormLabel>Description</FormLabel>
-                                <Textarea value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
+                                <FormLabel fontFamily={font1}>Description</FormLabel>
+                                <Textarea fontFamily={font1} value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
                             </FormControl>
                         </VStack>
                     </HStack>
                 </ModalBody>
                 <ModalFooter>
                     <HStack>
-                        <Button onClick={onEditSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                        <Button onClick={onEditSkillClose} fontFamily={font1} fontWeight="medium">Cancel</Button>
                         <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={handleEditSkill}>
-                            <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                            <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                                 Save
                             </Text>
                         </Button>
@@ -355,7 +333,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                             <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <CheckCircleIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                         Added a skill!
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -378,7 +356,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                             <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                                 <HStack position="relative" align="center" minH="26px">
                                     <WarningIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                         Session expired. Please log out.
                                     </Text>
                                     <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -392,28 +370,28 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
         return (
             <ModalContent>
-                <ModalHeader fontFamily="Inter" fontWeight="medium">New Skill</ModalHeader>
+                <ModalHeader fontFamily={font1} fontWeight="medium">New Skill</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
                     <HStack spacing="8">
                         <VStack spacing="8" w="1200px" h="328px">
                             <FormControl isRequired>
-                                <FormLabel>Name</FormLabel>
-                                <Input value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
+                                <FormLabel fontFamily={font1}>Name</FormLabel>
+                                <Input fontFamily={font1} value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
                             </FormControl>
                             <FormControl isRequired mt="8">
-                                <FormLabel>Description</FormLabel>
-                                <Textarea value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
+                                <FormLabel fontFamily={font1}>Description</FormLabel>
+                                <Textarea fontFamily={font1} value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
                             </FormControl>
                         </VStack>
                     </HStack>
                 </ModalBody>
                 <ModalFooter>
                     <HStack>
-                        <Button onClick={onNewSkillClose} fontFamily="Inter" fontWeight="medium">Cancel</Button>
+                        <Button onClick={onNewSkillClose} fontFamily={font1} fontWeight="medium">Cancel</Button>
                         <LightMode>
                             <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} w={4} h={4} />} onClick={handleAddSkill}>
-                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                                     Add
                                 </Text>
                             </Button>
@@ -427,20 +405,20 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
     return (
         <>
             <Button variant="outline" my="4" rightIcon={<Icon as={MdBadge} w={6} h={6} />} onClick={onViewSkillsOpen} w="100%">
-                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                     View/Edit Skills
                 </Text>
             </Button>
-            <Modal onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={() => { changeSkills(modalSkills) }} preserveScrollBarGap>
+            <Modal fontFamily={font1} onClose={onViewSkillsClose} isOpen={isViewSkillsOpen} isCentered motionPreset='slideInBottom' size="lg" onCloseComplete={() => { changeSkills(modalSkills) }} preserveScrollBarGap>
                 <ModalOverlay />
                 <ModalContent >
-                    <ModalHeader fontFamily="Inter" fontWeight="medium">Skills</ModalHeader>
+                    <ModalHeader fontFamily={font1} fontWeight="medium">Skills</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <VStack spacing="0">
                             <ShowSkillTable />
                             <Button variant="outline" rightIcon={<Icon as={MdAddCircle} color="green.500" w={6} h={6} />} w="100%" onClick={onNewSkillOpen}>
-                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily="Inter">
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                                     Add a new skill
                                 </Text>
                             </Button>

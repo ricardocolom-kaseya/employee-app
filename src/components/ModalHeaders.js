@@ -1,7 +1,9 @@
 import React from 'react'
 
 import { HStack, Icon, Box, Text, FormLabel } from '@chakra-ui/react'
-import { MdCake, MdWork, MdOutlineDelete, MdSave, MdBadge, MdPerson, MdEmail, MdAddCircle, MdDelete } from 'react-icons/md'
+import { MdCake, MdWork, MdBadge, MdPerson, MdEmail } from 'react-icons/md'
+
+import { font1 } from '../helpers/Helpers'
 
 export const NameHeader = () => {
     return (
@@ -9,10 +11,10 @@ export const NameHeader = () => {
             <HStack position="absolute" spacing="2">
                 <Icon as={MdPerson} boxSize={4} position="absolute" top="4px" />
                 <Box w="1" />
-                <Text fontWeight="medium" fontFamily="Inter">Name</Text>
+                <Text fontWeight="medium" fontFamily={font1}>Name</Text>
             </HStack>
             <FormLabel position="absolute" left="63px"></FormLabel>
-            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+            <Text color="transparent" pb="2" fontFamily={font1}>invisible</Text>
         </>
 
     )
@@ -24,10 +26,10 @@ export const EmailHeader = () => {
             <HStack position="absolute" spacing="2">
                 <Icon as={MdEmail} boxSize={4} position="absolute" top="5px" />
                 <Box w="1" />
-                <Text fontWeight="medium" fontFamily="Inter">Email</Text>
+                <Text fontWeight="medium" fontFamily={font1}>Email</Text>
             </HStack>
             <FormLabel position="absolute" left="59px"></FormLabel>
-            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+            <Text color="transparent" pb="2" fontFamily={font1}>invisible</Text>
         </>
     )
 }
@@ -38,11 +40,11 @@ export const DOBHeader = () => {
             <HStack position="absolute" spacing="2">
                 <Icon as={MdCake} boxSize={4} position="absolute" top="3px" />
                 <Box w="1" />
-                <Text fontWeight="medium" fontFamily="Inter">Birthday</Text>
-                <Text pt="1" pl="8" w="100%" textAlign="center" fontFamily="Inter" fontStyle="italic">Must be over 18</Text>
+                <Text fontWeight="medium" fontFamily={font1}>Birthday</Text>
+                <Text pt="1" pl="8" w="100%" textAlign="center" fontFamily={font1} fontStyle="italic">Must be over 18</Text>
             </HStack>
             <FormLabel position="absolute" left="83px"></FormLabel>
-            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+            <Text color="transparent" pb="2" fontFamily={font1}>invisible</Text>
         </>
     )
 }
@@ -53,10 +55,10 @@ export const SkillsHeader = () => {
             <HStack position="absolute" spacing="2">
                 <Icon as={MdBadge} boxSize={4} position="absolute" top="3px" />
                 <Box w="1" />
-                <Text fontWeight="medium" fontFamily="Inter">Skill</Text>
+                <Text fontWeight="medium" fontFamily={font1}>Skill</Text>
             </HStack>
             <FormLabel position="absolute" left="50px"></FormLabel>
-            <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+            <Text color="transparent" pb="2" fontFamily={font1}>invisible</Text>
         </>
     )
 }
@@ -68,10 +70,10 @@ export const ActivityHeader = () => {
                 <HStack position="absolute" spacing="2">
                     <Icon as={MdWork} boxSize={4} position="absolute" top="4px" />
                     <Box w="1" />
-                    <Text fontWeight="medium" fontFamily="Inter">Activity</Text>
+                    <Text fontWeight="medium" fontFamily={font1}>Activity</Text>
                 </HStack>
                 <FormLabel position="absolute" left="83px"></FormLabel>
-                <Text color="transparent" pb="2" fontFamily="Inter">invisible</Text>
+                <Text color="transparent" pb="2" fontFamily={font1}>invisible</Text>
             </HStack>
         </>
     )

@@ -5,17 +5,11 @@ import { WarningIcon } from '@chakra-ui/icons'
 
 import { Scrollbars } from 'react-custom-scrollbars-2'
 
-import KaseyaLogoSmall from "./assets/kaseya-logo-small.png"
+import { font1, getToken } from './helpers/Helpers'
 
 import EmployeeCard from './components/EmployeeCard'
 import ControlPanel from './components/ControlPanel'
 import Navbar from './Navbar'
-
-const font1 = 'Inter';
-
-function getToken(){
-    return localStorage.getItem('token')
-}
 
 const CardView = ({ employees, changeEmployees, skills }) => {
 
@@ -71,9 +65,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
     const [searchSkill, changeSearchSkill] = useState("")
     const [sortAsc, changeSortAsc] = useState(true);
 
-    const primary = useColorModeValue('white', 'gray.800')
     const secondary = useColorModeValue('gray.200', 'gray.700')
-    const textPrimary = useColorModeValue('gray.800', 'gray.300')
 
     const toast = useToast();
 
@@ -105,7 +97,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
                         <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                             <HStack position="relative" align="center" minH="26px">
                                 <WarningIcon w={5} h={5} m="0.5" />
-                                <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                                <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                     Session expired. Please log out.
                                 </Text>
                                 <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
@@ -148,7 +140,7 @@ export default function Dashboard({ navBarHeight, setAuth }) {
                     <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="red.500">
                         <HStack position="relative" align="center" minH="26px">
                             <WarningIcon w={5} h={5} m="0.5" />
-                            <Text fontWeight="bold" fontSize="md" fontFamily="Inter" pr="8">
+                            <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
                                 Session expired. Please log out.
                             </Text>
                             <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
