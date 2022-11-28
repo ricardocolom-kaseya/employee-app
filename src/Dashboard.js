@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Box, HStack, VStack, useColorModeValue, Text, CloseButton, useToast } from '@chakra-ui/react'
+import { Box, HStack, VStack, useColorModeValue, useToast } from '@chakra-ui/react'
 
-import { WarningIcon } from '@chakra-ui/icons'
+import { useNavigate } from 'react-router-dom'
 
 import { Scrollbars } from 'react-custom-scrollbars-2'
 
-import { font1, getToken, SessionExpiredToast } from './helpers/Helpers'
+import { getToken, SessionExpiredToast } from './helpers/Helpers'
 
 import EmployeeCard from './components/EmployeeCard'
 import ControlPanel from './components/ControlPanel'
@@ -68,6 +68,7 @@ export default function Dashboard({ navBarHeight }) {
     const secondary = useColorModeValue('gray.200', 'gray.700')
 
     const toast = useToast();
+    const navigate = useNavigate();
 
     useEffect(() => {
 
@@ -90,6 +91,7 @@ export default function Dashboard({ navBarHeight }) {
                 changeSkills(data)
             }
         ).catch((err) => {
+            navigate("/login")
         })
     }, [])
 
@@ -118,7 +120,6 @@ export default function Dashboard({ navBarHeight }) {
                 changeEmployees(toEmployees)
             }
         ).catch((err) => {
-            SessionExpiredToast(toast)
         })
     }
 

@@ -61,7 +61,11 @@ export default function ControlPanel({
         let mm = ((dob.getMonth() + 1) < 10) ? `0${dob.getMonth() + 1}` : dob.getMonth() + 1
         let dd = (dob.getDate() < 10) ? `0${dob.getDate()}` : dob.getDate()
         let email = faker.internet.email(f_name, l_name)
-        let skill_id = (skills[randomInt(skills.length)]).skill_id
+
+        let skill_id = "";
+        if (skills.length > 0)
+            skill_id = (skills[randomInt(skills.length)]).skill_id
+            
         let is_active = Math.round(Math.random())
 
         // If either name contains an apostrophe, "double up" the apostrophe
@@ -70,7 +74,7 @@ export default function ControlPanel({
 
         let employee = { f_name, l_name, yyyy, mm, dd, email, skill_id, is_active }
         let body = { employee }
-        
+
         console.log("TEST")
 
         fetch("http://localhost:4000/employees", {
