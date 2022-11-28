@@ -8,7 +8,7 @@ username: **<code>admin</code>**
 
 password: **<code>password</code>** 
 
-Backend must be running.
+[Backend](https://github.com/ricardocolom-kaseya/employee-app-backend) must be running.
 
 
 ## Available Scripts
