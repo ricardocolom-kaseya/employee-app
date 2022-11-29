@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Scrollbars } from 'react-custom-scrollbars-2'
 
-import { getToken, SessionExpiredToast } from './helpers/Helpers'
+import { getToken } from './helpers/Helpers'
 
 import EmployeeCard from './components/EmployeeCard'
 import ControlPanel from './components/ControlPanel'
@@ -66,8 +66,7 @@ export default function Dashboard({ navBarHeight }) {
     const [sortAsc, changeSortAsc] = useState(true);
 
     const secondary = useColorModeValue('gray.200', 'gray.700')
-
-    const toast = useToast();
+    
     const navigate = useNavigate();
 
     useEffect(() => {

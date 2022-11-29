@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Avatar, Select, Text, HStack, VStack, Heading, Input, Button, Icon, IconButton, Divider, useDisclosure, useColorMode, useColorModeValue, LightMode, ButtonGroup, InputGroup, InputLeftElement, useToast, Box, CloseButton } from '@chakra-ui/react'
+import { Avatar, Select, Text, HStack, VStack, Heading, Input, Button, Icon, IconButton, Divider, useDisclosure, useColorMode, useColorModeValue, LightMode, ButtonGroup, InputGroup, InputLeftElement, useToast } from '@chakra-ui/react'
 import {
     FormControl,
 } from '@chakra-ui/react'
@@ -11,7 +11,7 @@ import {
     AlertDialogContent,
     AlertDialogOverlay,
 } from '@chakra-ui/react'
-import { SearchIcon, SunIcon, WarningIcon } from '@chakra-ui/icons'
+import { SearchIcon, SunIcon } from '@chakra-ui/icons'
 import { MdHelp, MdOutlineLogout, MdHistory } from 'react-icons/md'
 import { BsSortAlphaDown, BsSortAlphaDownAlt } from "react-icons/bs"
 

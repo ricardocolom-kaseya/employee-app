@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Box, HStack, Text, CloseButton } from '@chakra-ui/react'
 
-import { WarningIcon } from '@chakra-ui/icons'
+import { CheckCircleIcon, WarningIcon } from '@chakra-ui/icons'
 
 export const font1 = "Inter"
 
@@ -37,6 +37,25 @@ export const SessionExpiredToast = (toast) => {
                 </HStack>
             </Box>
         ), status: 'error', duration: 3000
+    })
+}
+
+export const CopiedToast = ({toast, type}) => {
+
+    if(!toast.isActive(`${type} copiedToast`))
+    toast({
+        id: `${type} copiedToast`,
+        render: () => (
+            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                <HStack position="relative" align="center" minH="26px">
+                    <CheckCircleIcon w={5} h={5} m="0.5" />
+                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
+                        {type} copied!
+                    </Text>
+                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                </HStack>
+            </Box>
+        ), status: 'success', duration: 3000
     })
 }
 

@@ -35,7 +35,7 @@ import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from
 
 import validator from 'validator'
 
-import { font1, getToken, getAge, SessionExpiredToast } from '../helpers/Helpers'
+import { font1, getToken, getAge, SessionExpiredToast, CopiedToast } from '../helpers/Helpers'
 
 const RenderEmployeeActivity = (isActive) => {
     if (isActive) {
@@ -426,7 +426,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     </VStack>
                 </HStack>
                 <VStack spacing="0" align="left" pos="relative">
-                    <Text fontSize="xs" pos="absolute" bg={primary} px="2" left="2" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
+                    <Text fontSize="xs" pos="absolute" bg={primary} px="1.5" left="2.5" top="0.5" border="1px" borderRadius="md" borderColor="transparent" fontFamily={font1}>
                         SKILL
                     </Text>
                     <Accordion allowToggle pt="3" pb="8" w="100%">
@@ -460,7 +460,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                             SKILL ID:
                         </Code>
                         <Tooltip fontFamily={font1} hasArrow label={employee.skill_id} borderRadius="lg">
-                            <Button size="xs" onClick={() => navigator.clipboard.writeText(employee.skill_id)}>
+                            <Button size="xs" onClick={() => {navigator.clipboard.writeText(employee.skill_id); CopiedToast({toast: toast, type: "Skill ID"})}}>
                                 <Code bg="transparent">
                                     Copy
                                 </Code>
@@ -472,7 +472,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                             EMPLOYEE ID:
                         </Code>
                         <Tooltip fontFamily={font1} hasArrow label={employee.employee_id} borderRadius="lg">
-                            <Button size="xs" onClick={() => navigator.clipboard.writeText(employee.employee_id)}>
+                            <Button size="xs" onClick={() => {navigator.clipboard.writeText(employee.employee_id); CopiedToast({toast: toast, type: "Employee ID"})}}>
                                 <Code bg="transparent">
                                     Copy
                                 </Code>
