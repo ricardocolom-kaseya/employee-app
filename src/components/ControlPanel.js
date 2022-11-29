@@ -139,10 +139,8 @@ export default function ControlPanel({
         return (
             <>
                 <LightMode>
-                    <Button colorScheme="red" onClick={onOpen} w="100%">
-                        <Text w="100%" textAlign="center" fontWeight="normal" fontFamily={font1}>
-                            Delete All Employees
-                        </Text>
+                    <Button colorScheme="red" onClick={onOpen} w="100%" fontFamily={font1} fontWeight="normal">
+                        Delete All Employees
                     </Button>
                 </LightMode>
                 <AlertDialog
@@ -185,8 +183,6 @@ export default function ControlPanel({
 
         const handleDeleteAllSkills = () => {
 
-            console.log("Going to delete all skills... ");
-
             fetch("http://localhost:4000/skills", {
                 method: "DELETE",
                 headers: {
@@ -214,10 +210,8 @@ export default function ControlPanel({
         return (
             <>
                 <LightMode>
-                    <Button colorScheme="red" onClick={onOpen} w="100%">
-                        <Text w="100%" textAlign="center" fontWeight="normal" fontFamily={font1}>
-                            Delete All Skills
-                        </Text>
+                    <Button colorScheme="red" onClick={onOpen} w="100%" fontFamily={font1} fontWeight="normal">
+                        Delete All Skills
                     </Button>
                 </LightMode>
                 <AlertDialog
@@ -370,11 +364,11 @@ export default function ControlPanel({
                     </HStack>
                     <HStack justify="space-between" w="100%">
                         <LightMode>
-                            <Button fontFamily={font1} colorScheme="red" w="100%" onClick={() => resetSearch()}>
+                            <Button fontFamily={font1} fontWeight="normal" colorScheme="red" w="100%" onClick={() => resetSearch()}>
                                 Reset Search
                             </Button>
                         </LightMode>
-                        <Button fontFamily={font1} w="100%" variant="solid" onClick={() => { goPressed() }}>
+                        <Button fontFamily={font1} fontWeight="normal" w="100%" variant="solid" onClick={() => { goPressed() }}>
                             Search
                         </Button>
                     </HStack>
