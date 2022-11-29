@@ -94,8 +94,6 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
         const handleDeleteSkill = () => {
             let skillID = modalSkills[index].skill_id
 
-            // console.log("Attempting to delete skill...")
-
             fetch("http://localhost:4000/skills", {
                 method: "DELETE",
                 headers: {
@@ -132,7 +130,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
             return (
                 <>
                     <LightMode>
-                        <Button onClick={onOpen} fontFamily={font1} colorScheme="red" fontWeight="medium">Delete Selected</Button>
+                        <Button onClick={onOpen} fontFamily={font1} colorScheme="red" fontWeight="normal">Delete Selected</Button>
                     </LightMode>
                     <AlertDialog
                         isOpen={isOpen}
@@ -151,11 +149,11 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                                     <Text fontFamily={font1}>Are you sure you would like to delete <strong>{modalSkills[index].skill_name}</strong>?</Text>
                                 </AlertDialogBody>
                                 <AlertDialogFooter>
-                                    <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
+                                    <Button fontFamily={font1} fontWeight="normal" ref={cancelRef} onClick={onClose}>
                                         Cancel
                                     </Button>
                                     <LightMode>
-                                        <Button fontFamily={font1} colorScheme='red' onClick={handleDeleteSkill} ml={3}>
+                                        <Button fontFamily={font1} fontWeight="normal" colorScheme='red' onClick={handleDeleteSkill} ml={3}>
                                             Delete
                                         </Button>
                                     </LightMode>
@@ -269,7 +267,9 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                 </ModalBody>
                 <ModalFooter>
                     <HStack>
-                        <Button onClick={onEditSkillClose} fontFamily={font1} fontWeight="medium">Cancel</Button>
+                        <Button onClick={onEditSkillClose} fontFamily={font1} fontWeight="normal">
+                            Cancel
+                        </Button>
                         <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={handleEditSkill}>
                             <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                                 Save

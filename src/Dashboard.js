@@ -130,7 +130,7 @@ export default function Dashboard({ navBarHeight }) {
     const cardViewWidth = (window.innerWidth - 320) + "px"
 
     return (
-        <HStack spacing="0" h="100vh" w="100%" bg={secondary}>
+        <HStack spacing="0" h="100vh" w="100%" bg={secondary} justify="left">
             <VStack h="100%" w={cardViewWidth} spacing="0" pt={navBarHeight + "px"}>
                 <Scrollbars>
                     <CardView

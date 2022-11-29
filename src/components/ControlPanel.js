@@ -161,11 +161,11 @@ export default function ControlPanel({
                                 <Text fontFamily={font1}>Are you sure you would like to delete <strong>all employees</strong>?</Text>
                             </AlertDialogBody>
                             <AlertDialogFooter>
-                                <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
+                                <Button fontFamily={font1} fontWeight="normal" ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
                                 <LightMode>
-                                    <Button fontFamily={font1} colorScheme='red' onClick={handleDeleteAllEmployees} ml={3}>
+                                    <Button fontFamily={font1} fontWeight="normal" colorScheme='red' onClick={handleDeleteAllEmployees} ml={3}>
                                         Delete All
                                     </Button>
                                 </LightMode>
@@ -232,11 +232,11 @@ export default function ControlPanel({
                                 <Text fontFamily={font1}>Are you sure you would like to delete <strong>all skills</strong>?</Text>
                             </AlertDialogBody>
                             <AlertDialogFooter>
-                                <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
+                                <Button fontFamily={font1} fontWeight="normal" ref={cancelRef} onClick={onClose}>
                                     Cancel
                                 </Button>
                                 <LightMode>
-                                    <Button fontFamily={font1} colorScheme='red' onClick={handleDeleteAllSkills} ml={3}>
+                                    <Button fontFamily={font1} fontWeight="normal" colorScheme='red' onClick={handleDeleteAllSkills} ml={3}>
                                         Delete All
                                     </Button>
                                 </LightMode>
@@ -265,7 +265,7 @@ export default function ControlPanel({
         return (
             <>
                 <LightMode>
-                    <Button fontFamily={font1} variant="link" size="sm" colorScheme="red" rightIcon={<MdOutlineLogout />} onClick={onOpen}>
+                    <Button fontFamily={font1} fontWeight="normal" variant="link" size="sm" colorScheme="red" rightIcon={<MdOutlineLogout />} onClick={onOpen}>
                         Log out
                     </Button>
                 </LightMode>
@@ -286,11 +286,11 @@ export default function ControlPanel({
                                 <Text fontFamily={font1}>Are you sure you would like to <strong>log out</strong>?</Text>
                             </AlertDialogBody>
                             <AlertDialogFooter>
-                                <Button fontFamily={font1} ref={cancelRef} onClick={onClose}>
+                                <Button fontFamily={font1} ref={cancelRef} onClick={onClose} fontWeight="normal">
                                     Cancel
                                 </Button>
                                 <LightMode>
-                                    <Button fontFamily={font1} colorScheme='red' ml={3} isLoading={willLogOut} onClick={() => { doLogOut() }}>
+                                    <Button fontFamily={font1} fontWeight="normal" colorScheme='red' ml={3} isLoading={willLogOut} onClick={() => { doLogOut() }}>
                                         Log out
                                     </Button>
                                 </LightMode>
