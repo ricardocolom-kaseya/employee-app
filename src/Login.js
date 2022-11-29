@@ -52,7 +52,7 @@ export default function Home() {
   }
 
   const authenticateUser = () => {
-    console.log('Attempting to authenticate user...')
+    
     changeIsAuthenticating(true)
 
     // Authenticate the user

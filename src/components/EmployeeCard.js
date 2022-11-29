@@ -35,7 +35,7 @@ import { NameHeader, EmailHeader, DOBHeader, SkillsHeader, ActivityHeader } from
 
 import validator from 'validator'
 
-import { font1, getToken, getAge, SessionExpiredToast, CopiedToast } from '../helpers/Helpers'
+import { font1, getToken, getAge, SessionExpiredToast, CopiedToast, InvalidFieldsToast } from '../helpers/Helpers'
 
 const RenderEmployeeActivity = (isActive) => {
     if (isActive) {
@@ -107,12 +107,23 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
             const handleChangeFirstName = (theFirstName) => {
 
-                changeFirstNameValid(validator.isAlpha(theFirstName.replace(/'/g, "")) && theFirstName.slice(-1) !== "'")
+                let checkedAgainst = theFirstName.replace(/'/g, ""
+                ).replace(/ /g, ""
+                ).replace(/\./g, ""
+                ).replace(/,/g, "")
+
+                changeFirstNameValid(validator.isAlpha(checkedAgainst) && theFirstName.slice(-1) !== "'")
                 changeFirstName(theFirstName)
             }
 
             const handleChangeLastName = (theLastName) => {
-                changeLastNameValid(validator.isAlpha(theLastName.replace(/'/g, "")) && theLastName.slice(-1) !== "'")
+
+                let checkedAgainst = theLastName.replace(/'/g, ""
+                ).replace(/ /g, ""
+                ).replace(/\./g, ""
+                ).replace(/,/g, "")
+
+                changeLastNameValid(validator.isAlpha(checkedAgainst) && theLastName.slice(-1) !== "'")
                 changeLastName(theLastName)
             }
 
@@ -171,8 +182,6 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     let f_name = firstName.replace(/'/g, "''")
                     let l_name = lastName.replace(/'/g, "''")
 
-                    // console.log("Attempting to save " + f_name + " " + l_name + "...")
-
                     const putURL = "http://localhost:4000/employees/" + employee.employee_id;
 
                     let employeeInfo = { f_name, l_name, yyyy, mm, dd, email, skill_id: skill.skill_id, is_active: activity }
@@ -222,7 +231,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     )
                 }
                 else {
-                    SessionExpiredToast(toast)
+                    InvalidFieldsToast(toast)
                 }
             }
 
@@ -460,7 +469,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                             SKILL ID:
                         </Code>
                         <Tooltip fontFamily={font1} hasArrow label={employee.skill_id} borderRadius="lg">
-                            <Button size="xs" onClick={() => {navigator.clipboard.writeText(employee.skill_id); CopiedToast({toast: toast, type: "Skill ID"})}}>
+                            <Button size="xs" onClick={() => { navigator.clipboard.writeText(employee.skill_id); CopiedToast({ toast: toast, type: "Skill ID" }) }}>
                                 <Code bg="transparent">
                                     Copy
                                 </Code>
@@ -472,7 +481,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                             EMPLOYEE ID:
                         </Code>
                         <Tooltip fontFamily={font1} hasArrow label={employee.employee_id} borderRadius="lg">
-                            <Button size="xs" onClick={() => {navigator.clipboard.writeText(employee.employee_id); CopiedToast({toast: toast, type: "Employee ID"})}}>
+                            <Button size="xs" onClick={() => { navigator.clipboard.writeText(employee.employee_id); CopiedToast({ toast: toast, type: "Employee ID" }) }}>
                                 <Code bg="transparent">
                                     Copy
                                 </Code>

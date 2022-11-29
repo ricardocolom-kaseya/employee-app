@@ -26,7 +26,7 @@ import { MdSave, MdBadge, MdAddCircle } from 'react-icons/md'
 
 import validator from 'validator'
 
-import { font1, getToken, SessionExpiredToast } from '../helpers/Helpers'
+import { font1, getToken, SessionExpiredToast, InvalidFieldsToast } from '../helpers/Helpers'
 
 export default function ViewEditSkillsButton({ skills, changeSkills }) {
 
@@ -189,12 +189,28 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
         const [skillDescValid, changeSkillDescValid] = useState(true);
 
         const handleChangeSkillName = (theSkillName) => {
-            changeSkillNameValid(validator.isAlphanumeric(theSkillName.replace(/'/g, "")) && theSkillName.slice(-1) !== "'")
+
+            let checkedAgainst = theSkillName.replace(/'/g, ""
+            ).replace(/ /g, ""
+            ).replace(/"/g, ""
+            ).replace(/\./g, ""
+            ).replace(/,/g, "")
+
+            console.log(checkedAgainst)
+
+            changeSkillNameValid(validator.isAlphanumeric(checkedAgainst) && theSkillName.slice(-1) !== "'")
             changeSkillName(theSkillName)
         }
 
         const handleChangeSkillDesc = (theSkillDesc) => {
-            changeSkillDescValid(validator.isAlphanumeric(theSkillDesc.replace(/'/g, "")) && theSkillDesc.slice(-1) !== "'")
+
+            let checkedAgainst = theSkillDesc.replace(/'/g, ""
+            ).replace(/ /g, ""
+            ).replace(/"/g, ""
+            ).replace(/\./g, ""
+            ).replace(/,/g, "")
+
+            changeSkillDescValid(validator.isAlphanumeric(checkedAgainst) && theSkillDesc.slice(-1) !== "'")
             changeSkillDesc(theSkillDesc)
         }
 
@@ -263,6 +279,9 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                     SessionExpiredToast(toast)
                 })
             }
+            else {
+                InvalidFieldsToast(toast)
+            }
         }
 
         return (
@@ -276,7 +295,7 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                                 <FormLabel fontFamily={font1}>Name</FormLabel>
                                 <Input fontFamily={font1} value={skillName} onChange={(e) => handleChangeSkillName(e.target.value)} />
                             </FormControl>
-                            <FormControl isRequired mt="8" isInvalid={(!skillNameValid && skillName.length > 0)}>
+                            <FormControl isRequired mt="8" isInvalid={(!skillDescValid && skillDesc.length > 0)}>
                                 <FormLabel fontFamily={font1}>Description</FormLabel>
                                 <Textarea fontFamily={font1} value={skillDesc} onChange={(e) => handleChangeSkillDesc(e.target.value)} />
                             </FormControl>
@@ -304,56 +323,91 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
         const [skillName, changeSkillName] = useState("")
         const [skillDesc, changeSkillDesc] = useState("")
 
+        const [skillNameValid, changeSkillNameValid] = useState(false);
+        const [skillDescValid, changeSkillDescValid] = useState(false);
+
+        const handleChangeSkillName = (theSkillName) => {
+
+            let checkedAgainst = theSkillName.replace(/'/g, ""
+            ).replace(/ /g, ""
+            ).replace(/"/g, ""
+            ).replace(/\./g, ""
+            ).replace(/,/g, "")
+
+            changeSkillNameValid(validator.isAlphanumeric(checkedAgainst) && theSkillName.slice(-1) !== "'")
+            changeSkillName(theSkillName)
+        }
+
+        const handleChangeSkillDesc = (theSkillDesc) => {
+
+            let checkedAgainst = theSkillDesc.replace(/'/g, ""
+            ).replace(/ /g, ""
+            ).replace(/"/g, ""
+            ).replace(/\./g, ""
+            ).replace(/,/g, "")
+
+            changeSkillDescValid(validator.isAlphanumeric(checkedAgainst) && theSkillDesc.slice(-1) !== "'")
+            changeSkillDesc(theSkillDesc)
+        }
+
+        function allValid() {
+            return (skillNameValid && skillDescValid)
+        }
+
         const handleAddSkill = () => {
 
-            console.log("Attempting to add skill " + skillName)
+            if (allValid()) {
 
-            let skill_name = skillName.replace(/'/g, "''")
-            let skill_desc = skillDesc.replace(/'/g, "''")
+                let skill_name = skillName.replace(/'/g, "''")
+                let skill_desc = skillDesc.replace(/'/g, "''")
 
-            let skillInfo = { skill_name, skill_desc }
+                let skillInfo = { skill_name, skill_desc }
 
-            fetch("http://localhost:4000/skills", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${getToken()}`,
-                },
-                body: JSON.stringify(skillInfo)
-            }).then(
-                response => {
-                    if (response.status !== 200)
-                        throw new Error(response.status)
-                    console.log("POST /skills Status Code: " + response.status);
-                    return response.json()
-                }
-            ).then(
-                data => {
-                    onNewSkillClose();
+                fetch("http://localhost:4000/skills", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${getToken()}`,
+                    },
+                    body: JSON.stringify(skillInfo)
+                }).then(
+                    response => {
+                        if (response.status !== 200)
+                            throw new Error(response.status)
+                        console.log("POST /skills Status Code: " + response.status);
+                        return response.json()
+                    }
+                ).then(
+                    data => {
+                        onNewSkillClose();
 
-                    toast({
-                        render: () => (
-                            <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
-                                <HStack position="relative" align="center" minH="26px">
-                                    <CheckCircleIcon w={5} h={5} m="0.5" />
-                                    <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
-                                        Added a skill!
-                                    </Text>
-                                    <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
-                                </HStack>
-                            </Box>
-                        ), duration: 3000
-                    })
+                        toast({
+                            render: () => (
+                                <Box color="white" p={3} align="center" borderRadius="md" minW="300px" minH="26px" bg="green.500">
+                                    <HStack position="relative" align="center" minH="26px">
+                                        <CheckCircleIcon w={5} h={5} m="0.5" />
+                                        <Text fontWeight="bold" fontSize="md" fontFamily={font1} pr="8">
+                                            Added a skill!
+                                        </Text>
+                                        <CloseButton size="sm" pos="absolute" right="-8px" top="-8px" onClick={() => toast.closeAll()} />
+                                    </HStack>
+                                </Box>
+                            ), duration: 3000
+                        })
 
-                    let newSkill = { skill_id: data, skill_name: skillName, skill_desc: skillDesc }
+                        let newSkill = { skill_id: data, skill_name: skillName, skill_desc: skillDesc }
 
-                    let newAllSkills = [...modalSkills]
-                    newAllSkills.push(newSkill)
-                    changeModalSkills(newAllSkills);
-                }
-            ).catch((err) => {
-                SessionExpiredToast(toast)
-            })
+                        let newAllSkills = [...modalSkills]
+                        newAllSkills.push(newSkill)
+                        changeModalSkills(newAllSkills);
+                    }
+                ).catch((err) => {
+                    SessionExpiredToast(toast)
+                })
+            }
+            else {
+                InvalidFieldsToast(toast)
+            }
         }
 
         return (
@@ -363,13 +417,13 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
                 <ModalBody>
                     <HStack spacing="8">
                         <VStack spacing="8" w="1200px" h="328px">
-                            <FormControl isRequired>
+                            <FormControl isRequired isInvalid={(!skillNameValid && skillName.length > 0)}>
                                 <FormLabel fontFamily={font1}>Name</FormLabel>
-                                <Input fontFamily={font1} value={skillName} onChange={(e) => changeSkillName(e.target.value)} />
+                                <Input fontFamily={font1} value={skillName} onChange={(e) => handleChangeSkillName(e.target.value)} />
                             </FormControl>
-                            <FormControl isRequired mt="8">
+                            <FormControl isRequired mt="8" isInvalid={(!skillDescValid && skillDesc.length > 0)}>
                                 <FormLabel fontFamily={font1}>Description</FormLabel>
-                                <Textarea fontFamily={font1} value={skillDesc} onChange={(e) => changeSkillDesc(e.target.value)} />
+                                <Textarea fontFamily={font1} value={skillDesc} onChange={(e) => handleChangeSkillDesc(e.target.value)} />
                             </FormControl>
                         </VStack>
                     </HStack>

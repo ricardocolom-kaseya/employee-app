@@ -75,8 +75,6 @@ export default function ControlPanel({
         let employee = { f_name, l_name, yyyy, mm, dd, email, skill_id, is_active }
         let body = { employee }
 
-        console.log("TEST")
-
         fetch("http://localhost:4000/employees", {
             method: 'POST',
             headers: {

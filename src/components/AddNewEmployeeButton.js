@@ -45,12 +45,24 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
         const [birthdayValid, changeBirthdayValid] = useState(false);
 
         const handleChangeFirstName = (theFirstName) => {
-            changeFirstNameValid(validator.isAlpha(theFirstName.replace(/'/g, "")) && theFirstName.slice(-1) !== "'")
+
+            let checkedAgainst = theFirstName.replace(/'/g, ""
+                ).replace(/ /g, ""
+                ).replace(/\./g, ""
+                ).replace(/,/g, "")
+
+            changeFirstNameValid(validator.isAlpha(checkedAgainst) && theFirstName.slice(-1) !== "'")
             changeFirstName(theFirstName)
         }
 
         const handleChangeLastName = (theLastName) => {
-            changeLastNameValid(validator.isAlpha(theLastName.replace(/'/g, "")) && theLastName.slice(-1) !== "'")
+
+            let checkedAgainst = theLastName.replace(/'/g, ""
+                ).replace(/ /g, ""
+                ).replace(/\./g, ""
+                ).replace(/,/g, "")
+
+            changeLastNameValid(validator.isAlpha(checkedAgainst) && theLastName.slice(-1) !== "'")
             changeLastName(theLastName)
         }
 
@@ -229,7 +241,7 @@ export default function AddNewEmployeeButton({ employees, changeEmployees, skill
                         <Button onClick={onClose} fontFamily={font1} fontWeight="medium">Cancel</Button>
                         <LightMode>
                             <Button colorScheme="green" my="4" rightIcon={<Icon as={MdAddCircle} w={4} h={4} />} onClick={handleAddEmployee}>
-                                <Text  w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
+                                <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                                     Add
                                 </Text>
                             </Button>
