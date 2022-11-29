@@ -54,31 +54,11 @@ const RenderEmployeeActivity = (isActive) => {
     }
 }
 
-const SkillBlock = (skill) => {
-    return (
-        <VStack align="left" spacing="0" position="relative" pb={(skill.i < skill.totalCount - 1) ? "16" : "8"}>
-            <Text fontFamily={font1}>
-                {skill.desc}
-            </Text>
-            <HStack spacing="0" position="absolute" right="0" bottom="0">
-                <Code bg="transparent">
-                    SKILL ID:
-                </Code>
-                <Tooltip hasArrow fontFamily={font1} label={skill.skill_id} borderRadius="lg">
-                    <Button size="xs" variant="outline" onClick={() => navigator.clipboard.writeText(skill.skill_id)}>
-                        <Code bg="transparent">
-                            Copy
-                        </Code>
-                    </Button>
-                </Tooltip>
-            </HStack>
-        </VStack>
-    )
-}
-
 export default function EmployeeCard({ employee, skills, employees, changeEmployees }) {
 
     const toast = useToast();
+
+    const { isOpen: isHovered, onOpen: onHover, onClose: onLeaveHover } = useDisclosure();
 
     let toEmployees = employees;
     let thisEmployeeIndex = toEmployees.indexOf(employee);
@@ -143,7 +123,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
 
             function formatDate(date) {
                 const toDate = new Date(date).toISOString().split('T')[0];
-                return toDate;                
+                return toDate;
             }
 
             const handleChangeDate = (date) => {
@@ -268,7 +248,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                                 </FormControl>
                                 <FormControl isRequired mt="8">
                                     <DOBHeader />
-                                    <Input fontFamily={font1} type="date" defaultValue={formatDate(birthday)} onChange={(e) => {handleChangeDate(e.target.value)}}/>
+                                    <Input fontFamily={font1} type="date" defaultValue={formatDate(birthday)} onChange={(e) => { handleChangeDate(e.target.value) }} />
                                 </FormControl>
                             </VStack>
                             <VStack w="1200px" h="328px">
@@ -296,7 +276,13 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     <ModalFooter>
                         <HStack>
                             <Button onClick={onClose} fontFamily={font1} fontWeight="medium">Cancel</Button>
-                            <Button my="4" colorScheme="blue" variant="outline" rightIcon={<Icon as={MdSave} w={4} h={4} />} onClick={handleSaveEmployee}>
+                            <Button
+                                my="4"
+                                colorScheme="blue"
+                                variant="outline"
+                                rightIcon={<Icon as={MdSave} w={4} h={4} />}
+                                onClick={handleSaveEmployee}
+                            >
                                 <Text w="100%" textAlign="left" fontWeight="normal" fontFamily={font1}>
                                     Save
                                 </Text>
@@ -319,7 +305,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                         onClick={onOpen}
                     />
                 </Tooltip>
-                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { changeEmployees(toEmployees) }} preserveScrollBarGap>
+                <Modal onClose={onClose} isOpen={isOpen} isCentered motionPreset='slideInBottom' size="xl" onCloseComplete={() => { changeEmployees(toEmployees); onLeaveHover() }} preserveScrollBarGap>
                     <ModalOverlay />
                     <EditEmployeeModal />
                 </Modal>
@@ -381,7 +367,7 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                     motionPreset="slideInBottom"
                     preserveScrollBarGap
                     onCloseComplete={() => {
-                        changeEmployees(toEmployees)
+                        changeEmployees(toEmployees); onLeaveHover()
                     }}
                 >
                     <AlertDialogOverlay>
@@ -412,8 +398,8 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
     const primary = useColorModeValue('white', 'gray.800')
 
     return (
-        <Box pos="relative" w="lg" style={{ margin: "6px" }} shadow="md" borderRadius="2xl" bg={primary}>
-            <Box pos="absolute" m="2" right="0">
+        <Box pos="relative" w="lg" style={{ margin: "6px" }} shadow="md" borderRadius="2xl" bg={primary} onMouseEnter={onHover} onMouseLeave={onLeaveHover}>
+            <Box pos="absolute" m="2" right="0" opacity={isHovered ? "100" : "0"} transition="linear" transitionDuration="0.1s">
                 <HStack>
                     <EditButton />
                     <DeleteButton />
@@ -452,29 +438,47 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                                 </HStack>
                             </AccordionButton>
                             <AccordionPanel>
-                                <SkillBlock name={skillName} skill_id={employee.skill_id} desc={skillDesc} key={0} totalCount={1} />
+                                <VStack align="left" spacing="0" position="relative" pb="0">
+                                    <Text fontFamily={font1}>
+                                        {skillDesc}
+                                    </Text>
+                                </VStack>
                             </AccordionPanel>
                         </AccordionItem>
                     </Accordion>
                 </VStack>
             </VStack>
-            <HStack pos="absolute" w="100%" bottom="0" px="4" py="2">
+            <HStack pos="absolute" w="100%" bottom="3" px="4">
                 <Tooltip fontFamily={font1} hasArrow label={(employee.dob).toLocaleDateString()} borderRadius="lg">
-                    <Text fontStyle="italic" fontSize="sm" lineHeight="1.2" fontFamily={font1} w="122px">
+                    <Text fontStyle="italic" fontSize="sm" fontFamily={font1} w="122px" px="2">
                         {getAge(employee.dob)} years old
                     </Text>
                 </Tooltip>
-                <HStack spacing="0" w="100%" justify="end">
-                    <Code bg="transparent">
-                        ID:
-                    </Code>
-                    <Tooltip fontFamily={font1} hasArrow label={employee.employee_id} borderRadius="lg">
-                        <Button size="xs" onClick={() => navigator.clipboard.writeText(employee.employee_id)}>
-                            <Code bg="transparent">
-                                Copy
-                            </Code>
-                        </Button>
-                    </Tooltip>
+                <HStack spacing="3" w="100%" justify="end" opacity={isHovered ? "100" : "0"} transition="linear" transitionDuration="0.1s">
+                    <HStack spacing="0">
+                        <Code bg="transparent">
+                            SKILL ID:
+                        </Code>
+                        <Tooltip fontFamily={font1} hasArrow label={employee.skill_id} borderRadius="lg">
+                            <Button size="xs" onClick={() => navigator.clipboard.writeText(employee.skill_id)}>
+                                <Code bg="transparent">
+                                    Copy
+                                </Code>
+                            </Button>
+                        </Tooltip>
+                    </HStack>
+                    <HStack spacing="0">
+                        <Code bg="transparent">
+                            EMPLOYEE ID:
+                        </Code>
+                        <Tooltip fontFamily={font1} hasArrow label={employee.employee_id} borderRadius="lg">
+                            <Button size="xs" onClick={() => navigator.clipboard.writeText(employee.employee_id)}>
+                                <Code bg="transparent">
+                                    Copy
+                                </Code>
+                            </Button>
+                        </Tooltip>
+                    </HStack>
                 </HStack>
             </HStack>
         </Box>
