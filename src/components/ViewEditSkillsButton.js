@@ -196,8 +196,6 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
             ).replace(/\./g, ""
             ).replace(/,/g, "")
 
-            console.log(checkedAgainst)
-
             changeSkillNameValid(validator.isAlphanumeric(checkedAgainst) && theSkillName.slice(-1) !== "'")
             changeSkillName(theSkillName)
         }
