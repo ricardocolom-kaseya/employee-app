@@ -1,6 +1,4 @@
-# Employee Lookup
-
-Add, edit or remove employees.
+![Employee Lookup](https://imgur.com/V6OUSvM.png)
 
 This is an app made for onboarding training at my company.
 
