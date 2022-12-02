@@ -8,7 +8,7 @@ By default this runs on port 3000 of your local machine.
 
 ## Instructions
 
-- In the project directory run <code>npm install</code> to install all dependencies.
+- In the project directory run <code>yarn install</code> to install all dependencies.
 
 - [Backend](https://github.com/ricardocolom-kaseya/employee-app-backend) must be running.
 
