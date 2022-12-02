@@ -1,4 +1,6 @@
-![Employee Lookup](https://imgur.com/V6OUSvM.png)
+<p align="center">
+  <img src="https://i.imgur.com/V6OUSvM.png" />  
+</p>
 
 This is an app made for onboarding training at my company.
 
