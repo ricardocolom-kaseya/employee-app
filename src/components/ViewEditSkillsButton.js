@@ -206,7 +206,8 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
             ).replace(/ /g, ""
             ).replace(/"/g, ""
             ).replace(/\./g, ""
-            ).replace(/,/g, "")
+            ).replace(/,/g, ""
+            ).replace(/\(|\)/g, "")
 
             changeSkillDescValid(validator.isAlphanumeric(checkedAgainst) && theSkillDesc.slice(-1) !== "'")
             changeSkillDesc(theSkillDesc)
@@ -342,7 +343,8 @@ export default function ViewEditSkillsButton({ skills, changeSkills }) {
             ).replace(/ /g, ""
             ).replace(/"/g, ""
             ).replace(/\./g, ""
-            ).replace(/,/g, "")
+            ).replace(/,/g, ""
+            ).replace(/\(|\)/g, "")
 
             changeSkillDescValid(validator.isAlphanumeric(checkedAgainst) && theSkillDesc.slice(-1) !== "'")
             changeSkillDesc(theSkillDesc)

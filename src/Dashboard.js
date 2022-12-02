@@ -93,7 +93,7 @@ export default function Dashboard({ navBarHeight }) {
     useEffect(() => {
 
         function fetchEmployees() {
-            let searchParams = { includesCharacters: search, includesSkill: searchSkill, order: (sortAsc ? "ASC" : "DESC") }
+            let searchParams = { includesCharacters: search.toLowerCase(), includesSkill: searchSkill, order: (sortAsc ? "ASC" : "DESC") }
             // Get all employees
             fetch("http://localhost:4000/employees", {
                 headers: {

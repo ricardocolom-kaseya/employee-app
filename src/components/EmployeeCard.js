@@ -93,6 +93,14 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                 skill_desc: skillDesc,
             }
 
+            if(currSkill.skill_name === "None")
+            {
+                if(skills.length > 0)
+                {
+                    currSkill = skills[0];
+                }
+            }
+
             const [firstName, changeFirstName] = useState(employee.f_name);
             const [lastName, changeLastName] = useState(employee.l_name);
             const [email, changeEmail] = useState(employee.email);
@@ -228,7 +236,9 @@ export default function EmployeeCard({ employee, skills, employees, changeEmploy
                                 ), status: 'error', duration: 3000
                             })
                         }
-                    )
+                    ).catch((err) => {
+                        SessionExpiredToast(toast)
+                    })
                 }
                 else {
                     InvalidFieldsToast(toast)
