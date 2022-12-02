@@ -4,6 +4,8 @@
 
 This is an app made for onboarding training at my company.
 
+[Video demonstration](https://youtu.be/TV1jFcc_W1M)
+
 By default this runs on port 3000 of your local machine.
 
 ## Instructions
