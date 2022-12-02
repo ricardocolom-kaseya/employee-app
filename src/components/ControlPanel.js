@@ -313,6 +313,8 @@ export default function ControlPanel({
         changePanelSearch("")
         changePanelSortAsc("ASC")
 
+        document.getElementById("panelSkillsDropDown").selectedIndex = 0;
+
         changeSearch("")
         changeSearchSkill("")
         changeSortAsc("ASC")
